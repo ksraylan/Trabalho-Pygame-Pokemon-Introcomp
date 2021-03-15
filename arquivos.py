@@ -12,6 +12,11 @@ img_text_bar = pygame.image.load('Recursos/Sprites/SpritesInterface/text_bar.png
 img_vida_amarela = pygame.image.load('Recursos/Sprites/SpritesInterface/vida_amarela.png').convert_alpha()
 img_vida_vermelha = pygame.image.load('Recursos/Sprites/SpritesInterface/vida_vermelha.png').convert_alpha()
 
+img_pp_bar = pygame.transform.scale(img_pp_bar, (int(240*escala), int(48*escala)))
+img_vida_amarela = pygame.transform.scale(img_vida_amarela, (int(9*escala), int(3*escala)))
+img_vida_vermelha = pygame.transform.scale(img_vida_vermelha, (int(9*escala), int(3*escala)))
+img_barra_sem_vida = pygame.transform.scale(img_barra_sem_vida, (int(9*escala), int(3*escala)))
+
 # Aumentando o tamanho:
 img_barra1 = pygame.transform.scale(img_barra1, (int(101*escala), int(29*escala)))
 img_barra2 = pygame.transform.scale(img_barra2, (int(104*escala), int(39*escala)))
@@ -83,7 +88,7 @@ som_Thunder = pygame.mixer.Sound("Recursos/Sprites/SonsPokemon/Thunder.wav")
 
 img_opcoes_batalha = pygame.transform.scale(img_opcoes_batalha, (int(120*escala), int(48*escala)))
 img_text_bar = pygame.transform.scale(img_text_bar, (int(240*escala), int(48*escala)))
-img_fundo_pokemon = pygame.transform.scale(img_fundo_pokemon, (int(240*escala*1.5), int(112*escala*2.0)))
+img_fundo_pokemon = pygame.transform.scale(img_fundo_pokemon, (int(240*escala*1), int(112*escala*1.25)))
 
 fonte = pygame.font.Font("Recursos/Fontes/joystix monospace.ttf", int(7*escala))
-fonte_txt = pygame.font.Font("Recursos/Fontes/joystix monospace.ttf", int(11*escala))
+fonte_txt = pygame.font.Font("Recursos/Fontes/joystix monospace.ttf", int(8*escala))

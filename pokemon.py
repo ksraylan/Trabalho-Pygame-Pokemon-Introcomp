@@ -1,4 +1,5 @@
 import random
+import math
 # Características de um pokémon:
 class Pokemon:
     def __init__(self, nome, vida, ataque, defesa, velocidade, especial_ataque, especial_defesa, nivel, genero, imagens):
@@ -14,7 +15,12 @@ class Pokemon:
         self.__genero = genero
         self.__imagem_costas = imagens[1]
         self.__imagem_frente = imagens[0]
+        self.__tentou_fugir = 0
     
+
+    def copy(self):
+        return Pokemon(self.__nome, self.__vida, self.__ataque, self.__defesa, self.__velocidade, self.__especial_ataque, self.__especial_defesa, self.__nivel, self.__genero, [self.imagem_frente,self.imagem_costas])
+
     
     @property
     def nome(self):
@@ -22,8 +28,16 @@ class Pokemon:
 
     @property
     def vida(self):
-        return self.__vida
+       if self.__vida < 0:
+            return 0
+       else:
+            return self.__vida
+    
 
+    @property
+    def vida_maxima(self):
+        return self.__vida_maxima
+    
     @property
     def ataque(self):
         return self.__ataque
@@ -120,6 +134,22 @@ class Pokemon:
         print(outro_pokemon.vida)
         #return outro_pokemon
         
+
+    
+    def fugir_de(self, outro_pokemon):
+        self.__tentou_fugir += 1
+        A = self.__velocidade
+        B = outro_pokemon.velocidade
+        C = self.__tentou_fugir
+        F = ((A * 128/B) + 30 * C) % 256
+
+        if random.randrange(0, 255) < F:
+            # conseguiu escapar
+            return True
+        else:
+            # não conseguiu
+            return False
+    
     def cura(self, quantidade):
         self.__vida += quantidade
 

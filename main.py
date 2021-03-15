@@ -5,18 +5,20 @@ import pokemon
 import arquivos as arq
 import cores as cor
 import cena
+from mensagem import Mensagem
 
 def main():
     menu = cena.Menu()
     sub_menu = cena.Submenu()
     
+    mensagem = Mensagem("TESTE")
 
     escala = arq.escala
     # menu espaçamento:
     
     menu_espacamento = (200,50)
     # tamanho menu:
-    menu_tamanho = 2*escala
+    #menu_tamanho = 2*escala
     # tamanho seta:
     tamanho_cursor = 11*escala
 
@@ -26,6 +28,8 @@ def main():
     pos = [0,0]
     distanciamento = (50*escala,15*escala)
     generos = ["F", "M"]
+
+    
 
     pk_pikachu = pokemon.Pokemon("Pikachu",35,55,40,90,50,50,9,random.choice(generos), arq.carregar_imagem_pokemon(25))
     pk_charmander = pokemon.Pokemon("Charmander",39,52,43,65,60,50,9, random.choice(generos),arq.carregar_imagem_pokemon(4))
@@ -40,27 +44,47 @@ def main():
     cores_pode_escolher = [cor.AMARELO, cor.LARANJA, cor.VERDE, cor.AZUL, cor.CIANO, cor.ROXO, cor.ROSA, cor.CINZA]
 
 
-    pokemons = [pk_pikachu, pk_rhydon]
+    pokemons = [None, None]
     pk_pikachu.atacar(pk_rhydon)
 
     def texto_multilinha(texto):
         x = 0
         y = 0
-        for i in range(len(texto)):
+        # s = onde está o último espaço " " 
+        s = 0
+        i = 0
+        t = []
+        while i < len(texto):
+            t_local = arq.fonte_txt.render(texto[i], True, cor.BRANCO)
+            
+            t_rect = t_local.get_rect()
+            coordenada_x = 0 + 12*escala + t_rect.width*x
 
-            t = arq.fonte_txt.render(texto[i], True, cor.BRANCO)
-            t_rect = t.get_rect()
-            coordenada_x = 0 + 16*escala + t_rect.width*x
+            if texto[i] == " ":
+                s = i
 
             if coordenada_x > janela.tamanho[0]/2:
                 x = 0
                 y -= 1
-                coordenada_x = 0 + 16*escala + t_rect.width*x
+                
+                for a in range(i, s, -1):
+                    t.pop(s)
+                
+                i = s + 1 
+                
+                coordenada_x = 0 + 12*escala + t_rect.width*x
+                t_local = arq.fonte_txt.render(texto[i], True, cor.BRANCO)
 
             t_rect.left = coordenada_x
-            t_rect.bottom = janela.tamanho[1] - 25*escala - y*t_rect.height
-            janela.tela.blit(t, t_rect)
+            t_rect.bottom = janela.tamanho[1] - 28*escala - y*t_rect.height
+            
+            t.append([t_local, t_rect])
+
             x += 1
+            i += 1
+        for i in range(len(t)):
+            janela.tela.blit(t[i][0], t[i][1])
+
             
     def desenhar_graficos():
         #menu inicio:
@@ -123,13 +147,14 @@ def main():
             if sub_menu.no_submenu(sub_menu.principal):
                 janela.tela.blit(arq.img_opcoes_batalha, (janela.tamanho[0] - 120*escala, janela.tamanho[1] - 48*escala))
             elif sub_menu.no_submenu(sub_menu.escolhendo_ataque):
-                pass
+                janela.tela.blit(arq.img_pp_bar, (0, janela.tamanho[1] - 48*escala))
             pygame.draw.rect(janela.tela, cor.VERMELHO, ((janela.tamanho[0] - 107.5*escala + (pos[0]*distanciamento[0]), janela.tamanho[1] - 37.5*escala + (pos[1]*distanciamento[1])), (50*escala,15*escala)), int(1*escala))
-            nome_na_batalha = "What should {} do?".format(pokemons[0].nome)
-            batalha_nome = arq.fonte_txt.render(nome_na_batalha, True, cor.BRANCO)
+
+            batalha_nome = arq.fonte_txt.render(mensagem.texto, True, cor.BRANCO)
             batalha_rect = batalha_nome.get_rect()
-            batalha_rect.left = 0 + 16*escala
-            batalha_rect.bottom = janela.tamanho[1] - 25*escala
+            #batalha_rect.left = 0 + 16*escala
+            #batalha_rect.bottom = janela.tamanho[1] - 38*escala
+
 
             janela.tela.blit(arq.img_barra1, (15*escala, 18*escala))
             janela.tela.blit(arq.img_barra2, (janela.tamanho[0] - 110*escala,janela.tamanho[1] - 88*escala))
@@ -172,7 +197,28 @@ def main():
             simb_2_rect.top = poke_2_rect.y
             janela.tela.blit(simb_2, simb_2_rect)            
 
+            # Barras de vida:
+            
+            #arq.img_vida_vermelha
+            
+            img_vida_vermelha_esticada = pygame.transform.scale(arq.img_vida_vermelha, (int(arq.img_vida_vermelha.get_width() * 5.34 * (pokemons[0].vida)/pokemons[0].vida_maxima), arq.img_vida_vermelha.get_height()))
+            janela.tela.blit(img_vida_vermelha_esticada,(55*escala, 34*escala))
+            
+            img_vida_vermelha_esticada = pygame.transform.scale(arq.img_vida_vermelha, (int(arq.img_vida_vermelha.get_width() *5.34  * (pokemons[1].vida)/pokemons[1].vida_maxima), arq.img_vida_vermelha.get_height()))
+            janela.tela.blit(img_vida_vermelha_esticada,(janela.tamanho[0] - 62*escala,janela.tamanho[1] - 69*escala))
+            """
+            img_vida_amarela_esticada = pygame.transform.scale(arq.img_vida_amarela, (int(arq.img_vida_amarela.get_width() * 5.4), arq.img_vida_vermelha.get_height()))
+            janela.tela.blit(img_vida_amarela_esticada,(int(55*escala), int(34*escala)))
 
+            img_vida_amarela_esticada = pygame.transform.scale(arq.img_vida_amarela, (int(arq.img_vida_amarela.get_width() * 5.36), arq.img_vida_vermelha.get_height()))
+            janela.tela.blit(img_vida_amarela_esticada,(janela.tamanho[0] - 62*escala,janela.tamanho[1] - 69*escala))
+            
+            img_barra_sem_vida_esticada = pygame.transform.scale(arq.img_barra_sem_vida, (int(arq.img_barra_sem_vida.get_width() * 5.4), arq.img_barra_sem_vida.get_height()))
+            janela.tela.blit(img_barra_sem_vida_esticada,(int(55*escala), int(34*escala)))
+
+            img_barra_sem_vida_esticada = pygame.transform.scale(arq.img_barra_sem_vida, (int(arq.img_barra_sem_vida.get_width() * 5.36), arq.img_barra_sem_vida.get_height()))
+            janela.tela.blit(img_barra_sem_vida_esticada,(janela.tamanho[0] - 62*escala,janela.tamanho[1] - 69*escala))
+            """
             # Mostrando o nível do pokémon
             nivel = arq.fonte_txt.render("9", True, cor.PRETO)
             nivel_rect = nivel.get_rect()
@@ -185,43 +231,52 @@ def main():
             nivel_rect.top = janela.tamanho[1] - 84.5*escala
             janela.tela.blit(nivel, nivel_rect)
 
-            texto_multilinha(nome_na_batalha)
+            texto_multilinha(mensagem.texto)
             #janela.tela.blit(batalha_nome, batalha_rect)
 
         pygame.display.update()
 
 
-    def escolher_pokemon(menu, sub_menu):
+    def escolher_pokemon(menu, sub_menu, mensagem):
         menu.atual = menu.batalhando
         sub_menu.atual = sub_menu.principal
         # seu pokémon:
-        pokemons[0] = pokemons_pode_escolher[sel_s]
+        pokemons[0] = pokemons_pode_escolher[sel_s].copy()
         # pokémon inimigo:
-        pokemons[1] = pokemons_pode_escolher[random.randrange(0,len(pokemons_pode_escolher)-1)]
+        pokemons[1] = pokemons_pode_escolher[random.randrange(0,len(pokemons_pode_escolher)-1)].copy()
+        mensagem.texto = "What should {} do?".format(pokemons[0].nome)
         
-        
-
-
-
-    def escolher_acao_batalha():
+    def escolher_acao_batalha(mensagem):
         if pos == [0,0]:
-            #subcena_atual = cena.SUBMENU_BATALHA_ATAQUE
-            vez = random.randrange(1,2)
-            if pokemons[0].velocidade > pokemons[1].velocidade:
-                vez = 1
-            elif pokemons[0].velocidade < pokemons[1].velocidade:
-                vez = 2
+            sub_menu.atual = sub_menu.escolhendo_ataque
+        elif pos == [1,1]:
+            tentar_fugir(pokemons[0], pokemons[1], mensagem)
+    def tentar_fugir(pokemon_tentando_fugir, pokemon_inimigo, mensagem):
+        fugiu = pokemon_tentando_fugir.fugir_de(pokemon_inimigo)
+        if fugiu:
+            mensagem.texto = "Conseguiu fugir com sucesso!"
+        else:
+            mensagem.texto = "Não conseguiu fugir!"
+    
 
-            while vez <= 2:
-                if vez == 1:
-                    pokemons[0].atacar(pokemons[1])
-                elif vez == 2:
-                    pokemons[1].atacar(pokemons[0])
 
-                vez += 1
-            #pokemon_2 = pokemon_1.atacar(pokemon_2)
-            #pokemon_2.atacar(pokemon_1)
-            
+    def acao_atacar():
+        vez = random.randrange(1,2)
+        if pokemons[0].velocidade > pokemons[1].velocidade:
+            vez = 1
+        elif pokemons[0].velocidade < pokemons[1].velocidade:
+            vez = 2
+
+        while vez <= 2:
+            if vez == 1:
+                pokemons[0].atacar(pokemons[1])
+            elif vez == 2:
+                pokemons[1].atacar(pokemons[0])
+
+            vez += 1
+        #pokemon_2 = pokemon_1.atacar(pokemon_2)
+        #pokemon_2.atacar(pokemon_1)
+    
     def processar_logica():
         pass
 
@@ -251,11 +306,14 @@ def main():
                         
 
                         if event.key == pygame.K_RETURN:
-                            escolher_acao_batalha()
-
+                            escolher_acao_batalha(mensagem)
+                        
 
                     elif sub_menu.no_submenu(sub_menu.escolhendo_ataque):
-                        pass
+                        if event.key == pygame.K_ESCAPE:
+                            sub_menu.atual = sub_menu.principal
+                        if event.key == pygame.K_RETURN:
+                            acao_atacar()
                     
                 elif menu.no_menu(menu.escolhendo_pokemon):
                     if event.key == pygame.K_UP:
@@ -267,7 +325,7 @@ def main():
                         if sel_s > len(pokemons_pode_escolher) - 1:
                             sel_s = 0
                     elif event.key == pygame.K_RETURN:
-                        escolher_pokemon(menu, sub_menu)
+                        escolher_pokemon(menu, sub_menu, mensagem)
                     elif event.key == pygame.K_ESCAPE:
                         rodando_o_jogo = False
             
