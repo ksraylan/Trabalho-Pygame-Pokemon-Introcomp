@@ -22,6 +22,7 @@ img_pokemons = []
 
 i = 1
 n = 0
+"""
 while i <= 386:
     if i == 34:
         i = 35
@@ -39,9 +40,17 @@ while i <= 386:
         img_pokemons.append([pygame.image.load("Recursos/Sprites/SpritesPokemon/Frente/386-defense.png"), pygame.image.load("Recursos/Sprites/SpritesPokemon/Costas/386-defense.png")])
         img_pokemons.append([pygame.image.load("Recursos/Sprites/SpritesPokemon/Frente/386-normal.png"), pygame.image.load("Recursos/Sprites/SpritesPokemon/Costas/386-normal.png")])
         break
+"""
 
+
+
+def carregar_imagem_pokemon(numero):
+    return [pygame.transform.scale(pygame.image.load("Recursos/Sprites/SpritesPokemon/Frente/{}.png".format(numero)), (int(64*escala), int(64*escala))),
+    pygame.transform.scale(pygame.image.load("Recursos/Sprites/SpritesPokemon/Costas/{}.png".format(numero)), (int(64*escala), int(64*escala)))]
+    
 
 # Sons dos Pokemons:
+"""
 som_absorb = pygame.mixer.Sound("Recursos/Sprites/SonsPokemon/Absorb.wav")
 som_fire_red_abertura = pygame.mixer.Sound("Recursos/Sprites/SonsPokemon/fireRedAbertura.wav")
 som_Batalha = pygame.mixer.Sound("Recursos/Sprites/SonsPokemon/batalha.wav")
@@ -69,7 +78,7 @@ som_Twister = pygame.mixer.Sound("Recursos/Sprites/SonsPokemon/Twister.wav")
 #som_ViridianCity = pygame.mixer.Sound("Recursos/Sprites/SonsPokemon/ViridianCity.mp3")
 som_vitoria = pygame.mixer.Sound("Recursos/Sprites/SonsPokemon/vitoria.wav")
 som_Thunder = pygame.mixer.Sound("Recursos/Sprites/SonsPokemon/Thunder.wav")
-
+"""
 
 
 img_opcoes_batalha = pygame.transform.scale(img_opcoes_batalha, (int(120*escala), int(48*escala)))

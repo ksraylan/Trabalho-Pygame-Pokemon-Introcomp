@@ -1,11 +1,19 @@
-#características do pokémon:
+import random
+# Características de um pokémon:
 class Pokemon:
-    def __init__(self, nome, vida, força, imagem_costas, imagem_frente):
+    def __init__(self, nome, vida, ataque, defesa, velocidade, especial_ataque, especial_defesa, nivel, genero, imagens):
         self.__nome = nome
         self.__vida = vida
-        self.__força = força
-        self.__imagem_costas = imagem_costas
-        self.__imagem_frente = imagem_frente
+        self.__vida_maxima = vida
+        self.__ataque = ataque
+        self.__defesa = defesa
+        self.__velocidade = velocidade
+        self.__especial_ataque = especial_ataque
+        self.__especial_defesa = especial_defesa
+        self.__nivel = nivel
+        self.__genero = genero
+        self.__imagem_costas = imagens[1]
+        self.__imagem_frente = imagens[0]
     
     
     @property
@@ -17,9 +25,28 @@ class Pokemon:
         return self.__vida
 
     @property
-    def força(self):
-        return self.__força
+    def ataque(self):
+        return self.__ataque
+    
+    @property
+    def defesa(self):
+        return self.__defesa
 
+    @property
+    def velocidade(self):
+        return self.__velocidade
+    
+    @property
+    def especial_ataque(self):
+        return self.__especial_ataque
+
+    @property
+    def especial_defesa(self):
+        return self.__especial_defesa
+
+    @property
+    def genero(self):
+        return self.__genero
 
     @property
     def imagem_costas(self):
@@ -29,6 +56,10 @@ class Pokemon:
     def imagem_frente(self):
         return self.__imagem_frente
 
+    @property
+    def nivel(self):
+        return self.__nivel
+
     @nome.setter
     def nome(self,nome):
         self.__nome = nome
@@ -37,9 +68,29 @@ class Pokemon:
     def vida(self,vida):
         self.__vida = vida
         
-    @força.setter
-    def força(self,força):
-        self.__força = força
+    @ataque.setter
+    def ataque(self,ataque):
+        self.__ataque = ataque
+
+    @defesa.setter
+    def defesa(self,defesa):
+        self.__defesa = defesa
+
+    @velocidade.setter
+    def velocidade(self,velocidade):
+        self.__velocidade = velocidade
+    
+    @especial_ataque.setter
+    def especial_ataque(self,especial):
+        self.__especial_ataque = especial
+
+    @especial_defesa.setter
+    def especial_defesa(self,especial):
+        self.__especial_defesa = especial
+
+    @genero.setter
+    def genero(self, genero):
+        self.__genero = genero
 
     @imagem_costas.setter
     def imagem_costas(self,imagem_costa):
@@ -49,6 +100,27 @@ class Pokemon:
     def imagem_frente(self,imagem_frente):
         self.__imagem_frente = imagem_frente
 
+    @nivel.setter
+    def nivel(self,nivel):
+        self.__nivel = nivel
+
     def batalha(self,ataque,outro_pokemon):
         outro_pokemon.vida -= ataque
-        pass
+
+    def atacar(self, outro_pokemon):
+        
+        # poder (teste):
+        poder = 1
+
+        ataque_critico = 1
+        # modificador = alvos * tempo_meteorológico * Badge * ataque_critico * aleatorio de 0.85 a 1.00 * bônus de ataque do mesmo tipo * tipo * queimado * outro (não precisa)
+        modificador = 1 * 1 * 1 * ataque_critico * random.randrange(85, 100)/100 * 1 * 1 * 1 * 1
+        formula = ( (((2 * self.__nivel)/ 5 + 2) * poder * self.__ataque / outro_pokemon.defesa) / 50 + 2) * modificador 
+        outro_pokemon.vida -= formula
+        print(outro_pokemon.vida)
+        #return outro_pokemon
+        
+    def cura(self, quantidade):
+        self.__vida += quantidade
+
+    
