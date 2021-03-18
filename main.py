@@ -8,6 +8,7 @@ import cena
 from mensagem import Mensagem
 from condicao import Condicao
 from acoes import Acao
+from math import ceil, floor
 
 def main():
     menu = cena.Menu()
@@ -92,16 +93,18 @@ def main():
 
     pygame.mixer.music.play()
     
+    barra_width = arq.img_vida_vermelha.get_width() * 5.34
 
     def tocar_sons():
         #Musica entrada:
         if menu.atual == menu.escolhendo_pokemon:
-            arq.som_Batalha.stop()
+            #arq.som_Batalha.stop()
             #arq.som_fire_red_abertura.play()
-           
+            pass
         if menu.atual == menu.batalhando:
-            arq.som_fire_red_abertura.stop()
-            arq.som_Batalha.play()
+            #arq.som_fire_red_abertura.stop()
+            #arq.som_Batalha.play()
+            pass
         if condicao.atual == condicao.vitoria:
             arq.som_vitoria.play()
         if condicao.atual == condicao.derrota:
@@ -216,32 +219,34 @@ def main():
             # Barras de vida:
             
             #arq.img_vida_vermelha
+
             
-            img_vida_vermelha_esticada = pygame.transform.scale(arq.img_vida_vermelha, (int(arq.img_vida_vermelha.get_width() * 5.34 * (pokemons[0].vida)/pokemons[0].vida_maxima), arq.img_vida_vermelha.get_height()))
+
+            img_vida_vermelha_esticada = pygame.transform.scale(arq.img_vida_vermelha, (int(arq.img_vida_vermelha.get_width() + (escala*39)), arq.img_vida_vermelha.get_height()))
             janela.tela.blit(img_vida_vermelha_esticada,(55*escala, 34*escala))
             
-            img_vida_vermelha_esticada = pygame.transform.scale(arq.img_vida_vermelha, (int(arq.img_vida_vermelha.get_width() *5.34  * (pokemons[1].vida)/pokemons[1].vida_maxima), arq.img_vida_vermelha.get_height()))
+            img_vida_vermelha_esticada = pygame.transform.scale(arq.img_vida_vermelha, (int(arq.img_vida_vermelha.get_width()  + (escala*39)), arq.img_vida_vermelha.get_height()))
             janela.tela.blit(img_vida_vermelha_esticada,(janela.tamanho[0] - 62*escala,janela.tamanho[1] - 69*escala))
-            """
-            img_vida_amarela_esticada = pygame.transform.scale(arq.img_vida_amarela, (int(arq.img_vida_amarela.get_width() * 5.4), arq.img_vida_vermelha.get_height()))
+            
+            img_vida_amarela_esticada = pygame.transform.scale(arq.img_vida_amarela, (int(arq.img_vida_amarela.get_width()  + (escala*39)), arq.img_vida_vermelha.get_height()))
             janela.tela.blit(img_vida_amarela_esticada,(int(55*escala), int(34*escala)))
 
-            img_vida_amarela_esticada = pygame.transform.scale(arq.img_vida_amarela, (int(arq.img_vida_amarela.get_width() * 5.36), arq.img_vida_vermelha.get_height()))
+            img_vida_amarela_esticada = pygame.transform.scale(arq.img_vida_amarela, (int(arq.img_vida_amarela.get_width()  + (escala*39)), arq.img_vida_vermelha.get_height()))
             janela.tela.blit(img_vida_amarela_esticada,(janela.tamanho[0] - 62*escala,janela.tamanho[1] - 69*escala))
-            
-            img_barra_sem_vida_esticada = pygame.transform.scale(arq.img_barra_sem_vida, (int(arq.img_barra_sem_vida.get_width() * 5.4), arq.img_barra_sem_vida.get_height()))
-            janela.tela.blit(img_barra_sem_vida_esticada,(int(55*escala), int(34*escala)))
+            #print((pokemons[0].vida_maxima - pokemons[0].vida)/pokemons[0].vida_maxima)
+            img_barra_sem_vida_esticada = pygame.transform.scale(arq.img_barra_sem_vida, (floor((arq.img_barra_sem_vida.get_width() + (escala*39)) * (pokemons[0].vida_maxima - pokemons[0].vida)/pokemons[0].vida_maxima), arq.img_barra_sem_vida.get_height()))
+            janela.tela.blit(img_barra_sem_vida_esticada,(ceil(55*escala + barra_width * (pokemons[0].vida/pokemons[0].vida_maxima)), 34*escala))
 
-            img_barra_sem_vida_esticada = pygame.transform.scale(arq.img_barra_sem_vida, (int(arq.img_barra_sem_vida.get_width() * 5.36), arq.img_barra_sem_vida.get_height()))
-            janela.tela.blit(img_barra_sem_vida_esticada,(janela.tamanho[0] - 62*escala,janela.tamanho[1] - 69*escala))
-            """
+            img_barra_sem_vida_esticada = pygame.transform.scale(arq.img_barra_sem_vida, (floor((arq.img_barra_sem_vida.get_width() + (escala*39)) * (pokemons[1].vida_maxima - pokemons[1].vida)/pokemons[1].vida_maxima    ), arq.img_barra_sem_vida.get_height()))
+            janela.tela.blit(img_barra_sem_vida_esticada,(ceil(janela.tamanho[0] - 62*escala + barra_width * (pokemons[1].vida/pokemons[1].vida_maxima)),janela.tamanho[1] - 69*escala))
+            
             # Mostrando o nível do pokémon
-            nivel = arq.fonte_txt.render("9", True, cor.PRETO)
+            nivel = arq.fonte_txt.render(str(pokemons[0].nivel), True, cor.PRETO)
             nivel_rect = nivel.get_rect()
             nivel_rect.left = 96*escala
             nivel_rect.top = 18.5*escala
             janela.tela.blit(nivel, nivel_rect)
-            nivel = arq.fonte_txt.render("9", True, cor.PRETO)
+            nivel = arq.fonte_txt.render(str(pokemons[1].nivel), True, cor.PRETO)
             nivel_rect = nivel.get_rect()
             nivel_rect.left = janela.tamanho[0] - 21*escala
             nivel_rect.top = janela.tamanho[1] - 84.5*escala
@@ -285,7 +290,7 @@ def main():
            vez = 1
         elif pokemons[0].velocidade < pokemons[1].velocidade:
             vez = 2
-        print(Acao.ataque_simples)
+
         if vez == vez:
             turnos.append([pokemons[0], pokemons[1], Acao.ataque_simples])
             turnos.append([pokemons[1], pokemons[0], randomizar_acao()])
@@ -305,7 +310,7 @@ def main():
     
     def processar_turnos(turnos, mensagem):
         
-        print(turnos[0][2])
+        print(turnos[1][2])
         for _ in range(len(turnos)):
             pokemon_a_fazer = turnos[0][0]
             pokemon_a_tomar = turnos[0][1]
@@ -333,7 +338,7 @@ def main():
             count = 0
 
         delta = clock.tick(60)
-        count += 1
+        #count += 1
 
         # Eventos:
         for event in pygame.event.get():
@@ -343,7 +348,6 @@ def main():
             # Eventos do mouse:
             if event.type == pygame.MOUSEMOTION:
                 mouse_pos = pygame.mouse.get_pos()
-                #print(mouse_pos)
             
             # Eventos do teclado:
             if event.type == pygame.KEYDOWN:
@@ -387,11 +391,11 @@ def main():
                         escolher_pokemon(menu, sub_menu, mensagem)
                     elif event.key == pygame.K_ESCAPE:
                         rodando_o_jogo = False
-
+        pygame.event.poll()
         desenhar_graficos()
         processar_logica()
         tocar_sons()
-        pygame.event.poll()
+        #
     # Sair do pygame:
     pygame.quit()
 
