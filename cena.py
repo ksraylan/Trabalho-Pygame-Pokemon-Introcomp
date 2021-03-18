@@ -40,6 +40,12 @@ class Submenu:
     @property
     def atual(self):
         return self.__atual
+
+    @property
+    def texto(self):
+        return 2
+    
+    
     
     @atual.setter
     def atual(self, valor):

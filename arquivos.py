@@ -1,5 +1,10 @@
 import pygame
 
+#pygame.mixer.init(22050)
+
+pygame.mixer.music.load('Recursos/Sprites/SonsPokemon/fireRedAbertura.wav')
+
+
 escala = 3 + 1/3
 # Imagens da Interface:
 img_opcoes_batalha = pygame.image.load('Recursos/Sprites/SpritesInterface/fgt_options.png').convert_alpha()
@@ -55,7 +60,7 @@ def carregar_imagem_pokemon(numero):
     
 
 # Sons dos Pokemons:
-"""
+
 som_absorb = pygame.mixer.Sound("Recursos/Sprites/SonsPokemon/Absorb.wav")
 som_fire_red_abertura = pygame.mixer.Sound("Recursos/Sprites/SonsPokemon/fireRedAbertura.wav")
 som_Batalha = pygame.mixer.Sound("Recursos/Sprites/SonsPokemon/batalha.wav")
@@ -83,7 +88,7 @@ som_Twister = pygame.mixer.Sound("Recursos/Sprites/SonsPokemon/Twister.wav")
 #som_ViridianCity = pygame.mixer.Sound("Recursos/Sprites/SonsPokemon/ViridianCity.mp3")
 som_vitoria = pygame.mixer.Sound("Recursos/Sprites/SonsPokemon/vitoria.wav")
 som_Thunder = pygame.mixer.Sound("Recursos/Sprites/SonsPokemon/Thunder.wav")
-"""
+
 
 
 img_opcoes_batalha = pygame.transform.scale(img_opcoes_batalha, (int(120*escala), int(48*escala)))

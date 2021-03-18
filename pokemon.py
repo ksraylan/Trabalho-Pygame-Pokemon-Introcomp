@@ -131,7 +131,6 @@ class Pokemon:
         modificador = 1 * 1 * 1 * ataque_critico * random.randrange(85, 100)/100 * 1 * 1 * 1 * 1
         formula = ( (((2 * self.__nivel)/ 5 + 2) * poder * self.__ataque / outro_pokemon.defesa) / 50 + 2) * modificador 
         outro_pokemon.vida -= formula
-        print(outro_pokemon.vida)
         #return outro_pokemon
         
 
