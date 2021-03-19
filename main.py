@@ -188,20 +188,23 @@ def main():
             elif sub_menu.no_submenu(sub_menu.escolhendo_ataque):
                 janela.tela.blit(arq.img_pp_bar, (0, janela.tamanho[1] - 48*escala))
             
-
-            janela.tela.blit(arq.img_barra1, (15*escala, 18*escala))
-            janela.tela.blit(arq.img_barra2, (janela.tamanho[0] - 110*escala,janela.tamanho[1] - 88*escala))
+            if not pokemons[1].conseguiu_fugir() and not pokemons[1].foi_derrotado():
+                janela.tela.blit(arq.img_barra1, (15*escala, 18*escala))
+            if not pokemons[0].conseguiu_fugir() and not pokemons[0].foi_derrotado():
+                janela.tela.blit(arq.img_barra2, (janela.tamanho[0] - 110*escala,janela.tamanho[1] - 88*escala))
 
             # nomes dos pokemons renderizados na barra:
             poke_2 = arq.fonte.render(pokemons[1].nome, True, cor.PRETO)
             poke_2_rect = poke_2.get_rect()
             poke_2_rect.center =(48.5*escala, 25*escala)
-            janela.tela.blit(poke_2, poke_2_rect)
+            if not pokemons[1].conseguiu_fugir() and not pokemons[1].foi_derrotado():
+                janela.tela.blit(poke_2, poke_2_rect)
 
             poke_1 = arq.fonte.render(pokemons[0].nome, True, cor.PRETO)
             poke_1_rect = poke_1.get_rect()
             poke_1_rect.center =((janela.tamanho[0] - 68*escala), janela.tamanho[1] - 77.5*escala)
-            janela.tela.blit(poke_1, poke_1_rect)
+            if not pokemons[0].conseguiu_fugir() and not pokemons[0].foi_derrotado():
+                janela.tela.blit(poke_1, poke_1_rect)
 
             texto = ""
             a_cor = cor.PRETO
@@ -214,7 +217,8 @@ def main():
             simb_1_rect = simb_1.get_rect()
             simb_1_rect.left = poke_1_rect.width + poke_1_rect.x
             simb_1_rect.top = poke_1_rect.y
-            janela.tela.blit(simb_1, simb_1_rect)
+            if not pokemons[0].conseguiu_fugir() and not pokemons[0].foi_derrotado():
+                janela.tela.blit(simb_1, simb_1_rect)
 
             
             texto = ""
@@ -228,7 +232,8 @@ def main():
             simb_2_rect = simb_2.get_rect()
             simb_2_rect.left = poke_2_rect.width + poke_2_rect.x
             simb_2_rect.top = poke_2_rect.y
-            janela.tela.blit(simb_2, simb_2_rect)            
+            if not pokemons[1].conseguiu_fugir() and not pokemons[1].foi_derrotado():
+                janela.tela.blit(simb_2, simb_2_rect)            
 
             # Barras de vida:
             
@@ -251,22 +256,26 @@ def main():
 
             """
             img_barra_sem_vida_esticada = pygame.transform.scale(arq.img_barra_sem_vida, (ceil((arq.img_barra_sem_vida.get_width() + (escala*39)) * (pokemons[1].vida_maxima - pokemons[1].vida)/pokemons[1].vida_maxima), arq.img_barra_sem_vida.get_height()))
-            janela.tela.blit(img_barra_sem_vida_esticada,(floor(55*escala + barra_width * (pokemons[1].vida/pokemons[1].vida_maxima)), 34*escala))
+            if not pokemons[1].conseguiu_fugir() and not pokemons[1].foi_derrotado():
+                janela.tela.blit(img_barra_sem_vida_esticada,(floor(55*escala + barra_width * (pokemons[1].vida/pokemons[1].vida_maxima)), 34*escala))
 
             img_barra_sem_vida_esticada = pygame.transform.scale(arq.img_barra_sem_vida, (ceil((arq.img_barra_sem_vida.get_width() + (escala*39)) * (pokemons[0].vida_maxima - pokemons[0].vida)/pokemons[0].vida_maxima    ), arq.img_barra_sem_vida.get_height()))
-            janela.tela.blit(img_barra_sem_vida_esticada,(floor(janela.tamanho[0] - 62*escala + barra_width * (pokemons[0].vida/pokemons[0].vida_maxima)),janela.tamanho[1] - 69*escala))
+            if not pokemons[0].conseguiu_fugir() and not pokemons[0].foi_derrotado():
+                janela.tela.blit(img_barra_sem_vida_esticada,(floor(janela.tamanho[0] - 62*escala + barra_width * (pokemons[0].vida/pokemons[0].vida_maxima)),janela.tamanho[1] - 69*escala))
             
             # Mostrando o nível do pokémon
-            nivel = arq.fonte_txt.render(str(pokemons[0].nivel), True, cor.PRETO)
+            nivel = arq.fonte_txt.render(str(pokemons[1].nivel), True, cor.PRETO)
             nivel_rect = nivel.get_rect()
             nivel_rect.left = 96*escala
             nivel_rect.top = 18.5*escala
-            janela.tela.blit(nivel, nivel_rect)
-            nivel = arq.fonte_txt.render(str(pokemons[1].nivel), True, cor.PRETO)
+            if not pokemons[1].conseguiu_fugir() and not pokemons[1].foi_derrotado():
+                janela.tela.blit(nivel, nivel_rect)
+            nivel = arq.fonte_txt.render(str(pokemons[0].nivel), True, cor.PRETO)
             nivel_rect = nivel.get_rect()
             nivel_rect.left = janela.tamanho[0] - 21*escala
             nivel_rect.top = janela.tamanho[1] - 84.5*escala
-            janela.tela.blit(nivel, nivel_rect)
+            if not pokemons[0].conseguiu_fugir() and not pokemons[0].foi_derrotado():
+                janela.tela.blit(nivel, nivel_rect)
 
             texto_multilinha(mensagem.texto)
             #janela.tela.blit(batalha_nome, batalha_rect)
@@ -287,20 +296,11 @@ def main():
         if pos == [0,0]:
             sub_menu.atual = sub_menu.escolhendo_ataque
         elif pos == [1,1]:
-            tentar_fugir(pokemons[0], pokemons[1], mensagem)
-    def tentar_fugir(pokemon_tentando_fugir, pokemon_inimigo, mensagem):
-        fugiu = pokemon_tentando_fugir.fugir_de(pokemon_inimigo)
-        if fugiu:
-            mensagem.texto = "{} conseguiu fugir com sucesso!".format(pokemons[0].nome)
-        else:
-            mensagem.texto = "{} não conseguiu fugir!".format(pokemons[0].nome)
+            fazer_acao(menu, sub_menu, Acao.fugir)
     
     turnos = []
 
-    def randomizar_acao():
-        return random.randrange(0,2)
-
-    def acao_atacar(sub_menu, mensagem):
+    def fazer_acao(menu, sub_menu, acao):
         vez = random.randrange(1,2)
         if pokemons[0].velocidade > pokemons[1].velocidade:
            vez = 1
@@ -308,27 +308,26 @@ def main():
             vez = 2
 
         if vez == 1:
-            turnos.append([pokemons[0], pokemons[1], Acao.ataque_simples])
+            turnos.append([pokemons[0], pokemons[1], acao])
             turnos.append([pokemons[1], pokemons[0], randomizar_acao()])
         else:
             turnos.append([pokemons[1], pokemons[0], randomizar_acao()])
-            turnos.append([pokemons[0], pokemons[1], Acao.ataque_simples])
+            turnos.append([pokemons[0], pokemons[1], acao])
 
         sub_menu.atual = sub_menu.principal
-        #processar_turnos(turnos, mensagem)
-        #pokemon_2 = pokemon_1.atacar(pokemon_2)
-        #pokemon_2.atacar(pokemon_1)
-    
-    tempo = Tempo(0)
+
+    def randomizar_acao():
+        return random.randrange(0,1)
 
     
+    tempo = Tempo(0)
 
     def processar_logica(delta, tempo, menu, sub_menu):
 
         if menu.atual == menu.batalhando:
             tempo.adicionar(delta)
             #print(tempo.milisegundos)
-            if tempo.milisegundos >= 1000 * 2: # 1000 milisegundos vezes os segundos
+            if tempo.milisegundos >= 1000 * 0.5: # 1000 milisegundos vezes os segundos
                 if not sub_menu.no_submenu(sub_menu.derrota) and not sub_menu.no_submenu(sub_menu.vitoria):
                     if pokemons[0].foi_derrotado() or pokemons[0].conseguiu_fugir():
                         sub_menu.atual = sub_menu.fazendo_acoes
@@ -428,7 +427,7 @@ def main():
                         if event.key == pygame.K_ESCAPE:
                             sub_menu.atual = sub_menu.principal
                         if event.key == pygame.K_RETURN:
-                            acao_atacar(sub_menu, mensagem)
+                            fazer_acao(menu, sub_menu, Acao.ataque_simples)
                     
                 elif menu.no_menu(menu.escolhendo_pokemon):
                     if event.key == pygame.K_UP:
