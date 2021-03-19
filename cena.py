@@ -32,10 +32,19 @@ class Submenu:
     
     @property
     def principal(self):
-        return self.__principal
+        return 0
     @property
     def escolhendo_ataque(self):
-        return self.__escolhendo_ataque
+        return 1
+    @property
+    def fazendo_acoes(self):
+        return 2
+    @property
+    def vitoria(self):
+        return 3
+    @property
+    def derrota(self):
+        return 4
 
     @property
     def atual(self):

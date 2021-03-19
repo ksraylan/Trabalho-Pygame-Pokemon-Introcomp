@@ -10,7 +10,6 @@ class Condicao:
     @atual.setter
     def atual(self,atual):
         self.__atual = atual
-
     
     @property
     def batalhando(self):

@@ -16,6 +16,7 @@ class Pokemon:
         self.__imagem_costas = imagens[1]
         self.__imagem_frente = imagens[0]
         self.__tentou_fugir = 0
+        self.__fugiu = False
     
 
     def copy(self):
@@ -121,6 +122,11 @@ class Pokemon:
     def batalha(self,ataque,outro_pokemon):
         outro_pokemon.vida -= ataque
 
+    def foi_derrotado(self):
+        return True if self.__vida <= 0 else False
+    def conseguiu_fugir(self):
+        return self.__fugiu
+
     def atacar(self, outro_pokemon):
         
         # poder (teste):
@@ -128,9 +134,11 @@ class Pokemon:
 
         ataque_critico = 1
         # modificador = alvos * tempo_meteorológico * Badge * ataque_critico * aleatorio de 0.85 a 1.00 * bônus de ataque do mesmo tipo * tipo * queimado * outro (não precisa)
-        modificador = 1 * 1 * 1 * ataque_critico * random.randrange(85, 100)/100 * 1 * 1 * 1 * 1
+        modificador = 1 * 1 * 1 * ataque_critico * (random.randrange(85, 100)/100) * 1 * 1 * 1 * 1
         formula = ( (((2 * self.__nivel)/ 5 + 2) * poder * self.__ataque / outro_pokemon.defesa) / 50 + 2) * modificador 
+        formula = math.trunc(formula)
         outro_pokemon.vida -= formula
+        print(outro_pokemon.vida)
         #return outro_pokemon
         
 
@@ -143,7 +151,7 @@ class Pokemon:
         F = ((A * 128/B) + 30 * C) % 256
 
         if random.randrange(0, 255) < F:
-            # conseguiu escapar
+            self.__fugiu = True
             return True
         else:
             # não conseguiu
