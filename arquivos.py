@@ -1,11 +1,12 @@
 import pygame
+import janela
 
 #pygame.mixer.init(22050)
 
 pygame.mixer.music.load('Recursos/Sprites/SonsPokemon/fireRedAbertura.wav')
 
-
-escala = 3 + 1/3
+escala = janela.tamanho[0] / 240
+print(escala)
 # Imagens da Interface:
 img_opcoes_batalha = pygame.image.load('Recursos/Sprites/SpritesInterface/fgt_options.png').convert_alpha()
 img_barra1 = pygame.image.load('Recursos/Sprites/SpritesInterface/barra_1.png').convert_alpha()
@@ -95,5 +96,5 @@ img_opcoes_batalha = pygame.transform.scale(img_opcoes_batalha, (int(120*escala)
 img_text_bar = pygame.transform.scale(img_text_bar, (int(240*escala), int(48*escala)))
 img_fundo_pokemon = pygame.transform.scale(img_fundo_pokemon, (int(240*escala*1), int(112*escala*1.25)))
 
-fonte = pygame.font.Font("Recursos/Fontes/joystix monospace.ttf", int(7*escala))
-fonte_txt = pygame.font.Font("Recursos/Fontes/joystix monospace.ttf", int(8*escala))
+fonte = pygame.font.Font("./Recursos/Fontes/joystix monospace.ttf", int(7*escala))
+fonte_txt = pygame.font.Font("./Recursos/Fontes/joystix monospace.ttf", int(8*escala))

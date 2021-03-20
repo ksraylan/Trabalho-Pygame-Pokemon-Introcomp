@@ -62,3 +62,4 @@ class Submenu:
 
     def no_submenu(self, outro_menu):
         return True if self.__atual == outro_menu else False
+0

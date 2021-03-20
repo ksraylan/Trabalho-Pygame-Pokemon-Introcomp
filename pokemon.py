@@ -17,12 +17,21 @@ class Pokemon:
         self.__imagem_frente = imagens[0]
         self.__tentou_fugir = 0
         self.__fugiu = False
-    
+        self.__sumido = False
+        self.__sumindo = False
+        self.__deslocamento = [0,0] # x, y
+
+    @property
+    def deslocamento(self):
+        return self.__deslocamento
+
+    @deslocamento.setter
+    def deslocamento(self, deslocamento):
+        self.__deslocamento = deslocamento
 
     def copy(self):
         return Pokemon(self.__nome, self.__vida, self.__ataque, self.__defesa, self.__velocidade, self.__especial_ataque, self.__especial_defesa, self.__nivel, self.__genero, [self.imagem_frente,self.imagem_costas])
 
-    
     @property
     def nome(self):
         return self.__nome
@@ -33,7 +42,6 @@ class Pokemon:
             return 0
        else:
             return self.__vida
-    
 
     @property
     def vida_maxima(self):
@@ -74,6 +82,26 @@ class Pokemon:
     @property
     def nivel(self):
         return self.__nivel
+
+    @property
+    def sumido(self):
+        return self.__sumido
+    
+    @property
+    def sumindo(self):
+        return self.__sumindo
+
+    def inverte_sumido(self):
+        self.__sumido = not self.__sumido
+
+    @sumindo.setter
+    def sumindo(self, sumindo):
+        self.__sumindo = sumindo
+        self.__sumido = sumindo
+
+    @sumido.setter
+    def sumido(self, valor):
+        self.__sumido = valor
 
     @nome.setter
     def nome(self,nome):
@@ -128,18 +156,30 @@ class Pokemon:
         return self.__fugiu
 
     def atacar(self, outro_pokemon):
-        
+        # A = Accuracymove * Adjusted_stages * Other_mods
+        A = random.randrange(0,101) * 1 * 1
+        # The game then selects a random number R from 1 to 100 and compares it to A
+        # to determine whether the move hits. If R is less than or equal to A, the move hits.
+        R = random.randrange(0, 101)
+        acertou = 1 if R <= A else 0
+
+        multiplicador_critico = (2 * self.__nivel + 5) / (self.__nivel + 5)
         # poder (teste):
         poder = 1
-
+        print("Ataque: ", self.__ataque)
         ataque_critico = 1
+
+        chance_critico = random.randrange(0, 101)
+        print("Chance crítico: ", chance_critico)
+        if chance_critico <= 6.25:
+            ataque_critico = multiplicador_critico
+
         # modificador = alvos * tempo_meteorológico * Badge * ataque_critico * aleatorio de 0.85 a 1.00 * bônus de ataque do mesmo tipo * tipo * queimado * outro (não precisa)
         modificador = 1 * 1 * 1 * ataque_critico * (random.randrange(85, 100)/100) * 1 * 1 * 1 * 1
-        formula = ( (((2 * self.__nivel)/ 5 + 2) * poder * self.__ataque / outro_pokemon.defesa) / 50 + 2) * modificador 
+        formula = ( (((2 * self.__nivel)/ 5 + 2) * poder * self.__ataque / outro_pokemon.defesa) / 50 + 2) * modificador * acertou
         formula = math.trunc(formula)
         outro_pokemon.vida -= formula
-        print(outro_pokemon.vida)
-        #return outro_pokemon
+        return formula
         
 
     
