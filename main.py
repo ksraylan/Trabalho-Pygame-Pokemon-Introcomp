@@ -2,7 +2,7 @@ import random
 from math import ceil, floor
 import pygame
 import janela
-import pokemon
+from pokemon import Pokemon, Tipos, Movimento
 import arquivos as arq
 import cores as cor
 import cena
@@ -10,12 +10,13 @@ from mensagem import Mensagem
 from condicao import Condicao
 from acoes import Acao
 from tempo import Tempo
+from posicao import Pos
 
 def main():
     menu = cena.Menu()
     sub_menu = cena.Submenu()
     
-    mensagem = Mensagem("TESTE")
+    mensagem = Mensagem("Test")
 
     escala = arq.escala
     # menu espaçamento:
@@ -29,7 +30,7 @@ def main():
     # Pokémon selecionado (tela de seleção de pokémon):
     sel_s = 0
     
-    pos = [0,0]
+    pos = Pos(2, 2)
     distanciamento = (50*escala,15*escala)
     generos = ["F", "M"]
 
@@ -37,14 +38,17 @@ def main():
 
     condicao = Condicao()
 
-    pk_pikachu = pokemon.Pokemon("Pikachu",35,55,40,90,50,50,9,random.choice(generos), arq.carregar_imagem_pokemon(25))
-    pk_charmander = pokemon.Pokemon("Charmander",39,52,43,65,60,50,9, random.choice(generos),arq.carregar_imagem_pokemon(4))
-    pk_bulbasaur = pokemon.Pokemon("Bulbasaur",45,49,49,45,65,65,9, random.choice(generos),arq.carregar_imagem_pokemon(1))
-    pk_squirtle = pokemon.Pokemon("Squirtle",44,48,65,43,50,64, 9,random.choice(generos),arq.carregar_imagem_pokemon(7))
-    pk_rhydon = pokemon.Pokemon("Rhydon",105,130,120,40,45,45,9,random.choice(generos),arq.carregar_imagem_pokemon(112))
-    pk_gengar = pokemon.Pokemon("Gengar",60,65,60,110,130,75,9,random.choice(generos),arq.carregar_imagem_pokemon(94))
-    pk_dragonite = pokemon.Pokemon("Dragonite",91,134,95,80,100,100,9, random.choice(generos),arq.carregar_imagem_pokemon(149))
-    pk_mewtwo = pokemon.Pokemon("Mewtwo",106,110,90,130,154,90,9,random.choice(generos),arq.carregar_imagem_pokemon(150))
+    tipos = Tipos()
+    moves = Movimento()
+    
+    pk_pikachu = Pokemon("Pikachu",35,55,40,90,50,50,9,random.choice(generos),[tipos.electric],[moves.growl, moves.thunder_shock, moves.tail_whip, moves.thunder_wave, moves.quick_attack, moves.double_team, moves.slam, moves.thunderbolt, moves.agility, moves.thunder, moves.light_screen], arq.carregar_imagem_pokemon(25))
+    pk_charmander = Pokemon("Charmander",39,52,43,65,60,50,9, random.choice(generos),[tipos.fire],[moves.growl, moves.scratch, moves.ember, moves.mokescreen, moves.rage, moves.scary_face, moves.flamethrower, moves.slash, moves.dragon_rage, moves.fire_spin], arq.carregar_imagem_pokemon(4))
+    pk_bulbasaur = Pokemon("Bulbasaur",45,49,49,45,65,65,9, random.choice(generos), [tipos.grass, tipos.poison], [moves.tackle, moves.growl, moves.leech_seed, moves.vine_whip, moves.poison_powder, moves.sleep_powder, moves.razor_leaf, moves.sweet_scent, moves.growth, moves.synthesis, moves.solar_beam],arq.carregar_imagem_pokemon(1))
+    pk_squirtle = Pokemon("Squirtle",44,48,65,43,50,64, 9,random.choice(generos),[tipos.water], [moves.tackle, moves.tail_whip, moves.bubble, moves.withdraw, moves.water_gun, moves.bite, moves.rapid_spin, moves.protect, moves.rain_dance, moves.skull_bash, moves.hydro_pump], arq.carregar_imagem_pokemon(7))
+    pk_rhydon = Pokemon("Rhydon",105,130,120,40,45,45,9,random.choice(generos), [tipos.ground, tipos.rock],[moves.fury_attack, moves.horn_attack, moves.stomp, moves.tail_whip, moves.scary_face, moves.rock_blast, moves.horn_drill, moves.take_down, moves.earthquake, moves.megahorn], arq.carregar_imagem_pokemon(112))
+    pk_gengar = Pokemon("Gengar",60,65,60,110,130,75,9,random.choice(generos), [tipos.ghost, tipos.poison], [moves.hypnosis, moves.lick, moves.spite, moves.curse, moves.night_shade, moves.confuse_ray, moves.shadow_punch, moves.dream_eater, moves.destiny_bond, moves.shadow_ball, moves.nightmare, moves.mean_look], arq.carregar_imagem_pokemon(94))
+    pk_dragonite = Pokemon("Dragonite",91,134,95,80,100,100,9, random.choice(generos), [tipos.dragon, tipos.flying], [moves.leer, moves.thunder_wave, moves.twister, moves.wrap, moves.drago_rage, moves.slam, moves.agility, moves.safeguard, moves.wing_attack, moves.outrage, moves.hyperbeam], arq.carregar_imagem_pokemon(149))
+    pk_mewtwo = Pokemon("Mewtwo",106,110,90,130,154,90,9,random.choice(generos), [tipos.psychic], [moves.confusion, moves.disable, moves.barrier, moves.mist, moves.swift, moves.recover, moves.safeguard, moves.psychic, moves.psych_up, moves.future_sight, moves.amnesia], arq.carregar_imagem_pokemon(150))
     
     pokemons_pode_escolher = [pk_pikachu, pk_charmander, pk_bulbasaur, pk_squirtle, pk_rhydon, pk_gengar, pk_dragonite, pk_mewtwo]
     cores_pode_escolher = [cor.AMARELO, cor.LARANJA, cor.VERDE, cor.AZUL, cor.CIANO, cor.ROXO, cor.ROSA, cor.CINZA]
@@ -61,41 +65,34 @@ def main():
         t = []
         while i < mensagem.texto_posicao:
             t_local = arq.fonte_txt.render(texto[i], False, cor.BRANCO)
-            
             t_rect = t_local.get_rect()
             coordenada_x = 0 + 12*escala + t_rect.width*x
-
             if texto[i] == " ":
                 s = i
-
             if coordenada_x > janela.tamanho[0]/2 - t_rect.width:
                 x = 0
                 y -= 1
                 for _ in range(i, s, -1):
                     if s < len(t): 
                         t.pop(s)
-                
                 i = s + 1 
                 s = 0
                 coordenada_x = 0 + 12*escala + t_rect.width*x
                 t_local = arq.fonte_txt.render(texto[i], False, cor.BRANCO)
-
             t_rect.left = coordenada_x
             t_rect.bottom = janela.tamanho[1] - 28*escala - y*t_rect.height
-            
             t.append([t_local, t_rect])
-
             x += 1
             i += 1
         for i in range(len(t)):
             janela.tela.blit(t[i][0], t[i][1])
 
-    pygame.mixer.music.play()
+    pygame.mixer.music.play(-1)
     
     barra_width = arq.img_vida_vermelha.get_width() * 5.34
 
 
-    def tocar_musica(caminho):
+    def tocar_musica(caminho, repetir):
         # caminho: qual o caminho que leva até o arquivo da música
         # Para a música (se estiver tocando alguma):
         pygame.mixer.music.stop()
@@ -103,7 +100,10 @@ def main():
         print(caminho)
         pygame.mixer.music.load(caminho)
         # Começa a tocar a música:
-        pygame.mixer.music.play()
+        if repetir:
+            pygame.mixer.music.play(-1)
+        else:
+            pygame.mixer.music.play()
 
     def tocar_sons():
         #Musica entrada:
@@ -132,7 +132,7 @@ def main():
         
         if menu.no_menu(menu.escolhendo_pokemon):
             # Fonte:
-            superf = arq.fonte.render("Escolha o seu pokémon", False, cor.BRANCO)
+            superf = arq.fonte.render("Choose your pokémon", False, cor.BRANCO)
             superf_rect = superf.get_rect()
             superf_rect.center =(width_dividido, 100)
             janela.tela.blit(superf, superf_rect)
@@ -166,7 +166,6 @@ def main():
             #tela.blit(imagem, (x, y))
             janela.tela.blit(arq.img_fundo_pokemon,(0,0))
             
-            
             # (x, y)
             
             # img_pokemons[n_do_pokemon][0 = frente, 1 = costas]
@@ -181,10 +180,26 @@ def main():
             janela.tela.blit(arq.img_text_bar, (0, janela.tamanho[1] - 48*escala))
             if sub_menu.no_submenu(sub_menu.principal):
                 janela.tela.blit(arq.img_opcoes_batalha, (janela.tamanho[0] - 120*escala, janela.tamanho[1] - 48*escala))
-                pygame.draw.rect(janela.tela, cor.VERMELHO, ((janela.tamanho[0] - 107.5*escala + (pos[0]*distanciamento[0]), janela.tamanho[1] - 37.5*escala + (pos[1]*distanciamento[1])), (50*escala,15*escala)), int(1*escala))
+                pygame.draw.rect(janela.tela, cor.VERMELHO, ((janela.tamanho[0] - 107.5*escala + (pos.x*distanciamento[0]), janela.tamanho[1] - 37.5*escala + (pos.y*distanciamento[1])), (50*escala,15*escala)), int(1*escala))
             elif sub_menu.no_submenu(sub_menu.escolhendo_ataque):
                 janela.tela.blit(arq.img_pp_bar, (0, janela.tamanho[1] - 48*escala))
-            
+                x = 0
+                espac_x = janela.tamanho[0]/2 - janela.tamanho[0]/5
+                espac_y = 13*escala
+                y = y_pos = -pos.y
+                for i in range(len(pokemons[0].movimentos)):
+                    nome_movimento = pokemons[0].movimentos[i][1]
+                    superf = arq.fonte_escolher_move.render(str(nome_movimento), False, cor.PRETO)
+                    superf_rect = superf.get_rect()
+                    superf_rect.topleft =(10*escala + (espac_x*x), janela.tamanho[1] - (33*escala) + (espac_y * y))
+                    janela.tela.blit(superf, superf_rect)
+                    x += 1
+                    if x >= 2:
+                        x = 0
+                        y += 1
+                    if y > 2 + y_pos:
+                        break
+                pygame.draw.rect(janela.tela, cor.VERMELHO, ((10*escala + (espac_x*pos.x)), (janela.tamanho[1] - (33*escala) + (espac_y * (pos.y-y_pos)) ), (espac_x), (espac_y)), int(1*escala))
             if not pokemons[1].conseguiu_fugir() and not pokemons[1].foi_derrotado():
                 janela.tela.blit(arq.img_barra1, (15*escala, 18*escala))
             if not pokemons[0].conseguiu_fugir() and not pokemons[0].foi_derrotado():
@@ -235,7 +250,6 @@ def main():
             # Barras de vida:
             
             #arq.img_vida_vermelha
-
             
             """
             img_vida_vermelha_esticada = pygame.transform.scale(arq.img_vida_vermelha, (int(arq.img_vida_vermelha.get_width() + (escala*39)), arq.img_vida_vermelha.get_height()))
@@ -288,12 +302,13 @@ def main():
         pokemons[0] = pokemons_pode_escolher[sel_s].copy()
         # pokémon inimigo:
         pokemons[1] = pokemons_pode_escolher[random.randrange(0,len(pokemons_pode_escolher)-1)].copy()
-        mensagem.texto = "O que {} deve fazer?".format(pokemons[0].nome)
+        mensagem.texto = "What should {} do?".format(pokemons[0].nome)
         
-    def escolher_acao_batalha():
-        if pos == [0,0]:
+    def escolher_acao_batalha(pos):
+        if pos.i == 0:
             sub_menu.atual = sub_menu.escolhendo_ataque
-        elif pos == [1,1]:
+            pos = Pos(3, 2)
+        elif pos.i == 3:
             fazer_acao(menu, sub_menu, Acao.fugir)
     
     turnos = []
@@ -360,16 +375,16 @@ def main():
                 if not sub_menu.no_submenu(sub_menu.derrota) and not sub_menu.no_submenu(sub_menu.vitoria):
                     if pokemons[0].foi_derrotado() or pokemons[0].conseguiu_fugir():
                         sub_menu.atual = sub_menu.fazendo_acoes
-                        mensagem.texto = "O seu pokémon foi derrotado!"
+                        mensagem.texto = "You lost!"
                         sub_menu.atual = sub_menu.derrota
-                        tocar_musica("Recursos/Sprites/SonsPokemon/derrota.wav")
+                        tocar_musica("Recursos/Sprites/SonsPokemon/derrota.wav", False)
 
                     elif pokemons[1].foi_derrotado() or pokemons[1].conseguiu_fugir():
                         
                         sub_menu.atual = sub_menu.fazendo_acoes
-                        mensagem.texto = "O seu pokémon venceu a batalha!"
+                        mensagem.texto = "You won!"
                         sub_menu.atual = sub_menu.vitoria
-                        tocar_musica("Recursos/Sprites/SonsPokemon/vitoria.wav")
+                        tocar_musica("Recursos/Sprites/SonsPokemon/vitoria.wav", False)
                     else:
                         if len(turnos) > 0:
 
@@ -379,7 +394,7 @@ def main():
                             if sub_menu.atual == sub_menu.fazendo_acoes:
                                 print("testando 123")
                                 sub_menu.atual = sub_menu.principal
-                                mensagem.texto = "O que {} deve fazer?".format(pokemons[0].nome)
+                                mensagem.texto = "What should {} do?".format(pokemons[0].nome)
                     #print(pokemons[1].conseguiu_fugir())
                 
                 else:
@@ -388,6 +403,7 @@ def main():
                     if tempo.fim_de_jogo_tempo >= 5000:
                         menu.atual = menu.escolhendo_pokemon
                         sub_menu.atual = sub_menu.principal
+                        tocar_musica("Recursos/Sprites/SonsPokemon/fireRedAbertura.wav", True)
                         tempo.fim_de_jogo_tempo = 0
     
     
@@ -400,7 +416,7 @@ def main():
         if acao == Acao.ataque_simples:
             tempo.sumido_tempo += tempo.milisegundos
             if tempo.etapa_turno == 0:
-                mensagem.texto = "{} ataca!".format(pokemon_a_fazer.nome)
+                mensagem.texto = "{} attacks!".format(pokemon_a_fazer.nome)
                 tempo.etapa_turno_incrementa()
             elif tempo.etapa_turno == 1:
                 pokemon_a_tomar.sumindo = True
@@ -410,9 +426,9 @@ def main():
                 dano = pokemon_a_fazer.atacar(pokemon_a_tomar)
                 errou = True if dano == 0 else False
                 if errou:
-                    mensagem.texto = "Errou!"
+                    mensagem.texto = "Wrong!"
                 else:
-                    mensagem.texto = "Tirou {} de dano!".format(dano)
+                    mensagem.texto = "Caused {} HP of damage!".format(dano)
                 tempo.etapa_turno_incrementa()
             elif tempo.etapa_turno == 3:
                 if len(turnos) > 0:
@@ -421,17 +437,17 @@ def main():
 
         elif acao == Acao.fugir:
             if tempo.etapa_turno == 0:
-                mensagem.texto = "{} tentou fugir!".format(pokemon_a_fazer.nome)
+                mensagem.texto = "{} tries escape!".format(pokemon_a_fazer.nome)
                 tempo.etapa_turno_incrementa()
             elif tempo.etapa_turno == 1:
                 fugiu = pokemon_a_fazer.fugir_de(pokemon_a_tomar)
                 if fugiu:
-                    mensagem.texto = "{} conseguiu fugir com sucesso!".format(pokemon_a_fazer.nome)
+                    mensagem.texto = "{} escaped sucessful!".format(pokemon_a_fazer.nome)
                     for _ in range(len(turnos)):
                         turnos.pop(0)
                     tempo.etapa_turno_reseta()
                 else:
-                    mensagem.texto = "{} não conseguiu fugir!".format(pokemon_a_fazer.nome)
+                    mensagem.texto = "{} failed to escape!".format(pokemon_a_fazer.nome)
                     if len(turnos) > 0:
                         turnos.pop(0)
                     tempo.etapa_turno_reseta()
@@ -442,6 +458,9 @@ def main():
     rodando_o_jogo = True
 
     mouse_pos = (0,0)
+
+
+
 
     # Loop do jogo:
     while rodando_o_jogo:
@@ -460,22 +479,22 @@ def main():
             # Eventos do teclado:
             if event.type == pygame.KEYDOWN:
                 if menu.no_menu(menu.batalhando):
-                    if sub_menu.no_submenu(sub_menu.principal):
+                    if sub_menu.no_submenu(sub_menu.principal) or sub_menu.no_submenu(sub_menu.escolhendo_ataque):
                         if event.key == pygame.K_UP:
-                            pos[1] = 0
+                            pos.y -= 1
                         elif event.key == pygame.K_DOWN:
-                            pos[1] = 1
+                            pos.y += 1
                         elif event.key == pygame.K_LEFT:
-                            pos[0] = 0
+                            pos.x -= 1
                         elif event.key == pygame.K_RIGHT:
-                            pos[0] = 1
-                        
-                        elif event.key == pygame.K_ESCAPE:
+                            pos.x += 1
+                    if sub_menu.no_submenu(sub_menu.principal):
+                        if event.key == pygame.K_ESCAPE:
                             menu.atual = menu.escolhendo_pokemon
-                            tocar_musica("Recursos/Sprites/SonsPokemon/fireRedAbertura.wav")
+                            tocar_musica("Recursos/Sprites/SonsPokemon/fireRedAbertura.wav", True)
 
                         if event.key == pygame.K_RETURN:
-                            escolher_acao_batalha()
+                            escolher_acao_batalha(pos)
                         
                     elif sub_menu.no_submenu(sub_menu.escolhendo_ataque):
                         if event.key == pygame.K_ESCAPE:
@@ -494,7 +513,7 @@ def main():
                             sel_s = 0
                     elif event.key == pygame.K_RETURN:
                         # escolheu o pokémon
-                        tocar_musica("Recursos/Sprites/SonsPokemon/batalha.wav")
+                        tocar_musica("Recursos/Sprites/SonsPokemon/batalha.wav", True)
                         escolher_pokemon(menu, sub_menu, mensagem)
                     elif event.key == pygame.K_ESCAPE:
                         rodando_o_jogo = False

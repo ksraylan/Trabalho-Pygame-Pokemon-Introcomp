@@ -98,3 +98,5 @@ img_fundo_pokemon = pygame.transform.scale(img_fundo_pokemon, (int(240*escala*1)
 
 fonte = pygame.font.Font("./Recursos/Fontes/joystix monospace.ttf", int(7*escala))
 fonte_txt = pygame.font.Font("./Recursos/Fontes/joystix monospace.ttf", int(8*escala))
+
+fonte_escolher_move = pygame.font.Font("./Recursos/Fontes/joystix monospace.ttf", int(6*escala))
