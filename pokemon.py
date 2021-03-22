@@ -1,6 +1,7 @@
+# Importações
 import random
 import math
-# Características de um pokémon:
+# Classe que possui as características de um pokémon:
 class Pokemon:
     def __init__(self, nome, vida, ataque, defesa, velocidade, especial_ataque, especial_defesa, nivel, genero, tipos, movimentos, imagens):
         self.__nome = nome
@@ -791,9 +792,11 @@ class Movimento:
     @property
     def wrap(self):
         return [-60, "Wrap"]
+    """
     @property
     def drago_rage(self):
         return [-61,"Drago Rage"]
+    """
     @property
     def safeguard(self):
         return [-62,"Safeguard"]

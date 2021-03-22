@@ -1,25 +1,46 @@
 class Pos:
-    def __init__(self, width, height, x = 0, y = 0):
+    def __init__(self, width, height, i_limit = -1):
         self.__width = width
         self.__height = height
-        self.__x = x
-        self.__y = y
-        self.i_calc()
+        self.i_limit = i_limit
+        # posição x e y que a seta começa:
+        self.__x = 0
+        self.__y = 0
+        self.i_calc(False)
 
-    def i_calc(self):
+    def i_calc(self, recalcular_x_e_y):
         current_x = 0
         current_y = 0
         i = 0
+        # loop infinito:
         while current_x != self.__x or current_y != self.__y:
             i += 1
             current_x += 1
             if current_x >= self.__width:
                 current_x = 0
                 current_y += 1
-            print(i)
+            if i > 1000:
+                break
+
+        if i >= self.__i_limit:
+            i = self.__i_limit - 1
+        #if recalcular_x_e_y:
+        #    self.i = i
+        #else:
         self.__i = i
-        print("i =", i)
-            
+
+
+    @property
+    def i_limit(self):
+        return self.__i_limit
+
+    @i_limit.setter
+    def i_limit(self, value):
+        if not value < 0:
+            self.__i_limit = value
+        else:
+            #calcular o limite de i:
+            self.__i_limit = self.width * self.height - 1
 
     # getters e setters:    
     @property
@@ -53,7 +74,7 @@ class Pos:
     @x.setter
     def x(self, x):
         self.__x = self.fix_x(x)
-        self.i_calc()
+        self.i_calc(True)
 
     def fix_x(self, x):
         if x < 0:
@@ -72,11 +93,12 @@ class Pos:
     @y.setter
     def y(self, y):
         self.__y = self.fix_y(y)
-        self.i_calc()
+        self.i_calc(True)
     
     @i.setter
     def i(self, i):
         self.__i = i
-        # ex: i = 2
         self.__y = (i//self.width)
-        self.__x = i - (i * self.width) # talvez está certo?
+        self.__x = i - (i * self.width)
+
+
