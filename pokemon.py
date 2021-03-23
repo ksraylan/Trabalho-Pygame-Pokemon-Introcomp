@@ -1,6 +1,7 @@
 # Importações
 import random
 import math
+from effect import Effect, compare_effects
 # Classe que possui as características de um pokémon:
 class Pokemon:
     def __init__(self, nome, vida, ataque, defesa, velocidade, especial_ataque, especial_defesa, nivel, genero, tipos, movimentos, imagens):
@@ -23,6 +24,83 @@ class Pokemon:
         self.__deslocamento = [0,0] # x, y
         self.__tipos = tipos
         self.__movimentos = movimentos
+        self.__effects = []
+        self.effect = Effect()
+
+    def batalha(self,ataque,outro_pokemon):
+        outro_pokemon.vida -= ataque
+
+    def foi_derrotado(self):
+        return True if self.__vida <= 0 else False
+    def conseguiu_fugir(self):
+        return self.__fugiu
+
+    def process_effects(self, priority, enemy_pokemon):
+        effect = self.effect
+        # id, offset, stops ,priority (True = before turns, False = atfer all turns)
+        for i in range(len(self.__effects)):
+            effect_pokemon = self.__effects[i]
+            if compare_effects(effect.leech_seed, effect_pokemon):
+                vida_perdida = 12.5 * self.vida_maxima / 100
+                self.vida -= vida_perdida
+                enemy_pokemon.vida += vida_perdida
+
+            
+            if effect_pokemon[1] > effect_pokemon[2]:
+                self.__effects.pop(i)
+        
+
+    def atacar(self, outro_pokemon):
+        # A = Accuracymove * Adjusted_stages * Other_mods
+        A = random.randrange(0,101) * 1 * 1
+        # The game then selects a random number R from 1 to 100 and compares it to A
+        # to determine whether the move hits. If R is less than or equal to A, the move hits.
+        R = random.randrange(0, 101)
+        acertou = 1 if R <= A else 0
+
+        multiplicador_critico = (2 * self.__nivel + 5) / (self.__nivel + 5)
+        # poder (teste):
+        poder = 1
+        print("Ataque: ", self.__ataque)
+        ataque_critico = 1
+
+        chance_critico = random.randrange(0, 101)
+        print("Chance crítico: ", chance_critico)
+        if chance_critico <= 33.33:
+            ataque_critico = multiplicador_critico
+
+        # modificador = alvos * tempo_meteorológico * Badge * ataque_critico * aleatorio de 0.85 a 1.00 * bônus de ataque do mesmo tipo * tipo * queimado * outro (não precisa)
+        modificador = 1 * 1 * 1 * ataque_critico * (random.randrange(85, 100)/100) * 1 * 1 * 1 * 1
+        formula = ( (((2 * self.__nivel)/ 5 + 2) * poder * self.__ataque / outro_pokemon.defesa) / 50 + 2) * modificador * acertou
+        formula = math.trunc(formula)
+        outro_pokemon.vida -= formula
+        return formula
+
+    
+    def fugir_de(self, outro_pokemon):
+        self.__tentou_fugir += 1
+        A = self.__velocidade
+        B = outro_pokemon.velocidade
+        C = self.__tentou_fugir
+        F = ((A * 128/B) + 30 * C) % 256
+
+        if random.randrange(0, 255) < F:
+            self.__fugiu = True
+            return True
+        else:
+            # não conseguiu
+            return False
+    
+    def cura(self, quantidade):
+        self.__vida += quantidade
+
+    @property
+    def effects(self):
+        return self.__effects
+
+    @property
+    def tipos(self):
+        return self.__tipos
 
     @property
     def movimentos(self):
@@ -101,6 +179,16 @@ class Pokemon:
     def inverte_sumido(self):
         self.__sumido = not self.__sumido
 
+
+
+    # setters:
+
+    def add_effect(self, effect):
+        placed = True if not effect in self.__effects else False
+        if placed:
+            self.__effects.append(effect)
+        return placed
+
     @sumindo.setter
     def sumindo(self, sumindo):
         self.__sumindo = sumindo
@@ -116,7 +204,14 @@ class Pokemon:
 
     @vida.setter
     def vida(self,vida):
-        self.__vida = vida
+        vida_a_setar = vida
+
+        if vida_a_setar < 0:
+            vida_a_setar = 0
+        elif vida_a_setar > self.__vida_maxima:
+            vida_a_setar = self.__vida_maxima
+
+        self.__vida = vida_a_setar
         
     @ataque.setter
     def ataque(self,ataque):
@@ -153,59 +248,6 @@ class Pokemon:
     @nivel.setter
     def nivel(self,nivel):
         self.__nivel = nivel
-
-    def batalha(self,ataque,outro_pokemon):
-        outro_pokemon.vida -= ataque
-
-    def foi_derrotado(self):
-        return True if self.__vida <= 0 else False
-    def conseguiu_fugir(self):
-        return self.__fugiu
-
-    def atacar(self, outro_pokemon):
-        # A = Accuracymove * Adjusted_stages * Other_mods
-        A = random.randrange(0,101) * 1 * 1
-        # The game then selects a random number R from 1 to 100 and compares it to A
-        # to determine whether the move hits. If R is less than or equal to A, the move hits.
-        R = random.randrange(0, 101)
-        acertou = 1 if R <= A else 0
-
-        multiplicador_critico = (2 * self.__nivel + 5) / (self.__nivel + 5)
-        # poder (teste):
-        poder = 1
-        print("Ataque: ", self.__ataque)
-        ataque_critico = 1
-
-        chance_critico = random.randrange(0, 101)
-        print("Chance crítico: ", chance_critico)
-        if chance_critico <= 33.33:
-            ataque_critico = multiplicador_critico
-
-        # modificador = alvos * tempo_meteorológico * Badge * ataque_critico * aleatorio de 0.85 a 1.00 * bônus de ataque do mesmo tipo * tipo * queimado * outro (não precisa)
-        modificador = 1 * 1 * 1 * ataque_critico * (random.randrange(85, 100)/100) * 1 * 1 * 1 * 1
-        formula = ( (((2 * self.__nivel)/ 5 + 2) * poder * self.__ataque / outro_pokemon.defesa) / 50 + 2) * modificador * acertou
-        formula = math.trunc(formula)
-        outro_pokemon.vida -= formula
-        return formula
-        
-
-    
-    def fugir_de(self, outro_pokemon):
-        self.__tentou_fugir += 1
-        A = self.__velocidade
-        B = outro_pokemon.velocidade
-        C = self.__tentou_fugir
-        F = ((A * 128/B) + 30 * C) % 256
-
-        if random.randrange(0, 255) < F:
-            self.__fugiu = True
-            return True
-        else:
-            # não conseguiu
-            return False
-    
-    def cura(self, quantidade):
-        self.__vida += quantidade
 
     
 class Tipos:
