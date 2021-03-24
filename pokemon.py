@@ -39,15 +39,18 @@ class Pokemon:
         effect = self.effect
         # id, offset, stops ,priority (True = before turns, False = atfer all turns)
         for i in range(len(self.__effects)):
+            # processa efeito por efeito:
             effect_pokemon = self.__effects[i]
-            if compare_effects(effect.leech_seed, effect_pokemon):
+            if compare_effects(effect.leech_seed, effect_pokemon, priority):
                 vida_perdida = 12.5 * self.vida_maxima / 100
                 self.vida -= vida_perdida
                 enemy_pokemon.vida += vida_perdida
+                print("Applied effect")
 
-            
-            if effect_pokemon[1] > effect_pokemon[2]:
+            if effect_pokemon["offset"] > effect_pokemon["stops"]:
                 self.__effects.pop(i)
+            else:
+                effect_pokemon["offset"] += 1
         
 
     def atacar(self, outro_pokemon):

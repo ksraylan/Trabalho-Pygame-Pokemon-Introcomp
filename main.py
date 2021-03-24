@@ -382,9 +382,9 @@ def main():
                         tocar_musica("Recursos/Sprites/SonsPokemon/vitoria.wav", False)
                     else:
                         if len(turnos) > 0:
-
+                            
                             sub_menu.atual = sub_menu.fazendo_acoes
-                            processar_turnos(turnos, mensagem, tempo)
+                            process_one_turn(turnos, mensagem, tempo)
                         else:
                             if sub_menu.atual == sub_menu.fazendo_acoes:
                                 sub_menu.atual = sub_menu.principal
@@ -399,15 +399,56 @@ def main():
                         tocar_musica("Recursos/Sprites/SonsPokemon/fireRedAbertura.wav", True)
                         tempo.fim_de_jogo_tempo = 0
     
-    
+    def process_one_turn(turnos, mensagem, tempo):
+        pokemon_a_fazer = turnos[0][0] # pokemon que vai usar a ação
+        pokemon_a_tomar = turnos[0][1] # pokémon que vai sofrer da ação
+        move = turnos[0][2] # qual movimento irá realizar
+
+        if tempo.etapa_turno == 0:
+            mensagem.texto = "acao"
+            tempo.etapa_turno_incrementa()
+        elif tempo.etapa_turno == 1:
+            # basic animation
+            pokemon_a_tomar.sumindo = True
+            tempo.etapa_turno_incrementa()
+        elif tempo.etapa_turno == 2:
+            # disables the basic animation:
+            pokemon_a_tomar.sumindo = False
+            # the action:
+            if move == Acao.ataque_simples:
+                process_moves(pokemon_a_fazer, pokemon_a_fazer, move)
+            # atfer:
+            tempo.etapa_turno_incrementa()
+        # the last (to finish the move):
+        elif tempo.etapa_turno == 3:
+            if len(turnos) > 0:
+                turnos.pop(0)
+            tempo.etapa_turno_reseta()
+        
+        # resetar o tempo:
+        tempo.resetar()  
+
+    def process_moves(pokemon_a_fazer, pokemon_a_tomar, move):
+        if move == Acao.ataque_simples:
+            dano = pokemon_a_fazer.atacar(pokemon_a_tomar)
+            errou = True if dano == 0 else False
+            if errou:
+                mensagem.texto = "Wrong!"
+            else:
+                mensagem.texto = "Caused {} HP of damage!".format(dano)
+        elif move == moves.growl:
+            pokemon_a_tomar.vida -= 1
+            # Growl lowers the target's Attack by one stage.
+            pokemon_a_fazer.atacar(pokemon_a_tomar)
+            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
+
+
     def processar_turnos(turnos, mensagem, tempo):
         #turnos = [pokemon_a_usar_a_acao, pokemon_a_tomar_a_acao, acao]
         pokemon_a_fazer = turnos[0][0] # pokemon que vai usar a ação
         pokemon_a_tomar = turnos[0][1] # pokémon que vai sofrer da ação
         move = turnos[0][2] # qual movimento irá realizar
-
-        print("MOVIMENTOS:", move, moves.growl[0])
-
+        
         if move == Acao.ataque_simples:
             tempo.sumido_tempo += tempo.milisegundos
             if tempo.etapa_turno == 0:
@@ -429,6 +470,8 @@ def main():
                 if len(turnos) > 0:
                     turnos.pop(0)
                 tempo.etapa_turno_reseta()
+       
+
 
         elif move == moves.growl[0]:
             tempo.sumido_tempo += tempo.milisegundos
@@ -457,7 +500,7 @@ def main():
                     turnos.pop(0)
                 # e em vez de incrementar, reseta (apenas na última etapa do turno!!):
                 tempo.etapa_turno_reseta()
-
+                num = ramdom.randrange(0,50)
         #outro movimento:
         # elif move == moves.
         elif move == moves.thunder_shock[0]:#obs:paraliza,fazer depois
@@ -468,8 +511,9 @@ def main():
                 pokemon_a_tomar.sumindo = True
                 tempo.etapa_turno_incrementa()
             elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.vida -= 1
-                pokemon_a_tomar.velocidade -= 30/100
+                if num <= 30:
+                    pokemon_a_tomar.vida -= 1                
+                    pokemon_a_tomar.velocidade -= 75/100
                 tempo.etapa_turno_incrementa()
             elif tempo.etapa_turno == 3:
                 if len(turnos) > 0:
@@ -502,7 +546,7 @@ def main():
                 tempo.etapa_turno_incrementa()
             elif tempo.etapa_turno == 2:
                 pokemon_a_tomar.vida -= 1
-                pokemon_a_tomar.velocidade -= 25/100
+                pokemon_a_tomar.velocidade -= 75/100
                 tempo.etapa_turno_incrementa()
             elif tempo.etapa_turno == 3:
                 if len(turnos) > 0:
@@ -566,7 +610,9 @@ def main():
                 pokemon_a_tomar.sumindo = True
                 tempo.etapa_turno_incrementa()
             elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.vida -= 1
+                if num <= 10:
+                    pokemon_a_tomar.vida -= 1
+                    pokemon_a_tomar.velocidade -= 75/100
                 tempo.etapa_turno_incrementa()
             elif tempo.etapa_turno == 3:
                 if len(turnos) > 0:
@@ -588,6 +634,7 @@ def main():
                     turnos.pop(0)
                 tempo.etapa_turno_reseta()
         
+        
         elif move == moves.thunder[0]:#damage e paraliza 30%
             if tempo.etapa_turno == 0:
                 mensagem.texto = "{} used tail thunder!".format(pokemon_a_fazer.nome)
@@ -596,9 +643,10 @@ def main():
                 pokemon_a_tomar.sumindo = True
                 tempo.etapa_turno_incrementa()
             elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.vida -= 1
-                pokemon_a_tomar.velocidade -= 30/100
-                pokemon_a_fazer.atacar(pokemon_a_tomar)
+                if num <= 30:
+                    pokemon_a_tomar.vida -= 1
+                    pokemon_a_tomar.velocidade -= 75/100
+                    pokemon_a_fazer.atacar(pokemon_a_tomar)
                 mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
                 tempo.etapa_turno_incrementa()
             elif tempo.etapa_turno == 3:
@@ -623,7 +671,7 @@ def main():
                     turnos.pop(0)
                 tempo.etapa_turno_reseta()
         
-        elif move == moves.scratch[0]:
+        elif move == moves.scratch[0]:#damage(nao especifica o n) com efeitos adicionais
             if tempo.etapa_turno == 0:
                 mensagem.texto = "{} used tail scratch!".format(pokemon_a_fazer.nome)
                 tempo.etapa_turno_incrementa()
@@ -633,6 +681,7 @@ def main():
             elif tempo.etapa_turno == 2:
                 pokemon_a_tomar.vida -= 1
                 pokemon_a_fazer.atacar(pokemon_a_tomar)
+                pokemon_a_tomar.especial_ataque -= 10/100
                 mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
                 tempo.etapa_turno_incrementa()
             elif tempo.etapa_turno == 3:
@@ -657,7 +706,7 @@ def main():
         #            turnos.pop(0)
         #        tempo.etapa_turno_reseta()
         
-        elif move == moves.mokescreen[0]:
+        elif move == moves.smokescreen[0]:#procurar na geração 3 depois
             if tempo.etapa_turno == 0:
                 mensagem.texto = "{} used tail mokescreen!".format(pokemon_a_fazer.nome)
                 tempo.etapa_turno_incrementa()
@@ -672,7 +721,7 @@ def main():
                     turnos.pop(0)
                 tempo.etapa_turno_reseta()
         
-        elif move == moves.rage[0]:
+        elif move == moves.rage[0]:#normal
             if tempo.etapa_turno == 0:
                 mensagem.texto = "{} used tail rage!".format(pokemon_a_fazer.nome)
                 tempo.etapa_turno_incrementa()
@@ -689,7 +738,7 @@ def main():
                     turnos.pop(0)
                 tempo.etapa_turno_reseta()
         
-        elif move == moves.scary_face[0]:
+        elif move == moves.scary_face[0]:#procurar na geração 3 depois
             if tempo.etapa_turno == 0:
                 mensagem.texto = "{} used tail scary face!".format(pokemon_a_fazer.nome)
                 tempo.etapa_turno_incrementa()
@@ -714,11 +763,12 @@ def main():
                 pokemon_a_tomar.sumindo = True
                 tempo.etapa_turno_incrementa()
             elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.vida -= 1
-                pokemon_a_tomar.ataque -= 10/100
-                pokemon_a_fazer.atacar(pokemon_a_tomar)
-                mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-                tempo.etapa_turno_incrementa()
+                if num <= 10:
+                    pokemon_a_tomar.vida -= 1
+                    pokemon_a_tomar.ataque -= 1
+                    pokemon_a_fazer.atacar(pokemon_a_tomar)
+                    mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
+                    tempo.etapa_turno_incrementa()
             elif tempo.etapa_turno == 3:
                 if len(turnos) > 0:
                     turnos.pop(0)
@@ -754,7 +804,7 @@ def main():
                     turnos.pop(0)
                 tempo.etapa_turno_reseta()
 
-        elif move == moves.tackle[0]:
+        elif move == moves.tackle[0]:# power of 35 e 95% acerto
             if tempo.etapa_turno == 0:
                 mensagem.texto = "{} used tackle!".format(pokemon_a_fazer.nome)
                 tempo.etapa_turno_incrementa()
@@ -798,7 +848,7 @@ def main():
                     turnos.pop(0)
                 tempo.etapa_turno_reseta()
         
-        elif move == moves.vine_whip[0]:
+        elif move == moves.vine_whip[0]:# poder com base 35 + damage(numero nao identificado)
             if tempo.etapa_turno == 0:
                 mensagem.texto = "{} used tail vine whip!".format(pokemon_a_fazer.nome)
                 tempo.etapa_turno_incrementa()
@@ -807,13 +857,14 @@ def main():
                 tempo.etapa_turno_incrementa()
             elif tempo.etapa_turno == 2:
                 pokemon_a_tomar.ataque -= 1
+                pokemon_a_tomar.especial_ataque -= 10/100
                 tempo.etapa_turno_incrementa()
             elif tempo.etapa_turno == 3:
                 if len(turnos) > 0:
                     turnos.pop(0)
                 tempo.etapa_turno_reseta()
         
-        elif move == moves.poison_powder[0]:
+        elif move == moves.poison_powder[0]:# o inimigo perde 1/8 de hp
             if tempo.etapa_turno == 0:
                 mensagem.texto = "{} used tail poison powder!".format(pokemon_a_fazer.nome)
                 tempo.etapa_turno_incrementa()
@@ -821,14 +872,14 @@ def main():
                 pokemon_a_tomar.sumindo = True
                 tempo.etapa_turno_incrementa()
             elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
+                pokemon_a_tomar.ataque -= 1/8
                 tempo.etapa_turno_incrementa()
             elif tempo.etapa_turno == 3:
                 if len(turnos) > 0:
                     turnos.pop(0)
                 tempo.etapa_turno_reseta()
         
-        elif move == moves.sleep_powder[0]:
+        elif move == moves.sleep_powder[0]:#oponente dorme(não joga) por 3 turnos
             if tempo.etapa_turno == 0:
                 mensagem.texto = "{} used tail sleep powder!".format(pokemon_a_fazer.nome)
                 tempo.etapa_turno_incrementa()
@@ -843,7 +894,7 @@ def main():
                     turnos.pop(0)
                 tempo.etapa_turno_reseta()
                 
-        elif move == moves.razor_leaf[0]:
+        elif move == moves.razor_leaf[0]:#dano e tem uma taxa de acerto crítico aumentada (1⁄8 em vez de 1⁄24) a parte critica precisa ser feita.
             if tempo.etapa_turno == 0:
                 mensagem.texto = "{} used tail razor leaf!".format(pokemon_a_fazer.nome)
                 tempo.etapa_turno_incrementa()
@@ -851,14 +902,14 @@ def main():
                 pokemon_a_tomar.sumindo = True
                 tempo.etapa_turno_incrementa()
             elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
+                pokemon_a_tomar.ataque -= 1/8
                 tempo.etapa_turno_incrementa()
             elif tempo.etapa_turno == 3:
                 if len(turnos) > 0:
                     turnos.pop(0)
                 tempo.etapa_turno_reseta()
         
-        elif move == moves.sweet_scent[0]:
+        elif move == moves.sweet_scent[0]:#procurar na 3 geração
             if tempo.etapa_turno == 0:
                 mensagem.texto = "{} used tail sweet scent!".format(pokemon_a_fazer.nome)
                 tempo.etapa_turno_incrementa()
