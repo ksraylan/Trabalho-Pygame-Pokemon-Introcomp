@@ -2,9 +2,11 @@
 import random
 import math
 from effect import Effect, compare_effects
-# Classe que possui as características de um pokémon:
+# A class with all stats of a pokémon (in this game). Contains methods
+# that calculates the damage, things like that.
 class Pokemon:
     def __init__(self, nome, vida, ataque, defesa, velocidade, especial_ataque, especial_defesa, nivel, genero, tipos, movimentos, imagens):
+        # Contains all properties of a pokémon:
         self.__nome = nome
         self.__vida = vida
         self.__vida_maxima = vida
@@ -24,33 +26,54 @@ class Pokemon:
         self.__deslocamento = [0,0] # x, y
         self.__tipos = tipos
         self.__movimentos = movimentos
-        self.__effects = []
-        self.effect = Effect()
+        self.__pokemon_effects = []
+        # This is to easy acess to a "list" of all effects:
+        self.effects = Effect()
 
     def batalha(self,ataque,outro_pokemon):
+        # Deprecated!
         outro_pokemon.vida -= ataque
 
     def foi_derrotado(self):
+        # Returns True if this pokémon is not alive (your life is below or equals 0):
         return True if self.__vida <= 0 else False
     def conseguiu_fugir(self):
+        # Returns if this pokémon sucessful runned away:
         return self.__fugiu
 
     def process_effects(self, priority, enemy_pokemon):
-        effect = self.effect
-        # id, offset, stops ,priority (True = before turns, False = atfer all turns)
-        for i in range(len(self.__effects)):
-            # processa efeito por efeito:
-            effect_pokemon = self.__effects[i]
-            if compare_effects(effect.leech_seed, effect_pokemon, priority):
-                vida_perdida = 12.5 * self.vida_maxima / 100
-                self.vida -= vida_perdida
-                enemy_pokemon.vida += vida_perdida
-                print("Applied effect")
+        print("len:", len(self.__pokemon_effects))
+        # Process all effects:
+        for i in range(len(self.__pokemon_effects)):
 
-            if effect_pokemon["offset"] > effect_pokemon["stops"]:
-                self.__effects.pop(i)
-            else:
-                effect_pokemon["offset"] += 1
+            # Get a effect from the list of the effects of the current pokémon:
+            effect_pokemon = self.__pokemon_effects[i]
+
+            # Now it needs to verify if the priority of the effect from the pokémon
+            # is equal to the current priority (True: before the turns; False: after
+            # the turns.):
+            print("loop part")
+            if self.__pokemon_effects[i]["priority"] == priority:
+                # Call the function that process the effect:
+                self.__process_one_effect(effect_pokemon, enemy_pokemon)
+                # (PRECISA COMENTAR!)
+                print("prority part")
+
+                if effect_pokemon["stops"] != None and effect_pokemon["offset"] > effect_pokemon["stops"]:
+                    self.__pokemon_effects.pop(i)
+                else:
+                    effect_pokemon["offset"] += 1
+
+    def __process_one_effect(self, pokemon_effects, enemy_pokemon):
+        # Get the list of all effects that exists in the code "effect.py":
+        effects = self.effects
+        # Now this verifies if the actual effect is equal a effect, if yes, do a
+        # specific thing:
+        if pokemon_effects["id"] == effects.leech_seed["id"]:
+            vida_perdida = 12.5 * self.vida_maxima / 100
+            self.vida -= vida_perdida
+            enemy_pokemon.vida += vida_perdida
+            print("Applied effect")
         
 
     def atacar(self, outro_pokemon):
@@ -64,11 +87,9 @@ class Pokemon:
         multiplicador_critico = (2 * self.__nivel + 5) / (self.__nivel + 5)
         # poder (teste):
         poder = 1
-        print("Ataque: ", self.__ataque)
         ataque_critico = 1
 
         chance_critico = random.randrange(0, 101)
-        print("Chance crítico: ", chance_critico)
         if chance_critico <= 33.33:
             ataque_critico = multiplicador_critico
 
@@ -98,8 +119,8 @@ class Pokemon:
         self.__vida += quantidade
 
     @property
-    def effects(self):
-        return self.__effects
+    def pokemon_effects(self):
+        return self.__pokemon_effects
 
     @property
     def tipos(self):
@@ -126,9 +147,9 @@ class Pokemon:
 
     @property
     def vida(self):
-       if self.__vida < 0:
+        if self.__vida < 0:
             return 0
-       else:
+        else:
             return self.__vida
 
     @property
@@ -187,9 +208,9 @@ class Pokemon:
     # setters:
 
     def add_effect(self, effect):
-        placed = True if not effect in self.__effects else False
+        placed = True if not effect in self.__pokemon_effects else False
         if placed:
-            self.__effects.append(effect)
+            self.__pokemon_effects.append(effect)
         return placed
 
     @sumindo.setter
@@ -307,39 +328,7 @@ class Tipos:
     @property
     def steel(self):
         return 16
-"""
-class Tipo_Movimento:
-    def __init__(self):
-        pass
 
-    @property
-    def ataque_simples(self):
-        return 0
-    @property
-    def diminuir_defesa(self):
-        return 1
-    @property
-    def consome_vida_por_rodada(self):
-        return 2
-    @property
-    def veneno(self):
-        return 3
-    @property
-    def colocar_para_dormir(self):
-        return 4
-    @property
-    def diminuir_ataque(self):
-        return 5
-    @property
-    def diminuir_especial_ataque(self):
-        return 6
-    @property
-    def cura(self):
-        return 7
-    @property
-
-    
-"""
 class Movimento:
     def __init__(self):
         pass
@@ -888,7 +877,7 @@ class Movimento:
 
 
 
-
+"""
 class Ataque:
     def __init__(self, valor, precisao, chance_critico, tipo_movimento,):
         self.__valor = valor
@@ -911,3 +900,4 @@ class Ataque:
     @property
     def tipo_movimento(self):
         return self.__tipo_movimento
+"""

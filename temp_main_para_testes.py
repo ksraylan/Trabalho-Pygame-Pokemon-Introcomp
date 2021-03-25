@@ -13,7 +13,6 @@ from acoes import Acao
 from tempo import Tempo
 from posicao import Pos
 from effect import Effect
-from category import categories
 
 def main():
     effect = Effect()
@@ -399,7 +398,7 @@ def main():
                         tocar_musica("Recursos/Sprites/SonsPokemon/fireRedAbertura.wav", True)
                         tempo.fim_de_jogo_tempo = 0
     
-    def process_turns(turnos, mensagem, tempo, category):
+    def process_turns(turnos, mensagem, tempo):
         pokemon_a_fazer = turnos[0][0] # pokemon que vai usar a ação
         pokemon_a_tomar = turnos[0][1] # pokémon que vai sofrer da ação
         move = turnos[0][2] # qual movimento vai ser realizado
@@ -421,7 +420,7 @@ def main():
         # de movimentos:
         elif tempo.etapa_turno == 3:
             if len(turnos) > 0:
-                turnos.pop(0)# Importações:
+                turnos.pop(0)
             tempo.etapa_turno_reseta()
         
         # resetar o tempo:
@@ -488,7 +487,7 @@ def main():
             pokemon_a_fazer.atacar(pokemon_a_tomar)
             pokemon_a_tomar.especial_ataque -= 10/100
             mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-        elif move == moves.smoke_screen[0]: #precisão do alvo reduz em 1 estágio
+        elif move == moves.smokescreen[0]: #precisão do alvo reduz em 1 estágio
             pokemon_a_tomar.vida -= 1
             pokemon_a_fazer.atacar(pokemon_a_tomar)
             mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
@@ -498,14 +497,12 @@ def main():
             mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
         elif move == moves.scary_face[0]: #diminui velocidade do alvo em 2 estágios
             pokemon_a_tomar.vida -= 1
-            pokemon_a_tomar.velocidade -= 2
             pokemon_a_fazer.atacar(pokemon_a_tomar)
             mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
         elif move == moves.flamethrower[0]: #10% de chance de quimar 
-            if num <= 10:
-                pokemon_a_tomar.vida -= 1/16
-                pokemon_a_fazer.atacar(pokemon_a_tomar)
-                mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)   
+            pokemon_a_tomar.vida -= 1/16
+            pokemon_a_fazer.atacar(pokemon_a_tomar)
+            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)   
         elif move == moves.dragon_rage[0]:
             pokemon_a_tomar.vida -= 40
             pokemon_a_fazer.atacar(pokemon_a_tomar)
@@ -546,15 +543,10 @@ def main():
             pokemon_a_tomar.vida -= 1
             pokemon_a_tomar.fugir -= 1 
             pokemon_a_fazer.atacar(pokemon_a_tomar)
-            pokemon_a_fazer.fugir(pokemon_a_tomar)
             mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
         elif move == moves.growth[0]: #aumenta o ataque e o ataque especial em um 1 estágio
             pokemon_a_tomar.vida -= 1
-            pokemon_a_fazer.ataque += 1 
-            pokemon_a_fazer.especial_ataque += 1 
             pokemon_a_fazer.atacar(pokemon_a_tomar)
-            pokemon_a_fazer.ataque(pokemon_a_fazer)
-            pokemon_a_fazer.especial_ataque(pokemon_a_fazer)
             mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
         elif move == moves.synthesis[0]: #recupera HP
             pokemon_a_fazer.vida += 1
@@ -563,25 +555,7 @@ def main():
             pokemon_a_tomar.vida -= 1
             pokemon_a_fazer.atacar(pokemon_a_tomar)
             mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-        elif move == moves.ember[0]: #10% de chance de queimar
-            if num <= 10:
-                pokemon_a_tomar.vida -= 1/8
-                pokemon_a_fazer.atacar(pokemon_a_tomar)
-                mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-        elif move == moves.withdraw[0]: #aumenta a defesa em 1 estágio
-            pokemon_a_fazer.defesa += 1
-            pokemon_a_fazer.defesa(pokemon_a_fazer)
-        elif move == moves.water_gun[0]:
-            pokemon_a_tomar.vida -= 1
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-        #elif move == moves.bite[0]: #30% de chance do alvo vacilar
-        elif move == moves.rapid_spin[0]:
-            pokemon_a_tomar.vida -= 1
-            pokemon_a_fazer.velocidade += 1
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            pokemon_a_fazer.velocidade(pokemon_a_fazer)
-
+        elif move ==
             
 
 

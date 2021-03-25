@@ -6,7 +6,6 @@ import janela
 pygame.mixer.music.load('Recursos/Sprites/SonsPokemon/fireRedAbertura.wav')
 
 escala = janela.tamanho[0] / 240
-print(escala)
 # Imagens da Interface:
 img_opcoes_batalha = pygame.image.load('Recursos/Sprites/SpritesInterface/fgt_options.png').convert_alpha()
 img_barra1 = pygame.image.load('Recursos/Sprites/SpritesInterface/barra_1.png').convert_alpha()
