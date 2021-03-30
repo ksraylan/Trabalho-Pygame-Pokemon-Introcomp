@@ -16,8 +16,10 @@ from tempo import Tempo
 from posicao import Pos
 from effect import Effect
 from category import Category
+from itens import Itens
 
 def main():
+    itens = Itens()
     category = Category()
     effect = Effect()
     menu = cena.Menu()
@@ -74,7 +76,7 @@ def main():
                 x = 0
                 y -= 1
                 for _ in range(i, s, -1):
-                    if s < len(t): 
+                    if s < len(t):
                         t.pop(s)
                 i = s + 1 
                 s = 0
@@ -127,11 +129,10 @@ def main():
 
     def desenhar_graficos():
         #limpar a tela:
-        janela.tela.fill(cor.PRETO)
-        
+        janela.tela.fill(cor.PRETO)      
         if menu.no_menu(menu.escolhendo_pokemon):
             # Fonte:
-            superf = arq.fonte.render("Choose your pokémon", False, cor.BRANCO)
+            superf = arq.fonte.render("Escolha o seu pokémon", False, cor.BRANCO)
             superf_rect = superf.get_rect()
             superf_rect.center =(width_dividido, 100)
             janela.tela.blit(superf, superf_rect)
@@ -141,18 +142,22 @@ def main():
             # posicao y da seta dentro do retangulo:
             #li = 100-e_n + (e_n*sel_s)
             li = menu_espacamento[1] + tamanho_cursor/2 + (e_n*sel_s)
-            
 
             # seta de seleção:
-            pygame.draw.polygon(janela.tela, cor.VERMELHO, ( (menu_espacamento[0] + e_s_x, menu_espacamento[1] + li), (menu_espacamento[0] + e_s_x,menu_espacamento[1] + tamanho_cursor + li), (menu_espacamento[0] + e_s_x+ tamanho_cursor/2, menu_espacamento[1] + tamanho_cursor/2 + li) ) )
+            pygame.draw.polygon(janela.tela, cor.VERMELHO, ((menu_espacamento[0] + e_s_x,
+            menu_espacamento[1] + li), (menu_espacamento[0] + e_s_x,menu_espacamento[1] +
+            tamanho_cursor + li), (menu_espacamento[0] + e_s_x+ tamanho_cursor/2,
+            menu_espacamento[1] + tamanho_cursor/2 + li)))
             
             # loop que vai percorrer a lista com os nomes dos pokemons:
             for i in range( len(pokemons_pode_escolher) ):
                 # aqui vamos criar um texto com o pokemon "i" (o "i" que vai até o range do loop):
-                superf = arq.fonte.render(pokemons_pode_escolher[i].nome, False, cores_pode_escolher[i])
+                superf = arq.fonte.render(pokemons_pode_escolher[i].nome, False,
+                cores_pode_escolher[i])
                 # Pegaremos as dimensões do texto que criamos acima:
                 superf_rect = superf.get_rect()
-                # Colocaremos no centro, e pegamos o espaçamento e multiplicamos por "i", para os nomes dos pokemons irem para baixo e não ficarem um em cima do outro:
+                # Colocaremos no centro, e pegamos o espaçamento e multiplicamos por "i",
+                # para os nomes dos pokemons irem para baixo e não ficarem um em cima do outro:
                 superf_rect.center =(janela.tamanho[0]/2, 100 + e_n + i*e_n)
                 # Por fim, mostraremos na tela o texto:
                 janela.tela.blit(superf, superf_rect)
@@ -249,32 +254,62 @@ def main():
 
             # Barras de vida:
             
-            #arq.img_vida_vermelha
+            # Vida amarela:
             
-            
-            img_vida_vermelha_esticada = pygame.transform.scale(arq.img_vida_vermelha, (int(arq.img_vida_vermelha.get_width() + (escala*39)), arq.img_vida_vermelha.get_height()))
             if pokemons[1].vida_anim <= pokemons[1].vida_maxima/2:
+                img_vida_amarela_esticada = pygame.transform.scale(arq.img_vida_amarela,
+                (int(arq.img_vida_amarela.get_width() + (escala*39)),
+                arq.img_vida_vermelha.get_height()))
+                
+                janela.tela.blit(img_vida_amarela_esticada,(int(55*escala), int(34*escala)))
+            
+            if pokemons[0].vida_anim <= pokemons[0].vida_maxima/2:
+                img_vida_amarela_esticada = pygame.transform.scale(arq.img_vida_amarela,
+                (int(arq.img_vida_amarela.get_width() + (escala*39)),
+                arq.img_vida_vermelha.get_height()))
+                
+                janela.tela.blit(img_vida_amarela_esticada,(janela.tamanho[0]-62*escala,
+                janela.tamanho[1] - 69*escala))
+            
+            # Vida vermelha:
+            
+            if pokemons[1].vida_anim <= pokemons[1].vida_maxima/5:
+                img_vida_vermelha_esticada = pygame.transform.scale(arq.img_vida_vermelha,
+                (int(arq.img_vida_vermelha.get_width() + (escala*39)),
+                arq.img_vida_vermelha.get_height()))
+                
                 janela.tela.blit(img_vida_vermelha_esticada,(55*escala, 34*escala))
             
-            img_vida_vermelha_esticada = pygame.transform.scale(arq.img_vida_vermelha, (int(arq.img_vida_vermelha.get_width()  + (escala*39)), arq.img_vida_vermelha.get_height()))
-            janela.tela.blit(img_vida_vermelha_esticada,(janela.tamanho[0] - 62*escala,janela.tamanho[1] - 69*escala))
+            if pokemons[0].vida_anim <= pokemons[0].vida_maxima/5:
+                img_vida_vermelha_esticada = pygame.transform.scale(arq.img_vida_vermelha,
+                (int(arq.img_vida_vermelha.get_width() + (escala*39)),
+                arq.img_vida_vermelha.get_height()))
+                
+                janela.tela.blit(img_vida_vermelha_esticada,(janela.tamanho[0] -
+                62*escala,janela.tamanho[1] - 69*escala))
             
+            # Barra da parte "sem vida":
             
-            img_vida_amarela_esticada = pygame.transform.scale(arq.img_vida_amarela, (int(arq.img_vida_amarela.get_width()  + (escala*39)), arq.img_vida_vermelha.get_height()))
-            #janela.tela.blit(img_vida_amarela_esticada,(int(55*escala), int(34*escala)))
-
-            img_vida_amarela_esticada = pygame.transform.scale(arq.img_vida_amarela, (int(arq.img_vida_amarela.get_width()  + (escala*39)), arq.img_vida_vermelha.get_height()))
-            #janela.tela.blit(img_vida_amarela_esticada,(janela.tamanho[0] - 62*escala,janela.tamanho[1] - 69*escala))
-            
-            img_barra_sem_vida_esticada = pygame.transform.scale(arq.img_barra_sem_vida, (ceil((arq.img_barra_sem_vida.get_width() + (escala*39)) * (pokemons[1].vida_maxima - pokemons[1].vida_anim)/pokemons[1].vida_maxima), arq.img_barra_sem_vida.get_height()))
             if not pokemons[1].conseguiu_fugir() and not pokemons[1].foi_derrotado():
-                janela.tela.blit(img_barra_sem_vida_esticada,(floor(55*escala + barra_width * (pokemons[1].vida_anim/pokemons[1].vida_maxima)), 34*escala))
+                img_barra_sem_vida_esticada = pygame.transform.scale(arq.img_barra_sem_vida,
+                (ceil((arq.img_barra_sem_vida.get_width() + (escala*39)) *
+                (pokemons[1].vida_maxima - pokemons[1].vida_anim)/pokemons[1].vida_maxima),
+                arq.img_barra_sem_vida.get_height()))
 
-            img_barra_sem_vida_esticada = pygame.transform.scale(arq.img_barra_sem_vida, (ceil((arq.img_barra_sem_vida.get_width() + (escala*39)) * (pokemons[0].vida_maxima - pokemons[0].vida_anim)/pokemons[0].vida_maxima    ), arq.img_barra_sem_vida.get_height()))
+                janela.tela.blit(img_barra_sem_vida_esticada,(floor(55*escala +
+                barra_width * (pokemons[1].vida_anim/pokemons[1].vida_maxima)), 34*escala))
+
             if not pokemons[0].conseguiu_fugir() and not pokemons[0].foi_derrotado():
-                janela.tela.blit(img_barra_sem_vida_esticada,(floor(janela.tamanho[0] - 62*escala + barra_width * (pokemons[0].vida_anim/pokemons[0].vida_maxima)),janela.tamanho[1] - 69*escala))
+                img_barra_sem_vida_esticada = pygame.transform.scale(arq.img_barra_sem_vida,
+                (ceil((arq.img_barra_sem_vida.get_width() + (escala*39)) *
+                (pokemons[0].vida_maxima - pokemons[0].vida_anim)/pokemons[0].vida_maxima),
+                arq.img_barra_sem_vida.get_height()))
+                
+                janela.tela.blit(img_barra_sem_vida_esticada,(floor(janela.tamanho[0] -
+                62*escala + barra_width * (pokemons[0].vida_anim/pokemons[0].vida_maxima)),
+                janela.tamanho[1] - 69*escala))
             
-            # Mostrando o nível do pokémon
+            # Mostrando o nível do pokémon:
             nivel = arq.fonte_txt.render(str(pokemons[1].nivel), False, cor.PRETO)
             nivel_rect = nivel.get_rect()
             nivel_rect.left = 96*escala
@@ -301,7 +336,7 @@ def main():
         pokemons[0] = pokemons_pode_escolher[sel_s].copy()
         # pokémon inimigo:
         pokemons[1] = pokemons_pode_escolher[random.randrange(0,len(pokemons_pode_escolher)-1)].copy()
-        mensagem.texto = "What should {} do?".format(pokemons[0].nome)
+        mensagem.texto = "O que {} deve fazer?".format(pokemons[0].nome)
         
     def escolher_acao_batalha(pos):
         if pos.i == 0:
@@ -388,14 +423,14 @@ def main():
                 if not sub_menu.no_submenu(sub_menu.derrota) and not sub_menu.no_submenu(sub_menu.vitoria):
                     if pokemons[0].foi_derrotado() or pokemons[0].conseguiu_fugir():
                         sub_menu.atual = sub_menu.fazendo_acoes
-                        mensagem.texto = "You lost!"
+                        mensagem.texto = "{} ganhou a batalha!".format(pokemons[1].nome)
                         sub_menu.atual = sub_menu.derrota
                         tocar_musica("Recursos/Sprites/SonsPokemon/derrota.wav", False)
 
                     elif pokemons[1].foi_derrotado() or pokemons[1].conseguiu_fugir():
                         
                         sub_menu.atual = sub_menu.fazendo_acoes
-                        mensagem.texto = "You won!"
+                        mensagem.texto = "{} ganhou a batalha!".format(pokemons[0].nome)
                         sub_menu.atual = sub_menu.vitoria
                         tocar_musica("Recursos/Sprites/SonsPokemon/vitoria.wav", False)
                     else:
@@ -405,7 +440,7 @@ def main():
                         else:
                             if sub_menu.atual == sub_menu.fazendo_acoes:
                                 sub_menu.atual = sub_menu.principal
-                                mensagem.texto = "What should {} do?".format(pokemons[0].nome)
+                                mensagem.texto = "O que {} deve fazer?".format(pokemons[0].nome)
                 
                 else:
                     tempo.fim_de_jogo_tempo += delta
@@ -424,7 +459,7 @@ def main():
 
         if turn_category["id"] == category.state_move["id"]:
             if tempo.etapa_turno == 0:
-                mensagem.texto = "state_move text here"
+                mensagem.texto = "texto do state_move deve aparecer aqui"
                 pokemon_a_fazer.process_effects(True, pokemon_a_tomar)
                 tempo.etapa_turno_incrementa()
             elif tempo.etapa_turno == 1:
@@ -433,7 +468,7 @@ def main():
                 tempo.etapa_turno_reseta()
         elif turn_category["id"] == category.normal_move["id"]:
             if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used {}!".format(pokemon_a_fazer.nome, str(move[1]))
+                mensagem.texto = "{} usou {}!".format(pokemon_a_fazer.nome, str(move[1]))
                 tempo.etapa_turno_incrementa()
             elif tempo.etapa_turno == 1:
                 # animação básica
@@ -455,1559 +490,354 @@ def main():
         # resetar o tempo:
         tempo.resetar()  
 
+    def mostrar_texto_ataque_normal(dano):
+        errou = True if dano == 0 else False
+        if errou:
+            mensagem.texto = "Errou o alvo"
+        else:
+            mensagem.texto = "Fez perder {} HP".format(dano)
+
+    def mostrar_mensagem_errou():
+        if not mensagem.texto == "Errou o alvo":
+            mensagem.texto = "Errou"
+
+
+    def usar_item(pokemon_a_usar, pokemon_inimigo, item):
+        if item == itens.dire_hit:
+            
+
+        elif item == guard_spec: #Um item que impede a redução de estatísticas 
+            pokemon_a_usar.protegido = 3
+            mensagem.texto = "{} impediu que seus dados mudassem".format(pokemon_a_usar)
+
+        elif item == x_accuracy: #Aumenta a estatística de precisão do Pokémon em batalha
+            pokemon_a_usar.precisao += 20 * pokemon_a_usar / 100
+            mensagem.texto = "{} aumentou a precisão em 20%".format(pokemon_a_usar)
+            
+        elif item == x_attack:
+            
+
+
     def process_moves(pokemon_a_fazer, pokemon_a_tomar, move):
-        print("Move:", move, "Leech seed:", moves.leech_seed[0])
+        print("Movimento executado:", move)
         # códigos dos movimentos:
-        num = random.randrange(0,50)
+        num = random.randrange(0,101)
         
         if move == Acao.ataque_simples:
-            dano = pokemon_a_fazer.atacar(pokemon_a_tomar)
-            errou = True if dano == 0 else False
-            if errou:
-                mensagem.texto = "Wrong!"
-            else:
-                mensagem.texto = "Caused {} HP of damage!".format(dano)
-        
+            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
         if move == moves.growl[0]:
-            pokemon_a_tomar.vida -= 1
             # Growl lowers the target's Attack by one stage.
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-        elif move == moves.thunder_shock[0]:
-            if num <= 30:
-                pokemon_a_tomar.vida -= 1                
-                pokemon_a_tomar.velocidade -= 75/100
-                mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-        elif move == moves.tail_whip[0]:
-            pokemon_a_tomar.vida -= 1
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-        elif move == moves.thunder_wave[0]: #25% de chance do alvo não atacar
-            pokemon_a_tomar.vida -= 1
-            pokemon_a_tomar.velocidade -= 75/100
-        elif move == moves.quick_attack[0]: #deals damage
-            pokemon_a_tomar.vida -= 1
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-        elif move == moves.double_team[0]: 
             pokemon_a_tomar.ataque -= 1
+            mensagem.texto = "O ataque de {} diminuiu".format(pokemon_a_tomar.nome)
+        elif move == moves.thunder_shock[0]:
+            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
+            if num <= 10 and not tipos.electric in pokemon_a_tomar.tipos: # 10% de chance de ser paralizado:
+                pokemon_a_tomar.bloqueado = 1
+                pokemon_a_tomar.velocidade -= 50 * pokemon_a_fazer.velocidade / 100 #75%
+                mensagem.texto = "e foi paralizado".format(pokemon_a_tomar.nome,dano)
+        elif move == moves.tail_whip[0]:
+            pokemon_a_tomar.defesa -= 1
+            mensagem.texto = "Defesa de {} diminuiu".format(pokemon_a_tomar.nome,dano)
+
+        elif move == moves.thunder_wave[0]: #25% de chance do alvo não atacar
+            pokemon_a_tomar.paralisado = True
+            # Speed is decreased by 75%
+            pokemon_a_tomar.velocidade -= 75 * pokemon_a_fazer.velocidade / 100
+            mensagem.texto = "{} ficou paralisado".format(pokemon_a_tomar.nome)
+
+        elif move == moves.quick_attack[0]: #deals damage (IMPLEMENTAR ataque prioritário!)
+            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
+        elif move == moves.double_team[0]: # (IMPLEMENTAR)
+            pokemon_a_tomar. -= 1
+            pokemon_a_tomar.pode_fugir == False 
             pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
+            mensagem.texto = "{} perdeu {} HP e sua chance de fugir diminuiu em um estágio!".format(pokemon_a_tomar.nome)
+            
         elif move == moves.slam[0]: 
-            pokemon_a_tomar.vida -= 1
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-        elif move == moves.thunderbolt[0]:
+            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
+            
+        elif move == moves.thunderbolt[0]:#25% de chance do alvo não atacar
+            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
             if num <= 10:
-                pokemon_a_tomar.vida -= 1
-                pokemon_a_tomar.velocidade -= 75/100
+                pokemon_a_tomar.paralisado = True
+                mensagem.texto = "e foi paralisado".format(pokemon_a_tomar.nome)
+                
         elif move == moves.agility[0]: #aumenta velocidade em +2 estágios
             pokemon_a_fazer.velocidade += 2 
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
+            mensagem.texto = "{} teve a velocidade aumentada".format(pokemon_a_fazer.nome)
+
         elif move == moves.thunder[0]:
+            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
             if num <= 30:
-                pokemon_a_tomar.vida -= 1
-                pokemon_a_tomar.velocidade -= 75/100
-                pokemon_a_fazer.atacar(pokemon_a_tomar)
-                mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
+                pokemon_a_tomar.paralisado = True
+                mensagem.texto = "e foi paralisado".format(pokemon_a_tomar.nome)
+                
         elif move == moves.scratch[0]:
-            pokemon_a_tomar.vida -= 1
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            pokemon_a_tomar.especial_ataque -= 10/100
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-        elif move == moves.mokescreen[0]: #precisão do alvo reduz em 1 estágio
-            pokemon_a_tomar.vida -= 1
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
+            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
+
+        elif move == moves.smokescreen[0]: #precisão do alvo reduz em 1 estágio
+            pokemon_a_tomar.precisao -= 1
+            mensagem.texto = "{} teve a precisão reduzida".format(pokemon_a_tomar.nome)
+
         elif move == moves.rage[0]: #ataque aumenta em 1 estágio
-            pokemon_a_tomar.vida -= 1
             pokemon_a_fazer.ataque += 1 
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
+            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
+            mensagem.texto += "e ataque aumentado"
+
         elif move == moves.scary_face[0]: #diminui velocidade do alvo em 2 estágios
-            pokemon_a_tomar.vida -= 1
-            pokemon_a_tomar.velocidade -= 2
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-        elif move == moves.flamethrower[0]: #10% de chance de quimar 
+            if num <= 90:
+                pokemon_a_tomar.velocidade -= 2
+                pokemon_a_fazer.atacar(pokemon_a_tomar)
+                mensagem.texto = "{} teve a velocidade diminuida".format(pokemon_a_tomar.nome)
+            else:
+                mensagem.texto = "Parece que não surgiu efeito"
+
+        elif move == moves.flamethrower[0]: #10% de chance de queimar (IMPLEMENTAR)
+            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
             if num <= 10:
                 pokemon_a_tomar.vida -= 1/16
                 pokemon_a_fazer.atacar(pokemon_a_tomar)
-                mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)   
+                mensagem.texto = "e foi queimado" 
+                  
         elif move == moves.dragon_rage[0]:
             pokemon_a_tomar.vida -= 40
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-        elif move == moves.fire_spin[0]:
+            mensagem.texto = "{} foi atacado".format(pokemon_a_tomar.nome)
+            
+        elif move == moves.fire_spin[0]: # (IMPLEMENTAR)
             pokemon_a_tomar.vida -= 1/8
             pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-        elif move == moves.tackle[0]: #power of 35 e 95% acerto
-            pokemon_a_tomar.vida -= 1
+            mensagem.texto = "{} perdeu 1/8 HP!".format(pokemon_a_tomar.nome)
+            
+        elif move == moves.tackle[0]: #power of 35 e 95% acerto (IMPLEMENTAR)
+
             pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
+            mensagem.texto = "{} perdeu x HP!".format(pokemon_a_tomar.nome)
+            
         elif move == moves.leech_seed[0]:
-            # a ação em si
-            pokemon_a_tomar.sumindo = False
-
-            print("",pokemon_a_tomar.tipos)
-
             if not tipos.grass in pokemon_a_tomar.tipos:
                 pokemon_a_tomar.add_effect(effect.leech_seed)
             else:
-                mensagem.texto = "It didn't work!"
+                mensagem.texto = "Parece que não surgiu efeito"
+                
         elif move == moves.vine_whip[0]:
+            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
+            
+        elif move == moves.poison_powder[0]: # veneno (IMPLEMENTAR)
+            pokemon_a_tomar.vida -= pokemon_a_tomar.vida / 8
             pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-        elif move == moves.poison_powder[0]:
-            pokemon_a_tomar.vida -= 1/8
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
+            mensagem.texto = "{} perdeu 1/8 HP!".format(pokemon_a_tomar.nome)
+
         elif move == moves.sleep_powder[0]: #coloca o alvo para dormir por até 3 turnos
-            pokemon_a_tomar.bloqueado == 3 
+            pokemon_a_tomar.bloqueado = 3 
             pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-        elif move == moves.razor_leaf[0]: #taxa de acerto crítico de 1/8
-            pokemon_a_tomar.vida -= 1
-            pokemon_a_fazer.ataque_critico += 1/8
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-        elif move == moves.sweet_scent[0]: #diminui a evasão do alvo -1
-            pokemon_a_tomar.vida -= 1
-            pokemon_a_tomar.fugir -= 1 
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            pokemon_a_fazer.fugir(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-        elif move == moves.growth[0]: #aumenta o ataque e o ataque especial em um 1 estágio
-            pokemon_a_tomar.vida -= 1
-            pokemon_a_fazer.ataque += 1 
+            mensagem.texto = "{} dormindo por {} turnos!".format(pokemon_a_tomar.nome, 3)
+            
+        elif move == moves.razor_leaf[0]: #taxa de acerto crítico de 1/8 (IMPLEMENTAR)
+            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
+            
+        elif move == moves.sweet_scent[0]: #diminui a evasão do alvo -1 (IMPLEMENTAR)
+            mensagem.texto = "(a ser implementado)"
+            
+        elif move == moves.growth[0]: #aumenta o ataque especial em um 1 estágio
             pokemon_a_fazer.especial_ataque += 1 
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            pokemon_a_fazer.ataque(pokemon_a_fazer)
-            pokemon_a_fazer.especial_ataque(pokemon_a_fazer)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-        elif move == moves.synthesis[0]: #recupera HP
-            pokemon_a_fazer.vida += 1
-            pokemon_a_fazer.vida(pokemon_a_fazer)
-        elif move == moves.solar_beam[0]:
-            pokemon_a_tomar.vida -= 1
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-        elif move == moves.ember[0]: #10% de chance de queimar
-            if num <= 10:
+            mensagem.texto = "Ataque especial de {} foi aumentado".format(pokemon_a_fazer.nome)
+        elif move == moves.synthesis[0]: #recupera HP (IMPLEMENTAR) (VIDA_CERTA)
+            pokemon_a_fazer.vida += 2
+            mensagem.texto = "{} recuperou HP".format(pokemon_a_tomar.nome)
+            
+        elif move == moves.solar_beam[0]: # (IMPLEMENTAR) (EFEITO)
+            pokemon_a_tomar.vida -= 3
+            mensagem.texto = "{} perdeu {} HP!".format(pokemon_a_tomar.nome,3)
+            
+        elif move == moves.ember[0]: #10% de chance de queimar  
+            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
+            if num <= 10 and not tipos.fire in pokemon_a_tomar.tipos:
                 pokemon_a_tomar.vida -= 1/8
-                pokemon_a_fazer.atacar(pokemon_a_tomar)
-                mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
+                mensagem.texto = "e foi queimado"
+                
         elif move == moves.withdraw[0]: #aumenta a defesa em 1 estágio
             pokemon_a_fazer.defesa += 1
-            pokemon_a_fazer.defesa(pokemon_a_fazer)
+            mensagem.texto = "{} teve a defesa aumentada!".format(pokemon_a_fazer.nome)
+            
         elif move == moves.water_gun[0]:
-            pokemon_a_tomar.vida -= 1
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-        #elif move == moves.bite[0]: #30% de chance do alvo vacilar
+            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
+            
+        #elif move == moves.bite[0]: #30% de chance do alvo vacilar (IMPLEMENTAR)
         elif move == moves.rapid_spin[0]:
-            pokemon_a_tomar.vida -= 1
             pokemon_a_fazer.velocidade += 1
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            pokemon_a_fazer.velocidade(pokemon_a_fazer)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-        #elif move == moves.protect[0]: #protege o pokemon de quaisquer ataques
-        #elif move == moves.rain_dance[0]: #provoca chuva
+            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
+            mensagem.texto = "e sua velocidade aumentou"
+        #elif move == moves.protect[0]: #protege o pokemon de quaisquer ataques (IMPLEMENTAR)
+        #elif move == moves.rain_dance[0]: #provoca chuva (IMPLEMENTAR)
               
-        elif move == moves.skull_bash[0]:#aumenta a defesa em +1
+        elif move == moves.skull_bash[0]:#aumenta a defesa em +1 e dar dano segundo turno (IMPLEMENTAR)
             pokemon_a_fazer.defesa += 1
-            pokemon_a_fazer.defesa(pokemon_a_fazer)
+            mensagem.texto = "{} teve a defesa aumentada!".format(pokemon_a_fazer.nome)
+            
         elif move == moves.hydro_pump[0]: #damage
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-        elif move == moves.fury_attack[0]: #incompleto
+            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
+            
+        elif move == moves.fury_attack[0]: # (IMPLEMENTAR) (efeito)
             pokemon_a_tomar.vida -= 1
             pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
+            mensagem.texto = "{} perdeu 1 HP!".format(pokemon_a_tomar.nome)
+            
         elif move == moves.horn_attack[0]:#damage
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-        elif move == moves.stomp[0]: #damage e 30% de chance de fazer o alvo vacilar
-            pokemon_a_tomar.vida -= 1
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-        #elif move == moves.rock_blast[0]: #atinge 2 a 5 vezes por turno usado. A probabilidade de cada intervalo é mostrada à direita, com a potência total após cada acerto.Cada golpe de Rock Blast é tratado como um ataque separado
-        elif move == moves.horn_drill[0]: #fará o oponente desmaiar/incompleto
-            pokemon_a_tomar.vida -= 1
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
+            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
 
-        
-        elif move == moves.take_down[0]:#perde 25 hp
+        elif move == moves.stomp[0]: #damage e 30% de chance de fazer o alvo vacilar (IMPLEMENTAR)
+            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
+
+        #elif move == moves.rock_blast[0]: #atinge 3 vezes por turno usado. A probabilidade de cada intervalo é mostrada à direita, com a potência total após cada acerto.Cada golpe de Rock Blast é tratado como um ataque separado (IMPLEMENTAR)
+        elif move == moves.horn_drill[0]: #fará o oponente desmaiar (IMPLEMENTAR)
+            pokemon_a_tomar.bloqueado = 3
+            pokemon_a_fazer.atacar(pokemon_a_tomar)
+            mensagem.texto = "{} desmaiou por {} turnos!".format(pokemon_a_tomar.nome,bloqueado)
+
+        elif move == moves.take_down[0]:#perde 25 hp (IMPLEMENTAR)
             pokemon_a_tomar.vida -=25
             pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
+            mensagem.texto = "{} perdeu 1 HP!".format(pokemon_a_tomar.nome)
             
-        elif move == moves.earthquake[0]: #o dano acertará com o dobro de poder 
-            pokemon_a_tomar.vida -= pokemon_a_fazer.ataque * 2
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
+        elif move == moves.earthquake[0]: #o dano acertará com o dobro de poder (IMPLEMENTAR)
+            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
+            mensagem.texto = "{} perdeu x HP!".format(pokemon_a_tomar.nome)
             
         elif move == moves.megahorn[0]: #deals damage
-            pokemon_a_tomar.vida -= 1
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
+            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
         
-        elif move == moves.hypnosis[0]:#o pokemon fica bloqueado por 3 rodadas
+        elif move == moves.hypnosis[0]:#o pokemon fica bloqueado por 3 rodadas (IMPLEMENTAR)
             pokemon_a_tomar.bloqueado == 3
             pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
+            mensagem.texto = "{} desmaiou por {} turnos!".format(pokemon_a_tomar.nome, 3)
         
         elif moves == moves.lick[0]: #30% de chance de paralisar o alvo
+            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
             if num <= 30:              
-                pokemon_a_tomar.velocidade -= 75/100
-                pokemon_a_fazer.atacar(pokemon_a_tomar)
-                mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
+                pokemon_a_tomar.paralisado = True
+                mensagem.texto += "e foi paralisado"
             
-        elif move == moves.spite[0]:#perde 2-5 PP (oponente)
+        elif move == moves.spite[0]:#perde 2-5 PP (oponente) (IMPLEMENTAR) (PP)
             pass
-        elif move == moves.curse[0]:
+        
+        elif move == moves.curse[0]: # (IMPLEMENTAR) (VER DE NOVO)
             pokemon_a_tomar.vida -= 25/100
             pokemon_a_fazer.vida_maxima -= 50/100
             pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
+            mensagem.texto = "{} perdeu 25% HP e 50% HP máximo!".format(pokemon_a_tomar.nome)
 
         elif move == moves.night_shade[0]: #dano igual ao nivel do usuario
-            pokemon_a_toma.vida -= pokemon_a_fazer.vida
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
+            pokemon_a_tomar.vida -= pokemon_a_fazer.nivel
+            mensagem.texto = "{} perdeu {} HP".format(pokemon_a_tomar.nome, pokemon_a_fazer.nivel)
 
-        elif move == moves.confuse_ray[0]:#Pokémon confusos têm 33% de chance de se ferir a cada turno, por 1-4 turnos de ataque (50% de chance nas gerações 1-6 ). O dano recebido é como se o Pokémon atacasse a si mesmo com um ataque físico de 40 base power sem tipo.
+        elif move == moves.confuse_ray[0]:#Pokémon confusos têm 33% de chance de se ferir a cada turno, por 1-4 turnos de ataque (50% de chance nas gerações 1-6 ). O dano recebido é como se o Pokémon atacasse a si mesmo com um ataque físico de 40 base power sem tipo. (IMPLEMENTAR)
             pass
 
-        elif move == moves.shadow_punch[0]: #damage
+        elif move == moves.shadow_punch[0]: #damage (IMPLEMENTAR)
             pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-
-        elif move == moves.dream_eater[0]: #caso o pokemon esteja bloqueado o usuario recebe 50% de vida
-            if pokemon_a_tomar == bloqueado:
+            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
+        elif move == moves.dream_eater[0]: # (IMPLEMENTAR) melhor.  #caso o pokemon esteja bloqueado o usuario recebe 50% de vida
+            if pokemon_a_tomar.bloqueado:
                 pokemon_a_fazer.vida += 50/100
                 pokemon_a_fazer.atacar(pokemon_a_tomar)
-                mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
+                mensagem.texto = "{} aumentou o HP em 50%!".format(pokemon_a_fazer.nome)
 
         elif move == moves.destiny_bond[0]: #se o usuário desmaiar, o oponente também desmaia
-            if pokemon_a_fazer == bloqueado:
-                pokemon_a_tomar == bloquado
-                mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
+            if pokemon_a_fazer.bloqueado == True:
+                pokemon_a_tomar.bloqueado = True
+                mensagem.texto = "{} desmaiou!".format(pokemon_a_tomar.nome)
             
         elif move == moves.shadow_ball[0]: #diminui a defesa especial do adversario em 20%
             pokemon_a_tomar.especial_defesa -= 20/100
             pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
+            mensagem.texto = "{} teve a defesa especial diminuida em 20%!".format(pokemon_a_tomar.nome)
 
         elif move == moves.nightmare[0]: #Se o alvo estiver dormindo, faz com que ele perca 1⁄4 de seu HP máximo
-            if pokemon_a_tomar == bloqueado:
+            if pokemon_a_tomar.bloqueado == True:
                 pokemon_a_tomar.vida_maxima -= 1/4              #   kemon_a_fazer.atacar(pokemon_a_tomar)r)
-                mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)        
+                mensagem.texto = "{} perdeu {} HP!".format(pokemon_a_tomar.nome,dano)        
         
         elif move == moves.mean_look[0]:#oponente nao pode fugir
-            pokemon_a_tomar.pode_fugir == False
+            pokemon_a_tomar.pode_fugir = False
             pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome) 
+            mensagem.texto = "{} não pode fugir!".format(pokemon_a_tomar.nome) 
 
 
         elif move == moves.leer[0]: #a defesa do alvo diminu em 1 estágio
             pokemon_a_toma.defesa -= 1
             pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
+            mensagem.texto = "{} teve sua defesa diminuida!".format(pokemon_a_tomar.nome)
 
         elif  move == moves.twister[0]:#deals damage e o alvo tem chance de vacilar de 30%
-            pokemon_a_tomar.vida -= 1
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-
+            if num <= 30:
+                pokemon_a_tomar.vida -= 1
+                pokemon_a_fazer.atacar(pokemon_a_tomar)
+                mensagem.texto = "{} perdeu {} HP!".format(pokemon_a_tomar.nome,dano)
 
         elif move == moves.wrap[0]: #o alvo perde 1/8 HP
             pokemon_a_tomar.vida -= 1/8
             pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome) 
+            mensagem.texto = "{} perdeu {} de HP!".format(pokemon_a_tomar.nome,dano) 
 
         elif move == moves.safeguard[0]: #damage
             pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome) 
+            mensagem.texto = "{} perdeu {} HP!".format(pokemon_a_tomar.nome,dano) 
 
         elif move == moves.wing_attack[0]: #damage
             pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
+            mensagem.texto = "{} perdeu {} HP!".format(pokemon_a_tomar.nome,dano)
 
-        elif move == = moves.outrage[0]: 
+        elif move == moves.outrage[0]: 
             pokemon_a_fazer.atacar(pokemon_a_fazer)
-            
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)        
+            mensagem.texto = "{} perdeu {} HP!".format(pokemon_a_tomar.nome,dano)        
         
-        elif move == moves.hyperbeam[0]#deals damage e o usuario perde 75
+        elif move == moves.hyperbeam[0]:#deals damage e o usuario perde 75
             pokemon_a_tomar.vida -= 1
             pokemon_a_fazer.vida -= 75
             pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
+            mensagem.texto = "{} foi atacado e {} perde {} de HP!".format(pokemon_a_tomar.nome, dano)
 
-        elif move == ves.confusion[0]: #damage e 1% de chance de diminuir a velocidade do alvo
+        elif move == moves.confusion[0]: #damage e 1% de chance de diminuir a velocidade do alvo
             if num <= 10:
                 pokemon_a_tomar.vida -= 1
                 pokemon_a_tomar.velocidade -= 75/100
                 pokemon_a_fazer.atacar(pokemon_a_tomar)
-                mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
+                mensagem.texto = "{} tem a velocidade reduzida!".format(pokemon_a_tomar.nome)
 
         elif move == moves.disable[0]: # bloqueia o movimento anterior por 6 turnos
             pass
+
         elif move == moves.mist[0]:# os dados do usuario nao mudam
             pokemon_a_fazer.protegido = 4
+            mensagem.texto = "{} dados do usuario não mudam!".format(pokemon_a_fazer.nome)
 
-       
         elif move == moves.swift[0]: #damage
             pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
+            mensagem.texto = "{} perdeu {} HP!".format(pokemon_a_tomar.nome, dano)
             
-        elif move == moves.psychic[0]: #deals damage e menos 105 da defesa especial
+        elif move == moves.psychic[0]: #deals damage e menos 10% da defesa especial
             pokemon_a_tomar.vida -= 1
-            pokemon_a_tomar.defesa_especial -= 10%
+            pokemon_a_tomar.defesa_especial -= 10/100
             pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
+            mensagem.texto = "{} perde 10% da defesa especial!".format(pokemon_a_tomar.nome)
 
-        elif move == moves.psych_up[0]: #Copia as mudanças de estatísticas do oponente.
-            pokemon_a_fazer == pokemon_a_fazer.protegido             
-            mensagem.texto = "{} attack feel!"on_a_tomar.nome)        
+        elif move == moves.psych_up[0]: #Copia as mudanças de estatísticas do oponente incompleto
+            pokemon_a_fazer == pokemon_a_fazer.protegido 
+            mensagem.texto = "{} fica com as estatísticas igual ao oponente!".format(pokemon_a_fazer.nome)        
     
         elif move == moves.recover[0]:#recupera 50% de hp
-            pokemon_a_fazer.vida += 50%
+            pokemon_a_fazer.vida += 50/100
+            mensagem.texto = "{} recuperou 50% do HP!".format(pokemon_a_tomar.nome)
         
         elif move == moves.future_sight[0]:#deals damage
-            pokemon_a_tomar -= 1
             pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
+            mensagem.texto = "{} perdeu {} HP!".format(pokemon_a_tomar.nome,dano)
         
-        elif move == moves.amnesia[0]: #aumneta a defesa especial do usuário em dois estágios
+        elif move == moves.amnesia[0]: #aumeneta a defesa especial do usuário em dois estágios
             pokemon_a_fazer.especial_defesa += 2
-            mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)       
-                
-        
-                
-    def processar_turnos(turnos, mensagem, tempo):
-        #turnos = [pokemon_a_usar_a_acao, pokemon_a_tomar_a_acao, acao]
-                pokemon_a_fazer = turnos[0][0] # pokemon que vai usar a ação
-        pokemon_a_tomar = turnos[0][1] # pokémon que vai sofrer da ação
-        move = turnos[0][2] # qual movimento irá realizar
-        
-        if move == Acao.ataque_simples:
-            tempo.sumido_tempo += tempo.milisegundos
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} attacks!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.sumindo = False
-                dano = pokemon_a_fazer.atacar(pokemon_a_tomar)
-                errou = True if dano == 0 else False
-                if errou:
-                    mensagem.texto = "Wrong!"
-                else:
-                    mensagem.texto = "Caused {} HP of damage!".format(dano)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-       
+            pokemon_a_fazer.atacar(pokemon_a_tomar)
+            mensagem.texto = "{} aumentou a defesa especial!".format(pokemon_a_fazer.nome)       
 
-
-        elif move == moves.growl[0]:
-            tempo.sumido_tempo += tempo.milisegundos
-            if tempo.etapa_turno == 0:
-                # etapa 0: mostrar mensagem do que o pokémon vai fazer:
-                mensagem.texto = "{} used growl!".format(pokemon_a_fazer.nome)
-                # incrementar a etapa do turno:
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                # animar o movimento:
-                pokemon_a_tomar.sumindo = True
-                # incrementar:
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                # agora o código do movimento:
-                pokemon_a_tomar.vida -= 1
-                # Growl lowers the target's Attack by one stage.
-                pokemon_a_fazer.atacar(pokemon_a_tomar)
-                mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-                # colocar sempre para incrementar cada etapa do turno:
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                # a última etapa remove o turno atual:
-                
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                # e em vez de incrementar, reseta (apenas na última etapa do turno!!):
-                tempo.etapa_turno_reseta()
-                num = random.randrange(0,50)
-        #outro movimento:
-        # elif move == moves.
-        elif move == moves.thunder_shock[0]:#obs:paraliza,fazer depois
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used thunder shock!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                if num <= 30:
-                    pokemon_a_tomar.vida -= 1                
-                    pokemon_a_tomar.velocidade -= 75/100
-                    tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-        
-        elif move == moves.tail_whip[0]:#igual o growl(normal)
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail whilp!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.vida -= 1
-                pokemon_a_fazer.atacar(pokemon_a_tomar)
-                mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-        
-        elif move == moves.thunder_wave[0]:#paraliza o oponente 25%, ver depois
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail whilp!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.vida -= 1
-                pokemon_a_tomar.velocidade -= 75/100
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-            pass
-        elif move == moves.quick_attack[0]:#deals damage
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail quitk attack!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.vida -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-            
-        elif move == moves.double_team[0]:#==growl(normal)
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail double team!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                pokemon_a_fazer.atacar(pokemon_a_tomar)
-                mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-            
-        elif move == moves.slam[0]:#damage
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail slam!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.vida -= 1
-                pokemon_a_fazer.atacar(pokemon_a_tomar)
-                mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-        
-        elif move == moves.thunderbolt[0]:#damage e 10% paralizacao, incompleto
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail thunderbolt!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                if num <= 10:
-                    pokemon_a_tomar.vida -= 1
-                    pokemon_a_tomar.velocidade -= 75/100
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-        
-        elif move == moves.agility[0]:#(vai ate o 6 no max)
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail agility!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.vida -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-        
-        
-        elif move == moves.thunder[0]:#damage e paraliza 30%
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail thunder!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                if num <= 30:
-                    pokemon_a_tomar.vida -= 1
-                    pokemon_a_tomar.velocidade -= 75/100
-                    pokemon_a_fazer.atacar(pokemon_a_tomar)
-                mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-        
-        elif move == moves.light_screen[0]: #damage -50% de ataques especiais  
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail light screen!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.vida -= 1
-                pokemon_a_fazer.atacar(pokemon_a_tomar)
-                pokemon_a_tomar.especial_ataque -= 50/100
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-        
-        elif move == moves.scratch[0]:#damage(nao especifica o n) com efeitos adicionais
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail scratch!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.vida -= 1
-                pokemon_a_fazer.atacar(pokemon_a_tomar)
-                pokemon_a_tomar.especial_ataque -= 10/100
-                mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-        
-        # NOME DO MOVIMENTO ESCRITO ERRADO:
-        
-        #elif move == moves.bebbel:
-        #    if tempo.etapa_turno == 0:
-        #        mensagem.texto = "{} used tail bebbel!".format(pokemon_a_fazer.nome)
-        #        tempo.etapa_turno_incrementa()
-        #    elif tempo.etapa_turno == 1:
-        #        pokemon_a_tomar.sumindo = True
-        #        tempo.etapa_turno_incrementa()
-        #    elif tempo.etapa_turno == 2:
-        #        pokemon_a_tomar.ataque -= 1
-        #        tempo.etapa_turno_incrementa()
-        #    elif tempo.etapa_turno == 3:
-        #        if len(turnos) > 0:
-        #            turnos.pop(0)
-        #        tempo.etapa_turno_reseta()
-        
-        elif move == moves.mokescreen[0]:#procurar na geração 3 depois
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail mokescreen!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-        
-        elif move == moves.rage[0]:#normal
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail rage!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.vida -= 1
-                pokemon_a_fazer.atacar(pokemon_a_tomar)
-                mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-        
-        elif move == moves.scary_face[0]:#procurar na geração 3 depois
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail scary face!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.vida -= 1
-                pokemon_a_fazer.atacar(pokemon_a_tomar)
-                mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-        
-        elif move == moves.flamethrower[0]: #damage e 10% de chance de queimar
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail flamethrower!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                if num <= 10:
-                    pokemon_a_tomar.vida -= 1/16
-                    pokemon_a_tomar.ataque -= 1
-                    pokemon_a_fazer.atacar(pokemon_a_tomar)
-                    mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-                    tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-        
-        elif move == moves.dragon_rage[0]: #damage de -40HP 
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail dragon rage!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.vida -= 40
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-        
-        elif move == moves.fire_spin[0]: 
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail fire spin!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.vida -= 1/8
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-
-        elif move == moves.tackle[0]:# power of 35 e 95% acerto
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tackle!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.vida -= 1
-                pokemon_a_fazer.atacar(pokemon_a_tomar)
-                mensagem.texto = "{} attack feel!".format(pokemon_a_tomar.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-        
-        elif move == moves.leech_seed[0]:
-            # Leech Seed plants a seed on the target that drains 1/8 of its maximum HP
-            # at the end of each turn and restores it to the user, or any Pokémon that
-            # takes its place. It does not work on Grass-type Pokémon; it does
-            # technically work against Pokémon with the Magic Guard ability, but no HP
-            #  will be sapped.
-            if tempo.etapa_turno == 0:
-                # mensagem:
-                mensagem.texto = "{} used leech seed!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                # animação
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                # a ação em si
-                pokemon_a_tomar.sumindo = False
-                if not tipos.grass in pokemon_a_tomar.tipos:
-                    pokemon_a_tomar.add_effect(effect.leech_seed)
-                else:
-                    mensagem.texto = "It didn't work!"
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-        
-        elif move == moves.vine_whip[0]:# poder com base 35 + damage(numero nao identificado)
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail vine whip!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                pokemon_a_tomar.especial_ataque -= 10/100
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-        
-        elif move == moves.poison_powder[0]:# o inimigo perde 1/8 de hp
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail poison powder!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1/8
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-        
-        elif move == moves.sleep_powder[0]:#oponente dorme(não joga) por 3 turnos
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail sleep powder!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-                
-        elif move == moves.razor_leaf[0]:#dano e tem uma taxa de acerto crítico aumentada (1⁄8 em vez de 1⁄24) a parte critica precisa ser feita.
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail razor leaf!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1/8
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-        
-        elif move == moves.sweet_scent[0]:#procurar na 3 geração
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail sweet scent!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-
-        elif move == moves.growth[0]:#normal,mas aumenta em estagios, entao quando resolver se vai ter loop rever isso
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail growth!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-        
-        elif move == moves.synthesis[0]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail synthesis!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-            
-        elif move == moves.solar_beam[0]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail solar beam!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-        
-        elif move == moves.ember[0]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used ember!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-            
-        elif move == moves.withdraw[0]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail withdraw!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-                
-        elif move == moves.water_gun[0]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail water gun!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-            
-        elif move == moves.bite:
-            if tempo.etapa_turno == [0]:
-                mensagem.texto = "{} used tail bite!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-        
-        elif move == moves.rapid_spin:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail rapid spin!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-                
-        elif move == moves.protect:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail protect!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-        
-        elif move == moves.rain_dance:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail rain dance!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-                    
-        elif move == moves.skull_bash:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail skull bash!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-        
-        elif move == moves.hydro_pump:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail hydro pump!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-
-        elif move == moves.fury_attack:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail fury attack!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-
-        elif move == moves.horn_attack:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail horn attack!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-           
-        elif move == moves.stomp:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail stomp!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-
-        elif move == moves.rock_blast:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail rock blast!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-
-        elif move == moves.horn_drill:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail horn drill!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-
-        elif move == moves.take_down:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail take down!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()  
-
-        elif move == moves.earthquake[0]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail earthquake!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()  
-            
-        elif move == moves.megahorn[0]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail take megahorn!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()  
-        
-        elif move == moves.hypnosis[0]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail take hypnosis!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()  
-        
-        elif move == moves.lick[0]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail lick!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()  
-        
-        elif move == moves.spite[0]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail spite!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()  
-        
-        elif move == moves.curse[0]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail curse!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()  
-        
-        elif move == moves.night_shade[0]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail take night shade!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()  
-   
-        elif move == moves.confuse_ray[0]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail confuse ray!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()  
-        
-        elif move == moves.shadow_punch[0]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail shadow punch!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()  
-        
-        elif move == moves.dream_eater[0]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail dream eater!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()  
-        
-        elif move == moves.destiny_bond[0]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail destiny bond!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()  
-        
-        elif move == moves.shadow_ball[0]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail shadow ball!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()  
-        
-        elif move == moves.nightmare[0]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail nightmare!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()  
-        
-        elif move == moves.mean_look[0]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail mean look!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()  
-        
-        elif move == moves.leer[0]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail leer!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()  
-        
-        elif move == moves.twister[0]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail twister!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()  
-        
-        elif move == moves.wrap[0]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail wrap!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()  
-        
-        elif move == moves.safeguard[0]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail safeguard!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()  
-        
-        elif move == moves.wing_attack[0]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail wing attack!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()  
-        
-        elif move == moves.outrage[0]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail outrage!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()  
-        
-        elif move == moves.hyperbeam[0]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail hyperbeam!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()  
-        
-        elif move == moves.confusion[0]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail confusion!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()  
-        
-        elif move == moves.disable[0]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail disable!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()  
-        
-        elif move == moves.mist[0]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail mist!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()  
-        
-        elif move == moves.swift[0]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail swift!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()  
-        
-        elif move == moves.psychic[0]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail psychic!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()  
-        
-        elif move == moves.psych_up[0]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail psych up!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()  
-        
-        elif move == moves.recover[0]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail recover!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()  
-            
-        elif move == moves.future_sight[0]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail future sight!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()  
-        
-        elif move == moves.amnesia[0]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} used tail amnesia!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                pokemon_a_tomar.ataque -= 1
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()  
-
-        elif move == Acao.fugir:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} tries escape!".format(pokemon_a_fazer.nome)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                fugiu = pokemon_a_fazer.fugir_de(pokemon_a_tomar)
-                if fugiu:
-                    mensagem.texto = "{} escaped sucessful!".format(pokemon_a_fazer.nome)
-                    for _ in range(len(turnos)):
-                        turnos.pop(0)
-                    tempo.etapa_turno_reseta()
-                else:
-                    mensagem.texto = "{} failed to escape!".format(pokemon_a_fazer.nome)
-                    if len(turnos) > 0:
-                        turnos.pop(0)
-                    tempo.etapa_turno_reseta()
-        # resetar o tempo:
-        tempo.resetar()  
     rodando_o_jogo = True
     mouse_pos = (0,0)
     # Loop do jogo:

@@ -10,7 +10,7 @@ class Pokemon:
     def __init__(self, nome, vida, ataque, defesa, velocidade, especial_ataque, especial_defesa, nivel, genero, tipos, movimentos, imagens):
         # Contains all properties of a pokémon:
         self.__nome = nome
-        self.__vida = vida
+        self.__vida = vida/2
         self.__vida_anim = 0
         self.__vida_maxima = vida
         self.__ataque = ataque
@@ -35,6 +35,24 @@ class Pokemon:
         self.effects = Effect()
         self.__bloqueado = 0
         self.__protegido = 0
+        self.__paralisado = False
+        self.__precisao = 1
+
+    @property
+    def precisao(self):
+        return self.__precisao
+
+    @precisao.setter
+    def precisao(self, valor):
+        self.__precisao = valor
+
+    @property
+    def paralisado(self):
+        return self.__paralisado
+    
+    @paralisado.setter
+    def paralisado(self, valor):
+        self.paralisado = valor
 
     @property
     def vida_anim(self):
@@ -44,6 +62,8 @@ class Pokemon:
     def vida_anim(self, value):
         if value > self.__vida_maxima:
             value = self.__vida_maxima
+        elif value < 0:
+            value = 0
         self.__vida_anim = value
 
     @property
@@ -58,10 +78,13 @@ class Pokemon:
         return True if self.__protegido > 0 else False
 
     def atualiza_vida_anim(self, delta):
-        if self.__vida_anim < self.__vida:
-            self.vida_anim += vel_anim * delta
+        valor = vel_anim * delta
+        if self.__vida - valor/2 < self.__vida_anim < self.__vida + valor/2:
+            self.vida_anim = self.vida
+        elif self.__vida_anim < self.__vida:
+            self.vida_anim += valor
         elif self.__vida_anim > self.__vida:
-            self.vida_anim -= vel_anim * delta
+            self.vida_anim -= valor      
 
     def is_blocked(self):
         return True if self.__bloqueado > 0 else False

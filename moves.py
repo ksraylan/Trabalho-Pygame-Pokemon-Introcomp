@@ -385,8 +385,8 @@ class Moves:
     def ember(self):
         return [-23, "Ember"]
     @property
-    def mokescreen(self):
-        return [-24, "Mokescreen"]
+    def smokescreen(self):
+        return [-24, "Smokescreen"]
     @property
     def rage(self):
         return [-25, "Rage"]
