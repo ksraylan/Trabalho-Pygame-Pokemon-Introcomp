@@ -14,7 +14,7 @@ class Mensagem:
 
     @property
     def texto(self):
-        return self.__texto
+        return self.__texto + "!"
     
     @texto.setter
     def texto(self, valor):

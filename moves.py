@@ -314,136 +314,138 @@ class Moves:
     def yawm(self):
         return 102
     
-    # geração 1:
+
+
+    # geração 1. exemplo: return [id, nome, prioridade, força, chance_de_acertar, quantidade_de_pp] 
     @property
     def tackle(self):
-        return [-1, "Tackle"]
+        return [-1, "Tackle", 0, 35, 100, 35]
     @property
     def growl(self):
-        return [-2, "Growl"]
+        return [-2, "Growl", 0, -6, 100, 40]
     @property
     def leech_seed(self):
-        return [-3, "Leech Seed"]
+        return [-3, "Leech Seed", 0, 0, 90, 10]
     @property
     def vine_whip(self):
-        return [-4, "Vine Whip"]
+        return [-4, "Vine Whip", 0, 45, 100, 25]
     @property
     def poison_powder(self):
-        return [-5, "Poison Powder"]
+        return [-5, "Poison Powder", 0, 0, 75, 35]
     @property
     def sleep_powder(self):
-        return [-6, "Sleep Powder"]
+        return [-6, "Sleep Powder", 0, 0, 75, 15]
     @property
     def razor_leaf(self):
-        return [-7, "Razor Leaf"]
+        return [-7, "Razor Leaf", 0, 55, 95, 25]
     @property
     def sweet_scent(self):
-        return [-8, "Sweet Scent"]
+        return [-8, "Sweet Scent", 0, -6, 100, 20]
     @property
     def growth(self):
-        return [-9, "Growth"]
+        return [-9, "Growth", 0, 6, 100, 20]
     @property
     def synthesis(self):
-        return [-10, "Synthesis"]
+        return [-10, "Synthesis", 3, 50, 100, 5]
     @property
     def solar_beam(self):
-        return [-11, "Solar Beam"]
+        return [-11, "Solar Beam", 0, 120, 100, 10]
     @property
     def thunder_shock(self):
-        return [-12, "Thunder Shock"]
+        return [-12, "Thunder Shock", 0, 40, 100, 30]
     @property
     def tail_whip(self):
-        return [-13, "Tail Whip"]
+        return [-13, "Tail Whip", 0, -6, 100, 30]
     @property
     def quick_attack(self):
-        return [-14, "Quick Attack"]
+        return [-14, "Quick Attack", 1, 40, 100, 30]
     @property
     def double_team(self):
-        return [-15, "Double Team"]
+        return [-15, "Double Team", 0, 6, 100, 15]
     @property
     def slam(self):
-        return [-16, "Slam"]
+        return [-16, "Slam", 0, 80, 75, 20]
     @property
     def thunderbolt(self):
-        return [-17, "Thunderbolt"]
+        return [-17, "Thunderbolt", 0, 95, 100, 15]
     @property
     def agility(self):
-        return [-18, "Agility"]
+        return [-18, "Agility", 0, 6, 100, 30]
     @property
     def thunder(self):
-        return [-19, "Thunder"]
+        return [-19, "Thunder", 0, 120, 70, 10]
     @property
     def light_screen(self):
-        return [-20, "Light Screen"]
+        return [-20, "Light Screen", 0, 0, 100, 30]
     @property
     def thunder_wave(self):
-        return [-21, "Thunder Wave"]
+        return [-21, "Thunder Wave", 0, 0, 100, 20]
     @property
     def scratch(self):
-        return [-22, "Scratch"]
+        return [-22, "Scratch", 0, 40, 100, 35]
     @property
     def ember(self):
-        return [-23, "Ember"]
+        return [-23, "Ember", 0, 40, 100, 25]
     @property
     def smokescreen(self):
-        return [-24, "Smokescreen"]
+        return [-24, "Smokescreen", 0, -6, 100, 20]
     @property
     def rage(self):
-        return [-25, "Rage"]
+        return [-25, "Rage", 0, 20, 100, 20]
     @property
     def scary_face(self):
-        return [-26, "Scary Face"]
+        return [-26, "Scary Face", 0, -6, 100, 10]
     @property
     def flamethrower(self):
-        return [-27, "Flamethrower"]
+        return [-27, "Flamethrower", 0, 90, 100, 15]
     @property
     def slash(self):
-        return [-28, "Slash"]
+        return [-28, "Slash", 0, 70, 100, 20]
     @property
     def dragon_rage(self):
-        return [-29, "Dragon Rage"]
+        return [-29, "Dragon Rage", 0, 40, 100, 10]
     @property
     def fire_spin(self):
-        return [-30, "Fire Spin"]
+        return [-30, "Fire Spin", 0, 35, 85, 15]
     @property
     def withdraw(self):
-        return [-31, "Withdraw"]
+        return [-31, "Withdraw", 0, 6, 100, 40]
     @property
     def water_gun(self):
-        return [-32, "Water Gun"]
+        return [-32, "Water Gun", 0, 40, 100, 25]
     @property
     def bite(self):
-        return [-33, "Bite"]
+        return [-33, "Bite", 0, 60, 100, 25]
     @property
     def rapid_spin(self):
-        return [-34, "Rapid Spin"]
+        return [-34, "Rapid Spin", 0, 20, 100, 40]
     @property
     def protect(self):
-        return [-35, "Protect"]
+        return [-35, "Protect", 3, 0, 100, 10]
     @property
     def rain_dance(self):
-        return [-36, "Rain Dance"]
+        return [-36, "Rain Dance", 0, 0, 100, 5]
     @property
     def skull_bash(self):
-        return [-37, "Skull Bash"]
+        return [-37, "Skull Bash", 0, 130, 100, 10]
     @property
     def bubble(self):
-        return [-38, "Bubble"]
+        return [-38, "Bubble", 0, 20, 100, 30]
     @property
     def hydro_pump(self):
-        return [-39, "Hydro Pump"]
+        return [-39, "Hydro Pump", 0, 120, 80, 5]
     @property
     def fury_attack(self):
-        return [-40, "Fury Attack"]
+        return [-40, "Fury Attack", 0, 15, 85, 20]
     @property
     def horn_attack(self):
-        return [-41, "Horn Attack"]
+        return [-41, "Horn Attack", 0, 65, 100, 25]
     @property
     def stomp(self):
-        return [-42, "Stomp"]
+        return [-42, "Stomp", 0, 65, 100, 20]
     @property
     def horn_drill(self):
-        return [-43, "Horn Drill"]
+        return [-43, "Horn Drill", 0, 0, 30, 5]
     @property
     def take_down(self):
         return [-44, "Take Down"]

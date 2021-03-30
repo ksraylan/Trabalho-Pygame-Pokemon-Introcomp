@@ -17,6 +17,7 @@ from posicao import Pos
 from effect import Effect
 from category import Category
 from itens import Itens
+from processar_movimentos import process_moves
 
 def main():
     itens = Itens()
@@ -24,7 +25,7 @@ def main():
     effect = Effect()
     menu = cena.Menu()
     sub_menu = cena.Submenu()
-    mensagem = Mensagem("Test")
+    mensagem = Mensagem()
     escala = arq.escala
     # menu espaçamento:
     menu_espacamento = (200,50)
@@ -46,7 +47,7 @@ def main():
      moves.quick_attack, moves.double_team, moves.slam, moves.thunderbolt, moves.agility,
      moves.thunder, moves.light_screen], arq.carregar_imagem_pokemon(25))
     
-    pk_charmander = Pokemon("Charmander",39,52,43,65,60,50,9, random.choice(generos),[tipos.fire],[moves.growl, moves.scratch, moves.ember, moves.mokescreen, moves.rage, moves.scary_face, moves.flamethrower, moves.slash, moves.dragon_rage, moves.fire_spin], arq.carregar_imagem_pokemon(4))
+    pk_charmander = Pokemon("Charmander",39,52,43,65,60,50,9, random.choice(generos),[tipos.fire],[moves.growl, moves.scratch, moves.ember, moves.smokescreen, moves.rage, moves.scary_face, moves.flamethrower, moves.slash, moves.dragon_rage, moves.fire_spin], arq.carregar_imagem_pokemon(4))
     pk_bulbasaur = Pokemon("Bulbasaur",45,49,49,45,65,65,9, random.choice(generos), [tipos.grass, tipos.poison], [moves.tackle, moves.growl, moves.leech_seed, moves.vine_whip, moves.poison_powder, moves.sleep_powder, moves.razor_leaf, moves.sweet_scent, moves.growth, moves.synthesis, moves.solar_beam],arq.carregar_imagem_pokemon(1))
     pk_squirtle = Pokemon("Squirtle",44,48,65,43,50,64, 9,random.choice(generos),[tipos.water], [moves.tackle, moves.tail_whip, moves.bubble, moves.withdraw, moves.water_gun, moves.bite, moves.rapid_spin, moves.protect, moves.rain_dance, moves.skull_bash, moves.hydro_pump], arq.carregar_imagem_pokemon(7))
     pk_rhydon = Pokemon("Rhydon",105,130,120,40,45,45,9,random.choice(generos), [tipos.ground, tipos.rock],[moves.fury_attack, moves.horn_attack, moves.stomp, moves.tail_whip, moves.scary_face, moves.rock_blast, moves.horn_drill, moves.take_down, moves.earthquake, moves.megahorn], arq.carregar_imagem_pokemon(112))
@@ -107,15 +108,6 @@ def main():
             pygame.mixer.music.play()
 
     def tocar_sons():
-        #Musica entrada:
-        if menu.atual == menu.escolhendo_pokemon:
-            #arq.som_Batalha.stop()
-            #arq.som_fire_red_abertura.play()
-            pass
-        if menu.atual == menu.batalhando:
-            #arq.som_fire_red_abertura.stop()
-            #arq.som_Batalha.play()
-            pass
         if condicao.atual == condicao.vitoria:
             arq.som_vitoria.play()
         if condicao.atual == condicao.derrota:
@@ -252,45 +244,23 @@ def main():
             if not pokemons[1].conseguiu_fugir() and not pokemons[1].foi_derrotado():
                 janela.tela.blit(simb_2, simb_2_rect)            
 
-            # Barras de vida:
-            
-            # Vida amarela:
-            
-            if pokemons[1].vida_anim <= pokemons[1].vida_maxima/2:
-                img_vida_amarela_esticada = pygame.transform.scale(arq.img_vida_amarela,
-                (int(arq.img_vida_amarela.get_width() + (escala*39)),
-                arq.img_vida_vermelha.get_height()))
-                
-                janela.tela.blit(img_vida_amarela_esticada,(int(55*escala), int(34*escala)))
-            
-            if pokemons[0].vida_anim <= pokemons[0].vida_maxima/2:
-                img_vida_amarela_esticada = pygame.transform.scale(arq.img_vida_amarela,
-                (int(arq.img_vida_amarela.get_width() + (escala*39)),
-                arq.img_vida_vermelha.get_height()))
-                
-                janela.tela.blit(img_vida_amarela_esticada,(janela.tamanho[0]-62*escala,
-                janela.tamanho[1] - 69*escala))
-            
-            # Vida vermelha:
-            
-            if pokemons[1].vida_anim <= pokemons[1].vida_maxima/5:
-                img_vida_vermelha_esticada = pygame.transform.scale(arq.img_vida_vermelha,
-                (int(arq.img_vida_vermelha.get_width() + (escala*39)),
-                arq.img_vida_vermelha.get_height()))
-                
-                janela.tela.blit(img_vida_vermelha_esticada,(55*escala, 34*escala))
-            
-            if pokemons[0].vida_anim <= pokemons[0].vida_maxima/5:
-                img_vida_vermelha_esticada = pygame.transform.scale(arq.img_vida_vermelha,
-                (int(arq.img_vida_vermelha.get_width() + (escala*39)),
-                arq.img_vida_vermelha.get_height()))
-                
-                janela.tela.blit(img_vida_vermelha_esticada,(janela.tamanho[0] -
-                62*escala,janela.tamanho[1] - 69*escala))
-            
-            # Barra da parte "sem vida":
-            
+            # Pokémon inimigo:
             if not pokemons[1].conseguiu_fugir() and not pokemons[1].foi_derrotado():
+                # Barra de vida amarela:
+                if pokemons[1].vida_maxima/5 < pokemons[1].vida_anim <= pokemons[1].vida_maxima/2:
+                    img_vida_amarela_esticada = pygame.transform.scale(arq.img_vida_amarela,
+                    (int(arq.img_vida_amarela.get_width() + (escala*39)),
+                    arq.img_vida_vermelha.get_height()))
+                    
+                    janela.tela.blit(img_vida_amarela_esticada,(int(55*escala), int(34*escala)))
+                # Vida vermelha:
+                if pokemons[1].vida_anim <= pokemons[1].vida_maxima/5:
+                    img_vida_vermelha_esticada = pygame.transform.scale(arq.img_vida_vermelha,
+                    (int(arq.img_vida_vermelha.get_width() + (escala*39)),
+                    arq.img_vida_vermelha.get_height()))
+                    
+                    janela.tela.blit(img_vida_vermelha_esticada,(55*escala, 34*escala))
+                # "Vida vazia":
                 img_barra_sem_vida_esticada = pygame.transform.scale(arq.img_barra_sem_vida,
                 (ceil((arq.img_barra_sem_vida.get_width() + (escala*39)) *
                 (pokemons[1].vida_maxima - pokemons[1].vida_anim)/pokemons[1].vida_maxima),
@@ -299,7 +269,30 @@ def main():
                 janela.tela.blit(img_barra_sem_vida_esticada,(floor(55*escala +
                 barra_width * (pokemons[1].vida_anim/pokemons[1].vida_maxima)), 34*escala))
 
+                # Mostrando o nível do pokémon:
+                nivel = arq.fonte_txt.render(str(pokemons[1].nivel), False, cor.PRETO)
+                nivel_rect = nivel.get_rect()
+                nivel_rect.left = 96*escala
+                nivel_rect.top = 18.5*escala
+                janela.tela.blit(nivel, nivel_rect)
             if not pokemons[0].conseguiu_fugir() and not pokemons[0].foi_derrotado():
+                # Barra de vida amarela:
+                if pokemons[0].vida_anim <= pokemons[0].vida_maxima/2:
+                    img_vida_amarela_esticada = pygame.transform.scale(arq.img_vida_amarela,
+                    (int(arq.img_vida_amarela.get_width() + (escala*39)),
+                    arq.img_vida_vermelha.get_height()))
+                    
+                    janela.tela.blit(img_vida_amarela_esticada,(janela.tamanho[0]-62*escala,
+                    janela.tamanho[1] - 69*escala))
+                # Vida vermelha:
+                if pokemons[0].vida_anim <= pokemons[0].vida_maxima/5:
+                    img_vida_vermelha_esticada = pygame.transform.scale(arq.img_vida_vermelha,
+                    (int(arq.img_vida_vermelha.get_width() + (escala*39)),
+                    arq.img_vida_vermelha.get_height()))
+                    
+                    janela.tela.blit(img_vida_vermelha_esticada,(janela.tamanho[0] -
+                    62*escala,janela.tamanho[1] - 69*escala))
+                # "Vida vazia":
                 img_barra_sem_vida_esticada = pygame.transform.scale(arq.img_barra_sem_vida,
                 (ceil((arq.img_barra_sem_vida.get_width() + (escala*39)) *
                 (pokemons[0].vida_maxima - pokemons[0].vida_anim)/pokemons[0].vida_maxima),
@@ -308,20 +301,13 @@ def main():
                 janela.tela.blit(img_barra_sem_vida_esticada,(floor(janela.tamanho[0] -
                 62*escala + barra_width * (pokemons[0].vida_anim/pokemons[0].vida_maxima)),
                 janela.tamanho[1] - 69*escala))
+                # Mostrando o nível do pokémon:
+                nivel = arq.fonte_txt.render(str(pokemons[0].nivel), False, cor.PRETO)
+                nivel_rect = nivel.get_rect()
+                nivel_rect.left = janela.tamanho[0] - 21*escala
+                nivel_rect.top = janela.tamanho[1] - 84.5*escala
+                janela.tela.blit(nivel, nivel_rect)
             
-            # Mostrando o nível do pokémon:
-            nivel = arq.fonte_txt.render(str(pokemons[1].nivel), False, cor.PRETO)
-            nivel_rect = nivel.get_rect()
-            nivel_rect.left = 96*escala
-            nivel_rect.top = 18.5*escala
-            if not pokemons[1].conseguiu_fugir() and not pokemons[1].foi_derrotado():
-                janela.tela.blit(nivel, nivel_rect)
-            nivel = arq.fonte_txt.render(str(pokemons[0].nivel), False, cor.PRETO)
-            nivel_rect = nivel.get_rect()
-            nivel_rect.left = janela.tamanho[0] - 21*escala
-            nivel_rect.top = janela.tamanho[1] - 84.5*escala
-            if not pokemons[0].conseguiu_fugir() and not pokemons[0].foi_derrotado():
-                janela.tela.blit(nivel, nivel_rect)
             if not sub_menu.no_submenu(sub_menu.escolhendo_ataque):
                 texto_multilinha(mensagem.texto)
             #janela.tela.blit(batalha_nome, batalha_rect)
@@ -478,7 +464,7 @@ def main():
                 # desativa a animação básica
                 pokemon_a_tomar.sumindo = False
                 # processa o movimento atual
-                process_moves(pokemon_a_fazer, pokemon_a_tomar, move[0])
+                process_moves(pokemon_a_fazer, pokemon_a_tomar, move[0], Acao, mensagem, moves, tipos, effect)
                 tempo.etapa_turno_incrementa()
             # a última etapa é tirar o movimento que acabou de ser feito da lista
             # de movimentos:
@@ -490,359 +476,54 @@ def main():
         # resetar o tempo:
         tempo.resetar()  
 
-    def mostrar_texto_ataque_normal(dano):
-        errou = True if dano == 0 else False
-        if errou:
-            mensagem.texto = "Errou o alvo"
-        else:
-            mensagem.texto = "Fez perder {} HP".format(dano)
-
-    def mostrar_mensagem_errou():
-        if not mensagem.texto == "Errou o alvo":
-            mensagem.texto = "Errou"
-
-
     def usar_item(pokemon_a_usar, pokemon_inimigo, item):
-        if item == itens.dire_hit:
-            
+        if item == itens.dire_hit: #Aumenta a proporção de acertos críticos de Pokémon em batalha
+            pokemon_a_usar.ataque_critico += 1
+            mensagem.texto = "{} aumentou a proporção de ataque crítico!".format(pokemon_a_usar.nome)
 
-        elif item == guard_spec: #Um item que impede a redução de estatísticas 
+            
+        elif item == itens.guard_spec: #Um item que impede a redução de estatísticas 
             pokemon_a_usar.protegido = 3
-            mensagem.texto = "{} impediu que seus dados mudassem".format(pokemon_a_usar)
+            mensagem.texto = "{} tem seus dados protegidos por 3 turnos".format(pokemon_a_usar.nome)
 
-        elif item == x_accuracy: #Aumenta a estatística de precisão do Pokémon em batalha
-            pokemon_a_usar.precisao += 20 * pokemon_a_usar / 100
-            mensagem.texto = "{} aumentou a precisão em 20%".format(pokemon_a_usar)
+        elif item == itens.x_accuracy: #Aumenta a estatística de precisão do Pokémon em batalha
+            pokemon_a_usar.precisao += 1
+            mensagem.texto = "{} aumentou a precisão em 1 estágio".format(pokemon_a_usar.nome)
+
             
-        elif item == x_attack:
-            
+        elif item == itens.x_attack: #Aumenta a estatística ataque do Pokémon na batalha
+            pokemon_a_usar.ataque += 1
+            mensagem.texto = "{} aumentou seu ataque em 1 estágio!".format(pokemon_a_usar.nome)
 
-
-    def process_moves(pokemon_a_fazer, pokemon_a_tomar, move):
-        print("Movimento executado:", move)
-        # códigos dos movimentos:
-        num = random.randrange(0,101)
+        elif item == itens.x_defense: #Aumenta a estatística DEFESA do Pokémon em batalha
+            pokemon_a_usar.defesa += 1
+            mensagem.texto = "{} aumentou sua defesa em 1 estágio!".format(pokemon_a_usar.nome)
         
-        if move == Acao.ataque_simples:
-            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
-        if move == moves.growl[0]:
-            # Growl lowers the target's Attack by one stage.
-            pokemon_a_tomar.ataque -= 1
-            mensagem.texto = "O ataque de {} diminuiu".format(pokemon_a_tomar.nome)
-        elif move == moves.thunder_shock[0]:
-            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
-            if num <= 10 and not tipos.electric in pokemon_a_tomar.tipos: # 10% de chance de ser paralizado:
-                pokemon_a_tomar.bloqueado = 1
-                pokemon_a_tomar.velocidade -= 50 * pokemon_a_fazer.velocidade / 100 #75%
-                mensagem.texto = "e foi paralizado".format(pokemon_a_tomar.nome,dano)
-        elif move == moves.tail_whip[0]:
-            pokemon_a_tomar.defesa -= 1
-            mensagem.texto = "Defesa de {} diminuiu".format(pokemon_a_tomar.nome,dano)
+        elif item == itens.x_special: #Eleva a estatística do ataque especial
+            pokemon_a_usar.especial_ataque += 1
+            mensagem.texto = "{} aumentou seu ataque especial em 1 estágio!".format(pokemon_a_usar.nome)
 
-        elif move == moves.thunder_wave[0]: #25% de chance do alvo não atacar
-            pokemon_a_tomar.paralisado = True
-            # Speed is decreased by 75%
-            pokemon_a_tomar.velocidade -= 75 * pokemon_a_fazer.velocidade / 100
-            mensagem.texto = "{} ficou paralisado".format(pokemon_a_tomar.nome)
-
-        elif move == moves.quick_attack[0]: #deals damage (IMPLEMENTAR ataque prioritário!)
-            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
-        elif move == moves.double_team[0]: # (IMPLEMENTAR)
-            pokemon_a_tomar. -= 1
-            pokemon_a_tomar.pode_fugir == False 
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} perdeu {} HP e sua chance de fugir diminuiu em um estágio!".format(pokemon_a_tomar.nome)
-            
-        elif move == moves.slam[0]: 
-            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
-            
-        elif move == moves.thunderbolt[0]:#25% de chance do alvo não atacar
-            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
-            if num <= 10:
-                pokemon_a_tomar.paralisado = True
-                mensagem.texto = "e foi paralisado".format(pokemon_a_tomar.nome)
-                
-        elif move == moves.agility[0]: #aumenta velocidade em +2 estágios
-            pokemon_a_fazer.velocidade += 2 
-            mensagem.texto = "{} teve a velocidade aumentada".format(pokemon_a_fazer.nome)
-
-        elif move == moves.thunder[0]:
-            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
-            if num <= 30:
-                pokemon_a_tomar.paralisado = True
-                mensagem.texto = "e foi paralisado".format(pokemon_a_tomar.nome)
-                
-        elif move == moves.scratch[0]:
-            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
-
-        elif move == moves.smokescreen[0]: #precisão do alvo reduz em 1 estágio
-            pokemon_a_tomar.precisao -= 1
-            mensagem.texto = "{} teve a precisão reduzida".format(pokemon_a_tomar.nome)
-
-        elif move == moves.rage[0]: #ataque aumenta em 1 estágio
-            pokemon_a_fazer.ataque += 1 
-            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
-            mensagem.texto += "e ataque aumentado"
-
-        elif move == moves.scary_face[0]: #diminui velocidade do alvo em 2 estágios
-            if num <= 90:
-                pokemon_a_tomar.velocidade -= 2
-                pokemon_a_fazer.atacar(pokemon_a_tomar)
-                mensagem.texto = "{} teve a velocidade diminuida".format(pokemon_a_tomar.nome)
-            else:
-                mensagem.texto = "Parece que não surgiu efeito"
-
-        elif move == moves.flamethrower[0]: #10% de chance de queimar (IMPLEMENTAR)
-            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
-            if num <= 10:
-                pokemon_a_tomar.vida -= 1/16
-                pokemon_a_fazer.atacar(pokemon_a_tomar)
-                mensagem.texto = "e foi queimado" 
-                  
-        elif move == moves.dragon_rage[0]:
-            pokemon_a_tomar.vida -= 40
-            mensagem.texto = "{} foi atacado".format(pokemon_a_tomar.nome)
-            
-        elif move == moves.fire_spin[0]: # (IMPLEMENTAR)
-            pokemon_a_tomar.vida -= 1/8
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} perdeu 1/8 HP!".format(pokemon_a_tomar.nome)
-            
-        elif move == moves.tackle[0]: #power of 35 e 95% acerto (IMPLEMENTAR)
-
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} perdeu x HP!".format(pokemon_a_tomar.nome)
-            
-        elif move == moves.leech_seed[0]:
-            if not tipos.grass in pokemon_a_tomar.tipos:
-                pokemon_a_tomar.add_effect(effect.leech_seed)
-            else:
-                mensagem.texto = "Parece que não surgiu efeito"
-                
-        elif move == moves.vine_whip[0]:
-            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
-            
-        elif move == moves.poison_powder[0]: # veneno (IMPLEMENTAR)
-            pokemon_a_tomar.vida -= pokemon_a_tomar.vida / 8
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} perdeu 1/8 HP!".format(pokemon_a_tomar.nome)
-
-        elif move == moves.sleep_powder[0]: #coloca o alvo para dormir por até 3 turnos
-            pokemon_a_tomar.bloqueado = 3 
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} dormindo por {} turnos!".format(pokemon_a_tomar.nome, 3)
-            
-        elif move == moves.razor_leaf[0]: #taxa de acerto crítico de 1/8 (IMPLEMENTAR)
-            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
-            
-        elif move == moves.sweet_scent[0]: #diminui a evasão do alvo -1 (IMPLEMENTAR)
-            mensagem.texto = "(a ser implementado)"
-            
-        elif move == moves.growth[0]: #aumenta o ataque especial em um 1 estágio
-            pokemon_a_fazer.especial_ataque += 1 
-            mensagem.texto = "Ataque especial de {} foi aumentado".format(pokemon_a_fazer.nome)
-        elif move == moves.synthesis[0]: #recupera HP (IMPLEMENTAR) (VIDA_CERTA)
-            pokemon_a_fazer.vida += 2
-            mensagem.texto = "{} recuperou HP".format(pokemon_a_tomar.nome)
-            
-        elif move == moves.solar_beam[0]: # (IMPLEMENTAR) (EFEITO)
-            pokemon_a_tomar.vida -= 3
-            mensagem.texto = "{} perdeu {} HP!".format(pokemon_a_tomar.nome,3)
-            
-        elif move == moves.ember[0]: #10% de chance de queimar  
-            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
-            if num <= 10 and not tipos.fire in pokemon_a_tomar.tipos:
-                pokemon_a_tomar.vida -= 1/8
-                mensagem.texto = "e foi queimado"
-                
-        elif move == moves.withdraw[0]: #aumenta a defesa em 1 estágio
-            pokemon_a_fazer.defesa += 1
-            mensagem.texto = "{} teve a defesa aumentada!".format(pokemon_a_fazer.nome)
-            
-        elif move == moves.water_gun[0]:
-            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
-            
-        #elif move == moves.bite[0]: #30% de chance do alvo vacilar (IMPLEMENTAR)
-        elif move == moves.rapid_spin[0]:
-            pokemon_a_fazer.velocidade += 1
-            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
-            mensagem.texto = "e sua velocidade aumentou"
-        #elif move == moves.protect[0]: #protege o pokemon de quaisquer ataques (IMPLEMENTAR)
-        #elif move == moves.rain_dance[0]: #provoca chuva (IMPLEMENTAR)
-              
-        elif move == moves.skull_bash[0]:#aumenta a defesa em +1 e dar dano segundo turno (IMPLEMENTAR)
-            pokemon_a_fazer.defesa += 1
-            mensagem.texto = "{} teve a defesa aumentada!".format(pokemon_a_fazer.nome)
-            
-        elif move == moves.hydro_pump[0]: #damage
-            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
-            
-        elif move == moves.fury_attack[0]: # (IMPLEMENTAR) (efeito)
-            pokemon_a_tomar.vida -= 1
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} perdeu 1 HP!".format(pokemon_a_tomar.nome)
-            
-        elif move == moves.horn_attack[0]:#damage
-            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
-
-        elif move == moves.stomp[0]: #damage e 30% de chance de fazer o alvo vacilar (IMPLEMENTAR)
-            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
-
-        #elif move == moves.rock_blast[0]: #atinge 3 vezes por turno usado. A probabilidade de cada intervalo é mostrada à direita, com a potência total após cada acerto.Cada golpe de Rock Blast é tratado como um ataque separado (IMPLEMENTAR)
-        elif move == moves.horn_drill[0]: #fará o oponente desmaiar (IMPLEMENTAR)
-            pokemon_a_tomar.bloqueado = 3
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} desmaiou por {} turnos!".format(pokemon_a_tomar.nome,bloqueado)
-
-        elif move == moves.take_down[0]:#perde 25 hp (IMPLEMENTAR)
-            pokemon_a_tomar.vida -=25
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} perdeu 1 HP!".format(pokemon_a_tomar.nome)
-            
-        elif move == moves.earthquake[0]: #o dano acertará com o dobro de poder (IMPLEMENTAR)
-            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
-            mensagem.texto = "{} perdeu x HP!".format(pokemon_a_tomar.nome)
-            
-        elif move == moves.megahorn[0]: #deals damage
-            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
+        elif item == itens.x_speed: #Aumenta a estatística de VELOCIDADE do Pokémon na batalha
+            pokemon_a_usar.velocidade += 1
+            mensagem.texto = "{} aumentou sua velocidade em 1 estágio!".format(pokemon_a_usar.nome)
         
-        elif move == moves.hypnosis[0]:#o pokemon fica bloqueado por 3 rodadas (IMPLEMENTAR)
-            pokemon_a_tomar.bloqueado == 3
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} desmaiou por {} turnos!".format(pokemon_a_tomar.nome, 3)
-        
-        elif moves == moves.lick[0]: #30% de chance de paralisar o alvo
-            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
-            if num <= 30:              
-                pokemon_a_tomar.paralisado = True
-                mensagem.texto += "e foi paralisado"
-            
-        elif move == moves.spite[0]:#perde 2-5 PP (oponente) (IMPLEMENTAR) (PP)
-            pass
-        
-        elif move == moves.curse[0]: # (IMPLEMENTAR) (VER DE NOVO)
-            pokemon_a_tomar.vida -= 25/100
-            pokemon_a_fazer.vida_maxima -= 50/100
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} perdeu 25% HP e 50% HP máximo!".format(pokemon_a_tomar.nome)
+        elif item == itens.berry_juice: #Um suco 100% puro. Ele restaura o HP de um Pokémon em 20 pontos.
+            pokemon_a_usar.vida += 20
+            mensagem.texto = "{} teve seu HP restaurado em 20 pontos!".format(pokemon_a_usar.nome)
 
-        elif move == moves.night_shade[0]: #dano igual ao nivel do usuario
-            pokemon_a_tomar.vida -= pokemon_a_fazer.nivel
-            mensagem.texto = "{} perdeu {} HP".format(pokemon_a_tomar.nome, pokemon_a_fazer.nivel)
+        #elif item == itens.elixir: #Restaura o PP de todos os movimentos de um Pokémon em 10 pontos cada.
 
-        elif move == moves.confuse_ray[0]:#Pokémon confusos têm 33% de chance de se ferir a cada turno, por 1-4 turnos de ataque (50% de chance nas gerações 1-6 ). O dano recebido é como se o Pokémon atacasse a si mesmo com um ataque físico de 40 base power sem tipo. (IMPLEMENTAR)
-            pass
+        elif item == itens.potion: #Ele restaura o HP de um Pokémon em 20 pontos.
+            pokemon_a_usar.vida += 20
+            mensagem.texto = "{} teve seu HP restaurado em 20 pontos!".format(pokemon_a_usar.nome)
 
-        elif move == moves.shadow_punch[0]: #damage (IMPLEMENTAR)
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar))
-        elif move == moves.dream_eater[0]: # (IMPLEMENTAR) melhor.  #caso o pokemon esteja bloqueado o usuario recebe 50% de vida
-            if pokemon_a_tomar.bloqueado:
-                pokemon_a_fazer.vida += 50/100
-                pokemon_a_fazer.atacar(pokemon_a_tomar)
-                mensagem.texto = "{} aumentou o HP em 50%!".format(pokemon_a_fazer.nome)
-
-        elif move == moves.destiny_bond[0]: #se o usuário desmaiar, o oponente também desmaia
-            if pokemon_a_fazer.bloqueado == True:
-                pokemon_a_tomar.bloqueado = True
-                mensagem.texto = "{} desmaiou!".format(pokemon_a_tomar.nome)
-            
-        elif move == moves.shadow_ball[0]: #diminui a defesa especial do adversario em 20%
-            pokemon_a_tomar.especial_defesa -= 20/100
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} teve a defesa especial diminuida em 20%!".format(pokemon_a_tomar.nome)
-
-        elif move == moves.nightmare[0]: #Se o alvo estiver dormindo, faz com que ele perca 1⁄4 de seu HP máximo
-            if pokemon_a_tomar.bloqueado == True:
-                pokemon_a_tomar.vida_maxima -= 1/4              #   kemon_a_fazer.atacar(pokemon_a_tomar)r)
-                mensagem.texto = "{} perdeu {} HP!".format(pokemon_a_tomar.nome,dano)        
-        
-        elif move == moves.mean_look[0]:#oponente nao pode fugir
-            pokemon_a_tomar.pode_fugir = False
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} não pode fugir!".format(pokemon_a_tomar.nome) 
-
-
-        elif move == moves.leer[0]: #a defesa do alvo diminu em 1 estágio
-            pokemon_a_toma.defesa -= 1
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} teve sua defesa diminuida!".format(pokemon_a_tomar.nome)
-
-        elif  move == moves.twister[0]:#deals damage e o alvo tem chance de vacilar de 30%
-            if num <= 30:
-                pokemon_a_tomar.vida -= 1
-                pokemon_a_fazer.atacar(pokemon_a_tomar)
-                mensagem.texto = "{} perdeu {} HP!".format(pokemon_a_tomar.nome,dano)
-
-        elif move == moves.wrap[0]: #o alvo perde 1/8 HP
-            pokemon_a_tomar.vida -= 1/8
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} perdeu {} de HP!".format(pokemon_a_tomar.nome,dano) 
-
-        elif move == moves.safeguard[0]: #damage
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} perdeu {} HP!".format(pokemon_a_tomar.nome,dano) 
-
-        elif move == moves.wing_attack[0]: #damage
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} perdeu {} HP!".format(pokemon_a_tomar.nome,dano)
-
-        elif move == moves.outrage[0]: 
-            pokemon_a_fazer.atacar(pokemon_a_fazer)
-            mensagem.texto = "{} perdeu {} HP!".format(pokemon_a_tomar.nome,dano)        
-        
-        elif move == moves.hyperbeam[0]:#deals damage e o usuario perde 75
-            pokemon_a_tomar.vida -= 1
-            pokemon_a_fazer.vida -= 75
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} foi atacado e {} perde {} de HP!".format(pokemon_a_tomar.nome, dano)
-
-        elif move == moves.confusion[0]: #damage e 1% de chance de diminuir a velocidade do alvo
-            if num <= 10:
-                pokemon_a_tomar.vida -= 1
-                pokemon_a_tomar.velocidade -= 75/100
-                pokemon_a_fazer.atacar(pokemon_a_tomar)
-                mensagem.texto = "{} tem a velocidade reduzida!".format(pokemon_a_tomar.nome)
-
-        elif move == moves.disable[0]: # bloqueia o movimento anterior por 6 turnos
-            pass
-
-        elif move == moves.mist[0]:# os dados do usuario nao mudam
-            pokemon_a_fazer.protegido = 4
-            mensagem.texto = "{} dados do usuario não mudam!".format(pokemon_a_fazer.nome)
-
-        elif move == moves.swift[0]: #damage
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} perdeu {} HP!".format(pokemon_a_tomar.nome, dano)
-            
-        elif move == moves.psychic[0]: #deals damage e menos 10% da defesa especial
-            pokemon_a_tomar.vida -= 1
-            pokemon_a_tomar.defesa_especial -= 10/100
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} perde 10% da defesa especial!".format(pokemon_a_tomar.nome)
-
-        elif move == moves.psych_up[0]: #Copia as mudanças de estatísticas do oponente incompleto
-            pokemon_a_fazer == pokemon_a_fazer.protegido 
-            mensagem.texto = "{} fica com as estatísticas igual ao oponente!".format(pokemon_a_fazer.nome)        
     
-        elif move == moves.recover[0]:#recupera 50% de hp
-            pokemon_a_fazer.vida += 50/100
-            mensagem.texto = "{} recuperou 50% do HP!".format(pokemon_a_tomar.nome)
-        
-        elif move == moves.future_sight[0]:#deals damage
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} perdeu {} HP!".format(pokemon_a_tomar.nome,dano)
-        
-        elif move == moves.amnesia[0]: #aumeneta a defesa especial do usuário em dois estágios
-            pokemon_a_fazer.especial_defesa += 2
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
-            mensagem.texto = "{} aumentou a defesa especial!".format(pokemon_a_fazer.nome)       
 
     rodando_o_jogo = True
     mouse_pos = (0,0)
     # Loop do jogo:
     while rodando_o_jogo:
-        # Colocando o jogo para rodar no máximo a 60 fps:
+        # Colocando o jogo para rodar no máximo a 60 quadros por segundo:
         delta = clock.tick(60)
         # Eventos:
         for event in pygame.event.get():
@@ -856,35 +537,46 @@ def main():
                 if menu.no_menu(menu.batalhando):
                     if sub_menu.no_submenu(sub_menu.principal) or sub_menu.no_submenu(sub_menu.escolhendo_ataque):
                         if event.key == pygame.K_UP:
+                            arq.som_menu_mudou.play()
                             pos.y -= 1
                         elif event.key == pygame.K_DOWN:
+                            arq.som_menu_mudou.play()
                             pos.y += 1
                         elif event.key == pygame.K_LEFT:
+                            arq.som_menu_mudou.play()
                             pos.x -= 1
                         elif event.key == pygame.K_RIGHT:
+                            arq.som_menu_mudou.play()
                             pos.x += 1
                     if sub_menu.no_submenu(sub_menu.principal):
                         if event.key == pygame.K_ESCAPE:
+                            arq.som_menu_escolheu.play()
                             menu.atual = menu.escolhendo_pokemon
                             tocar_musica("Recursos/Sprites/SonsPokemon/fireRedAbertura.wav", True)
                         if event.key == pygame.K_RETURN:
+                            arq.som_menu_escolheu.play()
                             escolher_acao_batalha(pos)
                     elif sub_menu.no_submenu(sub_menu.escolhendo_ataque):
                         if event.key == pygame.K_ESCAPE:
+                            arq.som_menu_escolheu.play()
                             sub_menu.atual = sub_menu.principal
                         if event.key == pygame.K_RETURN:
+                            arq.som_menu_escolheu.play()
                             fazer_acao(menu, sub_menu, pokemons[0].movimentos[pos.i])
                 elif menu.no_menu(menu.escolhendo_pokemon):
                     if event.key == pygame.K_UP:
+                        arq.som_menu_mudou.play()
                         sel_s = sel_s - 1
                         if sel_s < 0:
                             sel_s = len(pokemons_pode_escolher) - 1
                     elif event.key == pygame.K_DOWN:
+                        arq.som_menu_mudou.play()
                         sel_s = sel_s + 1
                         if sel_s > len(pokemons_pode_escolher) - 1:
                             sel_s = 0
                     elif event.key == pygame.K_RETURN:
                         # escolheu o pokémon
+                        arq.som_menu_escolheu.play()
                         tocar_musica("Recursos/Sprites/SonsPokemon/batalha.wav", True)
                         escolher_pokemon(menu, sub_menu, mensagem)
                     elif event.key == pygame.K_ESCAPE:
