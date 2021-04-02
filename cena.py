@@ -52,8 +52,10 @@ class Submenu:
 
     @property
     def texto(self):
-        return 2
-    
+        return 5
+    @property
+    def itens(self):
+        return 6
     
     
     @atual.setter

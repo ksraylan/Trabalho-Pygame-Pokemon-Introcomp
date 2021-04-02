@@ -3,14 +3,14 @@ import random
 import math
 from effect import Effect
 
-vel_anim = 0.05
+vel_anim = 0.03
 # A class with all stats of a pokémon (in this game). Contains methods
 # that calculates the damage, things like that.
 class Pokemon:
     def __init__(self, nome, vida, ataque, defesa, velocidade, especial_ataque, especial_defesa, nivel, genero, tipos, movimentos, imagens):
         # Contains all properties of a pokémon:
         self.__nome = nome
-        self.__vida = vida/2
+        self.__vida = vida
         self.__vida_anim = 0
         self.__vida_maxima = vida
         self.__ataque = ataque
@@ -52,7 +52,7 @@ class Pokemon:
     
     @paralisado.setter
     def paralisado(self, valor):
-        self.paralisado = valor
+        self.__paralisado = valor
 
     @property
     def vida_anim(self):
@@ -120,7 +120,6 @@ class Pokemon:
         if priority is True:
             self.__bloqueado -= 1
             self.__protegido -= 1
-        print("len:", len(self.__pokemon_effects))
         # Process all effects:
         for i in range(len(self.__pokemon_effects)):
             # Get a effect from the list of the effects of the current pokémon:
@@ -128,12 +127,10 @@ class Pokemon:
             # Now it needs to verify if the priority of the effect from the pokémon
             # is equal to the current priority (True: before the turns; False: after
             # the turns.):
-            print("loop part")
             if self.__pokemon_effects[i]["priority"] is priority:
                 # Call the function that process the effect:
                 self.__process_one_effect(effect_pokemon, enemy_pokemon)
                 # (PRECISA COMENTAR!)
-                print("prority part")
                 if effect_pokemon["stops"] is not None and effect_pokemon["offset"] > effect_pokemon["stops"]:
                     self.__pokemon_effects.pop(i)
                 else:
@@ -148,7 +145,6 @@ class Pokemon:
             vida_perdida = 12.5 * self.vida_maxima / 100
             self.vida -= vida_perdida
             enemy_pokemon.vida += vida_perdida
-            print("Applied effect")
         
 
     def atacar(self, outro_pokemon):
@@ -285,10 +281,7 @@ class Pokemon:
     def add_effect(self, effect):
         place = True if not effect in self.__pokemon_effects else False
         if place:
-            print("placed effect")
             self.__pokemon_effects.append(effect)
-        else:
-            print("not placed effect")
         return place
 
     @sumindo.setter
@@ -314,7 +307,12 @@ class Pokemon:
             vida_a_setar = self.__vida_maxima
 
         self.__vida = vida_a_setar
-        
+
+    @vida_maxima.setter
+    def vida_maxima(self, valor):
+        valor = int(valor)
+        self.__vida_maxima = valor    
+    
     @ataque.setter
     def ataque(self,ataque):
         if not self.__protegido:

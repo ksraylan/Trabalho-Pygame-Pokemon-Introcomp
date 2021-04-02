@@ -3,52 +3,52 @@ class Types:
         pass
     @property
     def normal(self):
-        return 0
+        return "Normal"
     @property
     def fire(self):
-        return 1
+        return "Fire"
     @property
     def water(self):
-        return 2
+        return "Water"
     @property
     def grass(self):
-        return 3
+        return "Grass"
     @property
     def electric(self):
-        return 4
+        return "Electric"
     @property
     def ice(self):
-        return 5
+        return "Ice"
     @property
     def fighting(self):
-        return 6
+        return "Fighting"
     @property
     def poison(self):
-        return 7
+        return "Poison"
     @property
     def ground(self):
-        return 8
+        return "Ground"
     @property
     def flying(self):
-        return 9
+        return "Flying"
     @property
     def psychic(self):
-        return 10
+        return "Psychic"
     @property
     def bug(self):
-        return 11
+        return "Bug"
     @property
     def rock(self):
-        return 12
+        return "Rock"
     @property
     def ghost(self):
-        return 13
+        return "Ghost"
     @property
     def dragon(self):
-        return 14
+        return "Dragon"
     @property
     def dark(self):
-        return 15
+        return "Dark"
     @property
     def steel(self):
-        return 16
+        return "Steel"

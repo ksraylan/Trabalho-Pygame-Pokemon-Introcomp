@@ -16,11 +16,16 @@ img_fundo_pokemon = pygame.image.load('Recursos/Sprites/SpritesInterface/FundoPo
 img_text_bar = pygame.image.load('Recursos/Sprites/SpritesInterface/text_bar.png').convert_alpha()
 img_vida_amarela = pygame.image.load('Recursos/Sprites/SpritesInterface/vida_amarela.png').convert_alpha()
 img_vida_vermelha = pygame.image.load('Recursos/Sprites/SpritesInterface/vida_vermelha.png').convert_alpha()
+img_bag = pygame.image.load('Recursos/Sprites/SpritesInterface/bag_1.png').convert_alpha()
+img_bag_arrow = pygame.image.load('Recursos/Sprites/SpritesInterface/bag_arrow.png').convert_alpha()
 
 img_pp_bar = pygame.transform.scale(img_pp_bar, (int(240*escala), int(48*escala)))
 img_vida_amarela = pygame.transform.scale(img_vida_amarela, (int(9*escala), int(3*escala)))
 img_vida_vermelha = pygame.transform.scale(img_vida_vermelha, (int(9*escala), int(3*escala)))
 img_barra_sem_vida = pygame.transform.scale(img_barra_sem_vida, (int(9*escala), int(3*escala)))
+
+img_bag = pygame.transform.scale(img_bag, (int(240*escala), int(160*escala)))
+img_bag_arrow = pygame.transform.scale(img_bag_arrow, (int(20*escala), int(20*escala)))
 
 # Aumentando o tamanho:
 img_barra1 = pygame.transform.scale(img_barra1, (int(101*escala), int(29*escala)))
