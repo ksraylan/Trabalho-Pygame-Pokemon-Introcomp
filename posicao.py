@@ -7,6 +7,15 @@ class Pos:
         self.__x = 0
         self.__y = 0
         self.i_calc(False)
+        self.__offset = 0
+
+    @property
+    def offset(self):
+        return self.__offset
+
+    @offset.setter
+    def offset(self, offset):
+        self.__offset = offset
 
     def i_calc(self, recalcular_x_e_y):
         current_x = 0
@@ -21,9 +30,10 @@ class Pos:
                 current_y += 1
             if i > 1000:
                 break
+            
 
-        if i >= self.__i_limit:
-            i = self.__i_limit - 1
+        if i > self.__i_limit:
+            i = self.__i_limit
         #if recalcular_x_e_y:
         #    self.i = i
         #else:
@@ -66,10 +76,13 @@ class Pos:
     @width.setter
     def width(self, width):
         self.__width = width
+        self.i_limit = self.__width * self.__height
+        
     
     @height.setter
     def height(self, height):
         self.__height = height
+        self.i_limit = self.__width * self.__height
     
     @x.setter
     def x(self, x):

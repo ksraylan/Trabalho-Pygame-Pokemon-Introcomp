@@ -7,7 +7,7 @@ vel_anim = 0.03
 # A class with all stats of a pokémon (in this game). Contains methods
 # that calculates the damage, things like that.
 class Pokemon:
-    def __init__(self, nome, vida, ataque, defesa, velocidade, especial_ataque, especial_defesa, nivel, genero, tipos, movimentos, imagens):
+    def __init__(self, nome, vida, ataque, defesa, velocidade, especial_ataque, especial_defesa, nivel, genero, tipos, movimentos, itens, imagens):
         # Contains all properties of a pokémon:
         self.__nome = nome
         self.__vida = vida
@@ -29,7 +29,13 @@ class Pokemon:
         self.__sumindo = False
         self.__deslocamento = [0,0] # x, y
         self.__tipos = tipos
-        self.__movimentos = movimentos
+        self.__conjunto_movimentos = movimentos
+        
+        self.__movimentos = []
+        for i in range(len(movimentos)):
+            self.__movimentos.append(list(movimentos[i]))
+
+        print(self.__movimentos)
         self.__pokemon_effects = []
         # This is to easy acess to a "list" of all effects:
         self.effects = Effect()
@@ -37,6 +43,26 @@ class Pokemon:
         self.__protegido = 0
         self.__paralisado = False
         self.__precisao = 1
+        self.__itens = itens
+        self.__ataque_critico = 0
+
+    @property
+    def ataque_critico(self):
+        return self.__ataque_critico
+    
+    @ataque_critico.setter
+    def ataque_critico(self,ataque_critico):
+        if ataque_critico < 0:
+            ataque_critico = 0
+        self.__ataque_critico = ataque_critico
+        
+    @property
+    def itens(self):
+        return self.__itens
+
+    @itens.setter
+    def itens(self, itens):
+        self.__itens = itens
 
     @property
     def precisao(self):
@@ -56,15 +82,19 @@ class Pokemon:
 
     @property
     def vida_anim(self):
+        self.checar_e_corrigir_vida_anim()
         return self.__vida_anim
+
+    def checar_e_corrigir_vida_anim(self):
+        if self.__vida_anim > self.__vida_maxima:
+            self.__vida_anim = self.__vida_maxima
+        elif self.__vida_anim < 0:
+            self.__vida_anim = 0
 
     @vida_anim.setter
     def vida_anim(self, value):
-        if value > self.__vida_maxima:
-            value = self.__vida_maxima
-        elif value < 0:
-            value = 0
         self.__vida_anim = value
+        self.checar_e_corrigir_vida_anim()
 
     @property
     def protegido(self):
@@ -127,7 +157,7 @@ class Pokemon:
             # Now it needs to verify if the priority of the effect from the pokémon
             # is equal to the current priority (True: before the turns; False: after
             # the turns.):
-            if self.__pokemon_effects[i]["priority"] is priority:
+            if self.__pokemon_effects[i]["priority"] is prtuplasiority:
                 # Call the function that process the effect:
                 self.__process_one_effect(effect_pokemon, enemy_pokemon)
                 # (PRECISA COMENTAR!)
@@ -153,15 +183,30 @@ class Pokemon:
         # The game then selects a random number R from 1 to 100 and compares it to A
         # to determine whether the move hits. If R is less than or equal to A, the move hits.
         R = random.randrange(0, 101)
-        acertou = 1 if R <= A else 0
-
+        #acertou = 1 if R <= A else 0
+        acertou = 1
         multiplicador_critico = (2 * self.__nivel + 5) / (self.__nivel + 5)
         # poder (teste):
         poder = 1
         ataque_critico = 1
 
-        chance_critico = random.randrange(0, 101)
-        if chance_critico <= 33.33:
+
+
+        chance_critico = -1
+        if self.ataque_critico == 0:
+            chance_critico = random.randrange(0, 16)
+        elif self.ataque_critico == 1:
+            chance_critico = random.randrange(0, 8)
+        elif self.ataque_critico == 2:
+            chance_critico = random.randrange(0, 4)
+        elif self.ataque_critico == 3:
+            chance_critico = random.randrange(0, 3)
+        elif self.ataque_critico >= 4:
+            chance_critico = random.randrange(0, 2)
+            
+        print("chance_critico", chance_critico)
+        print("multiplicador_critico", multiplicador_critico)
+        if chance_critico == 0:
             ataque_critico = multiplicador_critico
 
         # modificador = alvos * tempo_meteorológico * Badge * ataque_critico * aleatorio de 0.85 a 1.00 * bônus de ataque do mesmo tipo * tipo * queimado * outro (não precisa)
@@ -169,7 +214,7 @@ class Pokemon:
         formula = ( (((2 * self.__nivel)/ 5 + 2) * poder * self.__ataque / outro_pokemon.defesa) / 50 + 2) * modificador * acertou
         formula = math.trunc(formula)
         outro_pokemon.vida -= formula
-        return formula
+        return (formula, True if chance_critico == 0 else False)
 
     
     def fugir_de(self, outro_pokemon):
@@ -210,7 +255,7 @@ class Pokemon:
         self.__deslocamento = deslocamento
 
     def copy(self):
-        return Pokemon(self.__nome, self.__vida, self.__ataque, self.__defesa, self.__velocidade, self.__especial_ataque, self.__especial_defesa, self.__nivel, self.__genero, self.__tipos, self.__movimentos, [self.imagem_frente,self.imagem_costas])
+        return Pokemon(self.__nome, self.__vida, self.__ataque, self.__defesa, self.__velocidade, self.__especial_ataque, self.__especial_defesa, self.__nivel, self.__genero, self.__tipos, self.__conjunto_movimentos, self.itens.copy() , [self.imagem_frente,self.imagem_costas])
 
     @property
     def nome(self):
@@ -299,7 +344,7 @@ class Pokemon:
 
     @vida.setter
     def vida(self,vida):
-        vida_a_setar = vida
+        vida_a_setar = int(vida)
 
         if vida_a_setar < 0:
             vida_a_setar = 0
@@ -311,7 +356,10 @@ class Pokemon:
     @vida_maxima.setter
     def vida_maxima(self, valor):
         valor = int(valor)
-        self.__vida_maxima = valor    
+        self.__vida_maxima = valor 
+        if self.__vida > self.__vida_maxima:
+            self.__vida = self.__vida_maxima
+        print("vida_maxima", valor)   
     
     @ataque.setter
     def ataque(self,ataque):

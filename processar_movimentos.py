@@ -38,8 +38,7 @@ def process_moves(pokemon_a_fazer, pokemon_a_tomar, move, mensagem, moves, tipos
 
     elif move == moves.tackle[0]: # (Usando) 
         #power of 35 e 95% acerto (IMPLEMENTAR)
-        pokemon_a_fazer.atacar(pokemon_a_tomar)
-        mensagem.texto = "{} perdeu x HP!".format(pokemon_a_tomar.nome)
+        funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar), mensagem)
         arq.som_Tackle.play()
     elif move == moves.leech_seed[0]: # (Usando)
         if not tipos.grass in pokemon_a_tomar.tipos:
@@ -95,9 +94,9 @@ def process_moves(pokemon_a_fazer, pokemon_a_tomar, move, mensagem, moves, tipos
         pass
     
     elif move == moves.curse[0]: # (Usando) (IMPLEMENTAR) (VER DE NOVO)
-        pokemon_a_tomar.vida -= 25/100
-        pokemon_a_fazer.vida_maxima -= 50/100
-        pokemon_a_fazer.atacar(pokemon_a_tomar)
+        pokemon_a_tomar.vida_maxima -= pokemon_a_tomar.vida_maxima/2
+        pokemon_a_tomar.vida -= pokemon_a_tomar.vida/4
+        print(pokemon_a_tomar.vida)
         mensagem.texto = "{} perdeu 25% HP e 50% HP máximo!".format(pokemon_a_tomar.nome)
 
     elif move == moves.leer[0]: # (Usando)
@@ -136,3 +135,6 @@ def process_moves(pokemon_a_fazer, pokemon_a_tomar, move, mensagem, moves, tipos
         funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar), mensagem)
         if num <= 10:
             pokemon_a_tomar.especial_defesa -= 1
+
+    elif move == moves.struggle[0]:
+        funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar), mensagem)
