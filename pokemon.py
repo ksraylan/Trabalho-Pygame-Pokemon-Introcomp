@@ -35,7 +35,6 @@ class Pokemon:
         for i in range(len(movimentos)):
             self.__movimentos.append(list(movimentos[i]))
 
-        print(self.__movimentos)
         self.__pokemon_effects = []
         # This is to easy acess to a "list" of all effects:
         self.effects = Effect()
@@ -45,6 +44,54 @@ class Pokemon:
         self.__precisao = 1
         self.__itens = itens
         self.__ataque_critico = 0
+        # precisão do movimento que se aplica apenas em uma rodada:
+        self.__precisao_temp = 100
+
+
+        self.__ultimo_movimento_id = None
+
+        self.__movimentos_bloqueados = []
+
+    @property
+    def ultimo_movimento_id(self):
+        return self.__ultimo_movimento_id
+
+    @ultimo_movimento_id.setter
+    def ultimo_movimento_id(self, valor):
+        self.__ultimo_movimento_id = valor
+
+    @property
+    def movimentos_bloqueados(self):
+        return self.__movimentos_bloqueados
+
+    @movimentos_bloqueados.setter
+    def movimentos_bloqueados(self, valor):
+        self.__movimentos_bloqueados = valor
+
+
+    def adicionar_movimento_bloqueado(self, movimento_id, por_quantos_turnos):
+        # precisamos somente da id do movimento (índice 0):
+        self.movimentos_bloqueados.append([movimento_id, por_quantos_turnos])
+
+    def __passou_um_turno(self):
+        # Restaura a precisão (chance de não vacilar):
+        self.__precisao_temp = 100
+
+        for i in range(len(self.movimentos_bloqueados)):
+            # Diminui por_quantos_turnos
+            self.movimentos_bloqueados[i][1] -= 1
+            # Se a quantidade de turnos chegarem a zero, então o movimento não é mais bloqueado,
+            # assim, temos que tirar ele da lista dos bloqueados:
+            if self.movimentos_bloqueados[i][1] <= 0:
+                self.movimentos_bloqueados.pop(i)
+
+    @property
+    def precisao_temp(self):
+        return self.__precisao_temp
+    
+    @precisao_temp.setter
+    def precisao_temp(self, precisao_temp):
+        self.__precisao_temp = precisao_temp
 
     @property
     def ataque_critico(self):
@@ -129,7 +176,7 @@ class Pokemon:
 
     @property
     def bloqueado(self):
-        return self.__bloqueado
+        return True if self.__bloqueado > 0 else False
     
     @bloqueado.setter
     def bloqueado(self, value):
@@ -147,9 +194,14 @@ class Pokemon:
         return self.__fugiu
 
     def process_effects(self, priority, enemy_pokemon):
+        # priority True: antes do movimento
+        # False: depois do movimento
         if priority is True:
             self.__bloqueado -= 1
             self.__protegido -= 1
+        else:
+            self.__passou_um_turno()
+            
         # Process all effects:
         for i in range(len(self.__pokemon_effects)):
             # Get a effect from the list of the effects of the current pokémon:
@@ -157,7 +209,7 @@ class Pokemon:
             # Now it needs to verify if the priority of the effect from the pokémon
             # is equal to the current priority (True: before the turns; False: after
             # the turns.):
-            if self.__pokemon_effects[i]["priority"] is prtuplasiority:
+            if self.__pokemon_effects[i]["priority"] is priority:
                 # Call the function that process the effect:
                 self.__process_one_effect(effect_pokemon, enemy_pokemon)
                 # (PRECISA COMENTAR!)
@@ -171,6 +223,9 @@ class Pokemon:
         effects = self.effects
         # Now this verifies if the actual effect is equal a effect, if yes, do a
         # specific thing:
+
+        print( self.nome, enemy_pokemon.nome)
+
         if pokemon_effects["id"] == effects.leech_seed["id"]:
             vida_perdida = 12.5 * self.vida_maxima / 100
             self.vida -= vida_perdida
@@ -203,9 +258,6 @@ class Pokemon:
             chance_critico = random.randrange(0, 3)
         elif self.ataque_critico >= 4:
             chance_critico = random.randrange(0, 2)
-            
-        print("chance_critico", chance_critico)
-        print("multiplicador_critico", multiplicador_critico)
         if chance_critico == 0:
             ataque_critico = multiplicador_critico
 
@@ -244,7 +296,27 @@ class Pokemon:
 
     @property
     def movimentos(self):
+        """
+        # Somente iremos retornar os movimentos não bloqueados:
+        movimentos_nao_bloqueados = []
+        id_bloqueados = []
+        for i in range(len(self.__movimentos_bloqueados)):
+            # obteremos somente a id do movimento para depois comparar com "in":
+            id_bloqueados.append(self.__movimentos_bloqueados[i])
+
+        for i in range (len(self.__movimentos)):
+            # [0]: id
+            # Se a id do movimento não está na lista de ids de movimentos bloqueados:
+            if not self.__movimentos[0] in id_bloqueados:
+                # adicionamos na lista de movimentos_nao_bloqueados:
+                movimentos_nao_bloqueados.append(self)
+        # por fim, retornar a lista apenas dos movimentos não bloqueados:
+
+        return movimentos_nao_bloqueados
+        """
         return self.__movimentos
+
+    
 
     @property
     def deslocamento(self):
@@ -359,7 +431,6 @@ class Pokemon:
         self.__vida_maxima = valor 
         if self.__vida > self.__vida_maxima:
             self.__vida = self.__vida_maxima
-        print("vida_maxima", valor)   
     
     @ataque.setter
     def ataque(self,ataque):

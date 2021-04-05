@@ -28,21 +28,23 @@ def main():
     mensagem = Mensagem()
     escala = arq.escala
     # menu espaçamento:
-    menu_espacamento = (200,50)
+    menu_espacamento = (200,100)
     # tamanho menu:
     #menu_tamanho = 2*escala
     # tamanho seta:
     tamanho_cursor = 11*escala
     # Pokémon selecionado (na tela de seleção de pokémon):
-    sel_s = 0
-    pos = Pos(2, 2)
+    #sel_s = 0
+    pos = Pos(1, 8)
     distanciamento = (50*escala,15*escala) # distanciamento entre as opções de escolha
+    # Os gêneros para cada pokémon:
     generos = ["F", "M"]
     clock = pygame.time.Clock()
     condicao = Condicao()
     tipos = Types()
     moves = Moves()
 
+    # Lista com os itens que cada pokémon irá ter:
     itens_usados = [itens.dire_hit, itens.guard_spec, itens.x_accuracy, itens.x_attack, itens.x_defense,
     itens.x_special, itens.x_speed, itens.berry_juice, itens.elixir, itens.potion]
 
@@ -137,6 +139,13 @@ def main():
 
         return x, width
 
+    def obter_id_bloqueados(pokemon):
+        id_bloqueados = []
+        for i in range(len(pokemon.movimentos_bloqueados)):
+            # obteremos somente a id do movimento para depois comparar com "in":
+            id_bloqueados.append(pokemon.movimentos_bloqueados[i][0])
+        return id_bloqueados
+
     def desenhar_graficos():
         #limpar a tela:
         janela.tela.fill(cor.PRETO)      
@@ -144,14 +153,14 @@ def main():
             # Fonte:
             superf = arq.fonte.render("Escolha o seu pokémon", False, cor.BRANCO)
             superf_rect = superf.get_rect()
-            superf_rect.center =(width_dividido, 100)
+            superf_rect.center =(width_dividido, 20*escala)
             janela.tela.blit(superf, superf_rect)
 
             # posicao do nome que está sendo selecionado:
             
             # posicao y da seta dentro do retangulo:
             #li = 100-e_n + (e_n*sel_s)
-            li = menu_espacamento[1] + tamanho_cursor/2 + (e_n*sel_s)
+            li = tamanho_cursor/2 + (e_n*pos.y)
 
             # seta de seleção:
             pygame.draw.polygon(janela.tela, cor.VERMELHO, ((menu_espacamento[0] + e_s_x,
@@ -256,8 +265,15 @@ def main():
                     espac_y = 13*escala
                     y = 0
                     for i in range(len(pokemons[0].movimentos)):
+                        id_movimento = pokemons[0].movimentos[i][0]
                         nome_movimento = pokemons[0].movimentos[i][1]
-                        superf = arq.fonte_escolher_move.render(str(nome_movimento), False, cor.PRETO)
+                        id_bloqueados = obter_id_bloqueados(pokemons[0])
+                        if not id_movimento in id_bloqueados:
+                            superf = arq.fonte_escolher_move.render(str(nome_movimento), False, cor.PRETO)
+                        else:
+                            superf = arq.fonte_escolher_move.render(str(nome_movimento), False, cor.VERMELHO)
+
+                        
                         superf_rect = superf.get_rect()
                         superf_rect.topleft =(15*escala + (espac_x*x), janela.tamanho[1] - (36*escala) + (espac_y * y))
                         
@@ -430,21 +446,31 @@ def main():
         menu.atual = menu.batalhando
         sub_menu.atual = sub_menu.principal
         # seu pokémon:
-        pokemons[0] = pokemons_pode_escolher[sel_s].copy()
+        pokemons[0] = pokemons_pode_escolher[pos.i].copy()
         # pokémon inimigo:
-        pokemons[1] = pokemons_pode_escolher[random.randrange(0,len(pokemons_pode_escolher)-1)].copy()
+        """
+        pokemons[1] = pokemons_pode_escolher[random.randrange(0,len(pokemons_pode_escolher))].copy()
+        """
+        # forçar o pokémon inimigo ser um pokemon especifico:
+        pokemons[1] = pokemons_pode_escolher[4].copy()
         mensagem.texto = "O que {} deve fazer?".format(pokemons[0].nome)
+
+        pos_2x2()
+        
         
 
-    def pos_2x2(pos):
+    def pos_2x2():
         pos.i = 0
         pos.width = 2
         pos.height = 2
+    def pos_menu_principal():
+        pos.i = 0
+        pos.width = 1
+        pos.height = len(pokemons_pode_escolher)
     
     def escolher_acao_batalha(pos):
-        print(pos.i)
         if pos.i == 0:
-            pos_2x2(pos)
+            pos_2x2()
             sub_menu.atual = sub_menu.escolhendo_ataque
         elif pos.i == 1:
             sub_menu.atual = sub_menu.itens
@@ -452,7 +478,6 @@ def main():
             pos.width = 1
             pos.height = len(pokemons[0].itens) + 1
         elif pos.i == 3:
-            print("yes")
             fazer_acao(menu, sub_menu, moves.fugir, category.normal_move)
         
     
@@ -467,25 +492,25 @@ def main():
         #quick attack priority +1
         #move = movimento[0]
         if vez == 1:
-            #turnos.append([pokemons[0], pokemons[1], None, category.state_move])
+            turnos.append([pokemons[0], pokemons[1], None, category.state_move])
             turnos.append([pokemons[0], pokemons[1], movimento, categoria])
-            #turnos.append([pokemons[1], pokemons[1], None, category.state_move])
+            turnos.append([pokemons[1], pokemons[0], None, category.state_move])
             turnos.append([pokemons[1], pokemons[0], randomizar_acao(pokemons[1]), category.normal_move])
         else:
-            
-            #turnos.append([pokemons[1], pokemons[0], None, category.state_move])
-
+            turnos.append([pokemons[1], pokemons[0], None, category.state_move])
             turnos.append([pokemons[1], pokemons[0], randomizar_acao(pokemons[1]), category.normal_move])
-            
-            #turnos.append([pokemons[0], pokemons[1], None, category.state_move])
-            
+            turnos.append([pokemons[0], pokemons[1], None, category.state_move])
             turnos.append([pokemons[0], pokemons[1], movimento, categoria])
-        pos_2x2(pos)
+        pos_2x2()
         sub_menu.atual = sub_menu.principal
 
     def randomizar_acao(pokemon):
+        """
         a_random = pokemon.movimentos[random.randrange(0, len(pokemon.movimentos))]
         return a_random
+        """
+        # forçar a usar o movimento:
+        return moves.fury_attack
 
     
     tempo = Tempo(1000)
@@ -545,87 +570,117 @@ def main():
                         tocar_musica("Recursos/Sprites/SonsPokemon/vitoria.wav", False)
                     else:
                         if len(turnos) > 0:
-                            pos_2x2(pos)
+                            pos_2x2()
                             sub_menu.atual = sub_menu.fazendo_acoes
                             process_turns(turnos, mensagem, tempo)
                         else:
                             if sub_menu.atual == sub_menu.fazendo_acoes:
-                                pos_2x2(pos)
-                                sub_menu.atual = sub_menu.principal
-                                mensagem.texto = "O que {} deve fazer?".format(pokemons[0].nome)
+                                if pokemons[0].bloqueado:
+                                    # Fazer nada se seu pokémon estiver bloqueado:
+                                    print(" FAZENDO NADA ")
+                                    fazer_acao(menu, sub_menu, None, None)
+                                    sub_menu.atual = sub_menu.fazendo_acoes
+                                else:
+                                    mensagem.texto = "O que {} deve fazer?".format(pokemons[0].nome)
+                                    sub_menu.atual = sub_menu.principal
+                                    pos_2x2()
                 
                 else:
                     tempo.fim_de_jogo_tempo += delta
 
                     if tempo.fim_de_jogo_tempo >= 5000:
                         menu.atual = menu.escolhendo_pokemon
-                        pos_2x2(pos)
+                        
                         sub_menu.atual = sub_menu.principal
                         tocar_musica("Recursos/Sprites/SonsPokemon/fireRedAbertura.wav", True)
                         tempo.fim_de_jogo_tempo = 0
+                        pos_menu_principal()
     
     def process_turns(turnos, mensagem, tempo):
         pokemon_a_fazer = turnos[0][0] # pokemon que vai usar a ação
         pokemon_a_tomar = turnos[0][1] # pokémon que vai sofrer da ação
         move = turnos[0][2] # qual movimento vai ser realizado
         turn_category = turnos[0][3] # pega qual categoria é (movimento normal ou de estado)
-        # Percorrer toda a lista de movimentos até achar o movimento certo e obter seu pp
-        for i in range (len(pokemon_a_fazer.movimentos)):
-            if pokemon_a_fazer.movimentos[i][0] == move[0]:
-                move_pokemon = pokemon_a_fazer.movimentos[i]
-                break
-        if turn_category["id"] == category.state_move["id"]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "texto do state_move deve aparecer aqui"
-                pokemon_a_fazer.process_effects(True, pokemon_a_tomar)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-        elif turn_category["id"] == category.normal_move["id"]:
-            if tempo.etapa_turno == 0:
-                if move == moves.fugir[0]:
-                    mensagem.texto = "{} tentou fugir".format(pokemon_a_fazer.nome)
-                mensagem.texto = "{} usou {}".format(pokemon_a_fazer.nome, str(move[1]))
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                # animação básica
-                pokemon_a_tomar.sumindo = True
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                # desativa a animação básica
-                pokemon_a_tomar.sumindo = False
-                # processa o movimento atual
-                move_pokemon[2] -= 1
-                process_moves(pokemon_a_fazer, pokemon_a_tomar, move[0], mensagem, moves, tipos, effect)
-                tempo.etapa_turno_incrementa()
-            # a última etapa é tirar o movimento que acabou de ser feito da lista
-            # de movimentos:
-            elif tempo.etapa_turno == 3:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-        elif turn_category["id"] == category.item_move["id"]:
-            if tempo.etapa_turno == 0:
-                mensagem.texto = "{} usou o item {}".format(pokemon_a_fazer.nome, str(move[1]))
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 1:
-                # animação de consumo do item (não sei se vamos fazer)
-                tempo.etapa_turno_incrementa()
-            elif tempo.etapa_turno == 2:
-                usar_item(pokemon_a_fazer, pokemon_a_tomar, move[0])
-                tempo.etapa_turno_incrementa()
+
+        # abrir exceção para o movimento de estado:
+        if move == None:
+            move = [-9999999, "None"]
+
+        if not move == None and not pokemon_a_fazer.bloqueado:
+
+            # Percorrer toda a lista de movimentos até achar o movimento certo e obter seu pp
+            for i in range (len(pokemon_a_fazer.movimentos)):
+                if pokemon_a_fazer.movimentos[i][0] == move[0]:
+                    move_pokemon = pokemon_a_fazer.movimentos[i]
+                    break
+            if turn_category["id"] == category.state_move["id"]:
+                if tempo.etapa_turno == 0:
+                    mensagem.texto = "state_move"
+                    pokemon_a_fazer.process_effects(True, pokemon_a_tomar)
+                    tempo.etapa_turno_incrementa()
+                elif tempo.etapa_turno == 1:
+                    if len(turnos) > 0:
+                        turnos.pop(0)
+                    tempo.etapa_turno_reseta()
+            elif turn_category["id"] == category.normal_move["id"]:
+                # atualiza qual foi o ultimo movimento usado desse pokémon:
+                # move[0]: id
+                pokemon_a_fazer.ultimo_movimento_id = move[0] 
+                if tempo.etapa_turno == 0:
+                    if move == moves.fugir[0]:
+                        mensagem.texto = "{} tentou fugir".format(pokemon_a_fazer.nome)
+                    mensagem.texto = "{} usou {}".format(pokemon_a_fazer.nome, str(move[1]))
+                    tempo.etapa_turno_incrementa()
+                elif tempo.etapa_turno == 1:
+                    # animação básica
+                    pokemon_a_tomar.sumindo = True
+                    tempo.etapa_turno_incrementa()
+                elif tempo.etapa_turno == 2:
+                    # desativa a animação básica
+                    pokemon_a_tomar.sumindo = False
+                    # processa o movimento atual
+                    if not move_pokemon[2] <= 0: 
+                        move_pokemon[2] -= 1
+                        process_moves(pokemon_a_fazer, pokemon_a_tomar, move[0], mensagem, moves, tipos, effect)
+                    else:
+                        mensagem.texto = "mas não teve mais pp suficiente"
+                    tempo.etapa_turno_incrementa()
+                # a última etapa é tirar o movimento que acabou de ser feito da lista
+                # de movimentos:
+                elif tempo.etapa_turno == 3:
+                    if len(turnos) > 0:
+                        turnos.pop(0)
+                    tempo.etapa_turno_reseta()
+            elif turn_category["id"] == category.item_move["id"]:
+                if tempo.etapa_turno == 0:
+                    mensagem.texto = "{} usou o item {}".format(pokemon_a_fazer.nome, str(move[1]))
+                    tempo.etapa_turno_incrementa()
+                elif tempo.etapa_turno == 1:
+                    # animação de consumo do item (não sei se vamos fazer)
+                    tempo.etapa_turno_incrementa()
+                elif tempo.etapa_turno == 2:
+                    usar_item(pokemon_a_fazer, pokemon_a_tomar, move[0])
+                    tempo.etapa_turno_incrementa()
+                else:
+                    if len(turnos) > 0:
+                        turnos.pop(0)
+                    tempo.etapa_turno_reseta()
             else:
                 if len(turnos) > 0:
                     turnos.pop(0)
                 tempo.etapa_turno_reseta()
+
+        else:
+            print("NADA")
+            if len(turnos) > 0:
+                turnos.pop(0)
+            tempo.etapa_turno_reseta()
         # resetar o tempo:
         tempo.resetar()  
 
-    def usar_item(pokemon_a_usar, pokemon_inimigo, item):
+    def usar_item(pokemon_a_usar, pokemon_inimigo, item): # PRONTO
         if item == itens.dire_hit[0]: #Aumenta a proporção de acertos críticos de Pokémon em batalha
-            pokemon_a_usar.ataque_critico += 4
+            pokemon_a_usar.ataque_critico += 1
             mensagem.texto = "{} aumentou a proporção de ataque crítico".format(pokemon_a_usar.nome)
             
         elif item == itens.guard_spec[0]: #Um item que impede a redução de estatísticas 
@@ -657,17 +712,20 @@ def main():
             pokemon_a_usar.vida += 20
             mensagem.texto = "{} teve seu HP restaurado em 20 pontos".format(pokemon_a_usar.nome)
 
-        elif item == itens.elixir: #Restaura o PP de todos os movimentos de um Pokémon em 10 pontos cada.
+        elif item == itens.elixir[0]: #Restaura o PP de todos os movimentos de um Pokémon em 10 pontos cada.
             # Percorrer todos os movimentos do pokémon e aumentar seus respectivos pp's:
-            for movimento in pokemon_a_usar.movimentos:
-                pp_atual = movimento[2]
-                pp_max = movimento[3]
-
+            for i in range(len(pokemon_a_usar.movimentos)):
+                
+                pp_max = pokemon_a_usar.movimentos[i][3]
+                
                 # Código que aumenta em 10 o pp atual, lembrando que o máximo de pp atual que pode ter é pp_max.
-                pp_atual += 10
+                # movimentos[i][2]: pp atual
+                pokemon_a_usar.movimentos[i][2] += 10
                 # Verificar se o pp_atual passou do pp_max, se sim, pp_atual = pp_max (para não passar de pp_max)
-                if pp_atual > pp_max:
-                    pp_atual = pp_max
+                if pokemon_a_usar.movimentos[i][2] > pp_max:
+                    pokemon_a_usar.movimentos[i][2] = pp_max
+            
+            mensagem.texto = "{} recuperou PP".format(pokemon_a_usar.nome)
                
         elif item == itens.potion[0]: #Ele restaura o HP de um Pokémon em 20 pontos.
             pokemon_a_usar.vida += 20
@@ -675,7 +733,6 @@ def main():
 
     
     rodando_o_jogo = True
-    mouse_pos = (0,0)
     # Loop do jogo:
     while rodando_o_jogo:
         # Colocando o jogo para rodar no máximo a 60 quadros por segundo:
@@ -684,9 +741,6 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 rodando_o_jogo = False
-            # Eventos do mouse:
-            if event.type == pygame.MOUSEMOTION:
-                mouse_pos = pygame.mouse.get_pos()
             # Eventos do teclado:
             if event.type == pygame.KEYDOWN:
                 if menu.no_menu(menu.batalhando):
@@ -708,21 +762,24 @@ def main():
                             arq.som_menu_mudou.play()
                             menu.atual = menu.escolhendo_pokemon
                             tocar_musica("Recursos/Sprites/SonsPokemon/fireRedAbertura.wav", True)
+                            pos_menu_principal()
                         if event.key == pygame.K_RETURN:
                             arq.som_menu_mudou.play()
                             escolher_acao_batalha(pos)
                     elif sub_menu.no_submenu(sub_menu.escolhendo_ataque):
                         if event.key == pygame.K_ESCAPE:
                             arq.som_menu_mudou.play()
-                            pos_2x2(pos)
+                            pos_2x2()
                             sub_menu.atual = sub_menu.principal
                         if event.key == pygame.K_RETURN:
                             arq.som_menu_mudou.play()
-                            fazer_acao(menu, sub_menu, pokemons[0].movimentos[pos.i], category.normal_move)
+                            # Verificar primeiro se o movimento está bloqueado e se possui pp suficiente
+                            if not pokemons[0].movimentos[pos.i][0] in obter_id_bloqueados(pokemons[0]) and pokemons[0].movimentos[pos.i][2] > 0:
+                                fazer_acao(menu, sub_menu, pokemons[0].movimentos[pos.i], category.normal_move)
                     elif sub_menu.no_submenu(sub_menu.itens):
                         if event.key == pygame.K_ESCAPE:
                             arq.som_menu_mudou.play()
-                            pos_2x2(pos)
+                            pos_2x2()
                             sub_menu.atual = sub_menu.principal
                         if event.key == pygame.K_UP:
                             arq.som_menu_mudou.play()
@@ -732,23 +789,20 @@ def main():
                             pos.y += 1
                         if event.key == pygame.K_RETURN:
                             arq.som_menu_mudou.play()
-
                             if pos.i == 0:
-                                pos_2x2(pos)
+                                pos_2x2()
                                 sub_menu.atual = sub_menu.principal
                             else:
-                                fazer_acao(menu, sub_menu, pokemons[0].itens[pos.i-1], category.item_move)
+                                item_selecionado = pos.i - 1
+                                fazer_acao(menu, sub_menu, pokemons[0].itens[item_selecionado], category.item_move)
+                                pokemons[0].itens.pop(item_selecionado)
                 elif menu.no_menu(menu.escolhendo_pokemon):
                     if event.key == pygame.K_UP:
                         arq.som_menu_mudou.play()
-                        sel_s = sel_s - 1
-                        if sel_s < 0:
-                            sel_s = len(pokemons_pode_escolher) - 1
+                        pos.y -= 1
                     elif event.key == pygame.K_DOWN:
                         arq.som_menu_mudou.play()
-                        sel_s = sel_s + 1
-                        if sel_s > len(pokemons_pode_escolher) - 1:
-                            sel_s = 0
+                        pos.y += 1
                     elif event.key == pygame.K_RETURN:
                         # escolheu o pokémon
                         arq.som_menu_mudou.play()

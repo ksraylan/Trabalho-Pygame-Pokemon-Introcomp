@@ -91,16 +91,16 @@ class Pos:
 
     def fix_x(self, x):
         if x < 0:
-            x = 0
-        elif x >= self.__width:
             x = self.__width - 1
+        if x >= self.__width:
+            x = 0
         return x
     
     def fix_y(self, y):
         if y < 0:
-            y = 0
-        elif y >= self.__height:
             y = self.__height - 1
+        elif y >= self.__height:
+            y = 0
         return y
 
     @y.setter
