@@ -1,33 +1,33 @@
 class Itens:
 
-    # itens que se usam na batalha
+    # itens que se usam na batalha:
     @property
     def dire_hit(self):
-        # Raises the critical-hit ratio of Pokémon in battle. Wears off if the Pokémon is withdrawn
+        # Aumenta a proporção de acertos críticos de Pokémon em batalha. Esmaece se o Pokémon for retirado.
         return [0, "Dire Hit"]
     @property
     def guard_spec(self):
-        # An item that prevents stat reduction among party Pokémon for five turns after use.
+        # O item que impede a redução de estatísticas entre os Pokémon do grupo por cinco turnos após o uso.
         return [1, "Guard Spec"]
     @property
     def x_accuracy(self):
-        # Raises the accuracy stat of Pokémon in battle. Wears off if the Pokémon is withdrawn.
+        # Aumenta a estatística de precisão do Pokémon em batalha. Esmaece se o Pokémon for retirado.
         return [2, "X Accuracy"]
     @property
     def x_attack(self):
-        # Raises the ATTACK stat of Pokémon in battle. Wears off if the Pokémon is withdrawn.
+        # Aumenta a estatística "ATTACK" do Pokémon na batalha. Esmaece se o Pokémon for retirado.
         return [3, "X Attack"]
     @property
     def x_defense(self):
-        # Raises the DEFENSE stat of Pokémon in battle. Wears off if the Pokémon is withdrawn.
+        # Aumenta a estatística "DEFENSE" do Pokémon em batalha. Esmaece se o Pokémon for retirado.
         return [4, "X Defense"]
     @property
     def x_special(self):
-        # Raises the SP. ATK stat of Pokémon in battle. Wears off if the Pokémon is withdrawn.
+        # Eleva o SP. Estatística "ATK" de Pokémon em batalha. Esmaece se o Pokémon for retirado.
         return [5, "X Special"]
     @property
     def x_speed(self):
-        # Raises the SPEED stat of Pokémon in battle. Wears off if the Pokémon is withdrawn.
+        # Aumenta a estatística do "SPEED" do Pokémon em batalha. Esmaece se o Pokémon for retirado.
         return [6, "X Speed"]
 
 
@@ -35,13 +35,13 @@ class Itens:
 
     @property
     def berry_juice(self):
-        # A 100% pure juice. It restores the HP of one Pokémon by 20 points.
+        # Um 100% "PURE JUICE". Ele restaura o HP de um Pokémon em 20 pontos.
         return [-1, "Berry Juice"]
     @property
     def elixir(self):
-        # Restores the PP of all moves for one Pokémon by 10 points each.
+        # Restaura o PP de todos os movimentos de um Pokémon em 10 pontos cada.
         return [-2, "Elixir"]
     @property
     def potion(self):
-        # A spray-type wound medicine. It restores the HP of one Pokémon by 20 points.
+        # Um medicamento "SPRAY-TYPE". Ele restaura o HP de um Pokémon em 20 pontos.
         return [-3, "Potion"]

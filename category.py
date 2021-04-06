@@ -1,3 +1,4 @@
+# Temos nesta classe 
 class Category:
     def __dictionary(self, a_list):
         return {"id": a_list[0], "name": a_list[1]}

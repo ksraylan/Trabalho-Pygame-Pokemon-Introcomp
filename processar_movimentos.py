@@ -6,11 +6,11 @@ def process_moves(pokemon_a_fazer, pokemon_a_tomar, move, mensagem, moves, tipos
     num = random.randrange(0,101)
     
     if move == moves.growl[0]: # (Usando)
-        # Growl lowers the target's Attack by one stage.
+        # Growl reduz o Ataque do alvo em um estágio.
         pokemon_a_tomar.ataque -= 1
         mensagem.texto = "O ataque de {} diminuiu".format(pokemon_a_tomar.nome)
     elif move == moves.thunder_shock[0]: # (Usando)
-        funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar), mensagem)
+        funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar, 40), mensagem)
         if num <= 10 and not tipos.electric in pokemon_a_tomar.tipos: # 10% de chance de ser paralizado:
             pokemon_a_tomar.bloqueado = 1
             pokemon_a_tomar.velocidade -= 50 * pokemon_a_fazer.velocidade / 100 #75%
@@ -27,33 +27,34 @@ def process_moves(pokemon_a_fazer, pokemon_a_tomar, move, mensagem, moves, tipos
         pokemon_a_tomar.velocidade -= 75 * pokemon_a_fazer.velocidade / 100
         mensagem.texto = "{} ficou paralisado".format(pokemon_a_tomar.nome)
     elif move == moves.metal_claw[0]: # (Usando)
-        funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar), mensagem)
+        funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar, 50), mensagem)
         if num <= 10:
             pokemon_a_fazer.ataque -= 1
     elif move == moves.bubble[0]: # (Usando)
-        funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar), mensagem)
+        funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar, 40), mensagem)
         if num <= 10:
             pokemon_a_tomar.velocidade -= 1
     elif move == moves.barrier[0]: # (Usando)
         pokemon_a_fazer.defesa += 2
         mensagem.texto = "{} aumentou sua defesa".format(pokemon_a_fazer.nome)
     elif move == moves.scratch[0]: # (Usando)
-        funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar), mensagem)
+        funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar, 40), mensagem)
     elif move == moves.tackle[0]: # (Usando) 
-        funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar), mensagem)
+        funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar, 40), mensagem)
         arq.som_Tackle.play()
     elif move == moves.leech_seed[0]: # (Usando)
         if not tipos.grass in pokemon_a_tomar.tipos:
             pokemon_a_tomar.add_effect(effect.leech_seed)
+            mensagem.texto = "{} foi semeado".format(pokemon_a_tomar.nome)
         else:
-            mensagem.texto = "Parece que não surgiu efeito"
+            mensagem.texto = "mas não funcionou"
             
     elif move == moves.vine_whip[0]: # (Usando)
-        funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar), mensagem)
+        funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar, 45), mensagem)
         
     elif move == moves.ember[0]: # (Usando)
         #10% de chance de queimar  
-        funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar), mensagem)
+        funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar, 40), mensagem)
         if num <= 10 and not tipos.fire in pokemon_a_tomar.tipos:
             pokemon_a_tomar.vida -= 1/8
             mensagem.texto = "e foi queimado"
@@ -81,28 +82,29 @@ def process_moves(pokemon_a_fazer, pokemon_a_tomar, move, mensagem, moves, tipos
 
         # vai dar hits de acordo com a probabilidade de quantos hits:
         for i in range(hits):
-            pokemon_a_fazer.atacar(pokemon_a_tomar)
+            num = random.randrange(0,101)
+            pokemon_a_fazer.atacar(pokemon_a_tomar, 15)
 
         mensagem.texto = "{} tomou {} ataques".format(pokemon_a_tomar.nome, hits)
         
     elif move == moves.horn_attack[0]: # (Usando)
         #damage
-        funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar), mensagem)
+        funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar, 65), mensagem)
 
     elif move == moves.stomp[0]: # (Usando)
         #damage e 30% de chance de fazer o alvo vacilar
         pokemon_a_tomar.precisao_temp -= 30
-        funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar), mensagem)
+        funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar, 65), mensagem)
         arq.som_Stomp.play()
-    
     elif move == moves.hypnosis[0]: # (Usando)
         #o pokemon fica bloqueado por 1-3 rodadas
         pokemon_a_tomar.bloqueado = random.randrange(1, 4)
         mensagem.texto = "{} ficou bloqueado".format(pokemon_a_tomar.nome)
         arq.som_Hypnosis.play()
-    elif moves == moves.lick[0]: # (Usando)
-        #30% de chance de paralisar o alvo
-        funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar), mensagem)
+    elif move == moves.lick[0]: # (Usando)
+        print("cadê você lick???")
+        # 30% de chance de paralisar o alvo
+        funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar, 30), mensagem)
         if num <= 30:              
             pokemon_a_tomar.paralisado = True
             mensagem.texto += "e foi paralisado"
@@ -142,16 +144,27 @@ def process_moves(pokemon_a_fazer, pokemon_a_tomar, move, mensagem, moves, tipos
     elif move == moves.twister[0]: # (Usando)
         #deals damage e o alvo tem chance de vacilar de 30%
         pokemon_a_tomar.precisao_temp -= 30
-        funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar), mensagem)
+        funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar, 40), mensagem)
         arq.som_Twister.play()
     elif move == moves.wrap[0]: # (Usando)
-        # Wrap inflicts damage on the first turn then traps the opponent,
-        # causing them to lose 1⁄8 of their maximum HP after each turn, for 4-5 turns. (IMPLEMENTAR)
-        funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar), mensagem)
+        # Wrap inflige dano no primeiro turno, em seguida, prende o oponente,
+        # fazendo com que percam 1⁄8 de seu HP máximo após cada turno (IMPLEMENTAR)
+        # Nas gerações 1-4, os efeitos posteriores do Wrap duram 2-5 turnos em vez de 4-5;
+        # Nas gerações 2-5, o alvo perde apenas 1/16 de seu HP máximo após cada turno
+        # Nas gerações 1-4, Wrap tem 85% de precisão.
+
+        funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar, 15), mensagem)
+
+        if num <= 85:
+            quantas_rodadas = random.randrange(2,6)
+            pokemon_a_tomar.add_effect(effect.wrap)
+        else:
+            mensagem.texto = "mas não funcionou"
+        
 
     elif move == moves.confusion[0]: # (Usando)
         #damage e 1% de chance de diminuir a velocidade do alvo
-        funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar), mensagem)
+        funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar, 50), mensagem)
         if num <= 10:
             pokemon_a_tomar.confuso = True
             mensagem.texto += "e ficou confuso"
@@ -174,9 +187,9 @@ def process_moves(pokemon_a_fazer, pokemon_a_tomar, move, mensagem, moves, tipos
 
     elif move == moves.psychic[0]: # (Usando)
         #deals damage e menos 10% da defesa especial
-        funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar), mensagem)
+        funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar, 90), mensagem)
         if num <= 10:
             pokemon_a_tomar.especial_defesa -= 1
 
     elif move == moves.struggle[0]:
-        funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar), mensagem)
+        funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar, 50), mensagem)

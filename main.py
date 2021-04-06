@@ -19,7 +19,9 @@ from category import Category
 from itens import Itens
 from processar_movimentos import process_moves
 
+# Aqui 
 def main():
+    
     itens = Itens()
     category = Category()
     effect = Effect()
@@ -70,6 +72,7 @@ def main():
     pokemons_pode_escolher = [pk_pikachu, pk_charmander, pk_bulbasaur, pk_squirtle, pk_rhydon, pk_gengar, pk_dragonite, pk_mewtwo]
     cores_pode_escolher = [cor.AMARELO, cor.LARANJA, cor.VERDE, cor.AZUL, cor.CIANO, cor.ROXO, cor.ROSA, cor.CINZA]
 
+    # Começará com nenhum pokémon selecionado:
     pokemons = [None, None]
 
     def texto_multilinha(texto):
@@ -390,9 +393,9 @@ def main():
                     janela.tela.blit(img_barra_sem_vida_esticada,(x, 34*escala))
 
                     # Mostrando o nível do pokémon:
-                    nivel = arq.fonte_txt.render(str(pokemons[1].nivel), False, cor.PRETO)
+                    nivel = arq.fonte_escolher_move.render(str(pokemons[1].nivel), False, cor.PRETO)
                     nivel_rect = nivel.get_rect()
-                    nivel_rect.topleft = (96*escala,20*escala)
+                    nivel_rect.topleft = (96*escala,23*escala)
                     janela.tela.blit(nivel, nivel_rect)
 
                 if not pokemons[0].conseguiu_fugir() and not pokemons[0].foi_derrotado():
@@ -422,10 +425,10 @@ def main():
                     62*escala + barra_width * (pokemons[0].vida_anim/pokemons[0].vida_maxima)),
                     janela.tamanho[1] - 69*escala))
                     # Mostrando o nível do pokémon:
-                    nivel = arq.fonte_txt.render(str(pokemons[0].nivel), False, cor.PRETO)
+                    nivel = arq.fonte_escolher_move.render(str(pokemons[0].nivel), False, cor.PRETO)
                     nivel_rect = nivel.get_rect()
                     nivel_rect.left = janela.tamanho[0] - 21*escala
-                    nivel_rect.top = janela.tamanho[1] - 84.5*escala
+                    nivel_rect.top = janela.tamanho[1] - 80*escala
                     janela.tela.blit(nivel, nivel_rect)
 
                     # Mostrando o número da vida:
@@ -447,12 +450,9 @@ def main():
         sub_menu.atual = sub_menu.principal
         # seu pokémon:
         pokemons[0] = pokemons_pode_escolher[pos.i].copy()
-        # pokémon inimigo:
-        """
+        # pokémon inimigo aleatório:
         pokemons[1] = pokemons_pode_escolher[random.randrange(0,len(pokemons_pode_escolher))].copy()
-        """
-        # forçar o pokémon inimigo ser um pokemon especifico:
-        pokemons[1] = pokemons_pode_escolher[4].copy()
+        
         mensagem.texto = "O que {} deve fazer?".format(pokemons[0].nome)
 
         pos_2x2()
@@ -479,38 +479,64 @@ def main():
             pos.height = len(pokemons[0].itens) + 1
         elif pos.i == 3:
             fazer_acao(menu, sub_menu, moves.fugir, category.normal_move)
-        
+    
+    # Remover turnos que ficaram pendentes quando a partida acaba:
+    def remover_todos_turnos():
+        for i in range(len(turnos)):
+            turnos.pop(0)
     
     turnos = []
 
     def fazer_acao(menu, sub_menu, movimento, categoria):
-        vez = random.randrange(1,2)
+        # Aqui primeiro vemos qual pokémon fazerá suas ações primeiro:
+        # Primeiro a gente pega um número aleatório
+        vez = random.randrange(0,1)
+        # Agora, se o pokémon "0" (seu pokémon) tiver maior velocidade que o
+        # pokémon "1" (pokémon inimigo), então o seu pokémon será o primeiro:
         if pokemons[0].velocidade > pokemons[1].velocidade:
-            vez = 1
+            # Colocamos como primeiro o pokémon "0":
+            vez = 0
+        # Mas se seu pokémon tiver menor velocidade que o pokémon inimigo:
         elif pokemons[0].velocidade < pokemons[1].velocidade:
-            vez = 2
+            # O primeiro será o pokémon "1":
+            vez = 1
+        # Agora, se os dois tiverem a mesma velocidade, então nem o if e o elif serão
+        # executados, aí o primeiro será aleatório, pois antes do if colocamos um random
+        # de aleatório.
+
         #quick attack priority +1
         #move = movimento[0]
-        if vez == 1:
-            turnos.append([pokemons[0], pokemons[1], None, category.state_move])
-            turnos.append([pokemons[0], pokemons[1], movimento, categoria])
-            turnos.append([pokemons[1], pokemons[0], None, category.state_move])
-            turnos.append([pokemons[1], pokemons[0], randomizar_acao(pokemons[1]), category.normal_move])
-        else:
-            turnos.append([pokemons[1], pokemons[0], None, category.state_move])
-            turnos.append([pokemons[1], pokemons[0], randomizar_acao(pokemons[1]), category.normal_move])
-            turnos.append([pokemons[0], pokemons[1], None, category.state_move])
-            turnos.append([pokemons[0], pokemons[1], movimento, categoria])
+        
+        # Seu pokémon primeiro vai executar os movimentos de estado que acontecem
+        # antes dos movimentos dele em si:
+        print(vez)
+
+        # [pokemon "0", pokemon "1"]:
+        categorias_pokemons = [categoria, category.normal_move]
+        movimentos_pokemons = [movimento, randomizar_acao(pokemons[1])]
+
+        turnos.append([pokemons[vez], pokemons[vez-1], True, category.state_move])
+        # Agora será adicionado aos turnos o movimento em si:
+        turnos.append([pokemons[vez], pokemons[vez-1], movimentos_pokemons[vez], categorias_pokemons[vez]])
+        # E agora os movimentos de estado que acontecem depois do movimento do pokémon em si:
+        turnos.append([pokemons[vez], pokemons[vez-1], False, category.state_move])
+
+        # Agora a mesma coisa, só que agora com o pokémon inimigo:
+        turnos.append([pokemons[vez-1], pokemons[vez], True, category.state_move])
+        # Aqui será um movimento aleatório do inimigo:
+        turnos.append([pokemons[vez-1], pokemons[vez], movimentos_pokemons[vez-1], categorias_pokemons[vez-1]])
+        # E a ação de estado depois do movimento:
+        turnos.append([pokemons[vez-1], pokemons[vez], False, category.state_move])
+
+        # Coloca a seta poder se locomover a partir de um espaço 2 de largura e 2 de altura (2 x 2)
         pos_2x2()
+        # Coloca o sub menu atual sendo o principal:
         sub_menu.atual = sub_menu.principal
 
     def randomizar_acao(pokemon):
-        """
+        # Aqui terá o código da "inteligência artificial":
         a_random = pokemon.movimentos[random.randrange(0, len(pokemon.movimentos))]
         return a_random
-        """
-        # forçar a usar o movimento:
-        return moves.fury_attack
 
     
     tempo = Tempo(1000)
@@ -559,6 +585,7 @@ def main():
                     if pokemons[0].foi_derrotado() or pokemons[0].conseguiu_fugir():
                         sub_menu.atual = sub_menu.fazendo_acoes
                         mensagem.texto = "{} ganhou a batalha".format(pokemons[1].nome)
+                        remover_todos_turnos()
                         sub_menu.atual = sub_menu.derrota
                         tocar_musica("Recursos/Sprites/SonsPokemon/derrota.wav", False)
 
@@ -566,6 +593,7 @@ def main():
                         
                         sub_menu.atual = sub_menu.fazendo_acoes
                         mensagem.texto = "{} ganhou a batalha".format(pokemons[0].nome)
+                        remover_todos_turnos()
                         sub_menu.atual = sub_menu.vitoria
                         tocar_musica("Recursos/Sprites/SonsPokemon/vitoria.wav", False)
                     else:
@@ -577,7 +605,6 @@ def main():
                             if sub_menu.atual == sub_menu.fazendo_acoes:
                                 if pokemons[0].bloqueado:
                                     # Fazer nada se seu pokémon estiver bloqueado:
-                                    print(" FAZENDO NADA ")
                                     fazer_acao(menu, sub_menu, None, None)
                                     sub_menu.atual = sub_menu.fazendo_acoes
                                 else:
@@ -597,32 +624,46 @@ def main():
                         pos_menu_principal()
     
     def process_turns(turnos, mensagem, tempo):
+
+        def remover_turno(ir_logo_pro_proximo = False):
+            if len(turnos) > 0:
+                turnos.pop(0)
+            tempo.etapa_turno_reseta()
+            # Se quer ir logo pro próximo turno sem atraso:
+            if ir_logo_pro_proximo:
+                # no final os turnos vão estar vazios, aí vai dar erro se tentar acessar algum
+                # item da lista de turnos, então só vamos ir pro próximo turno se ainda estiver
+                # turnos pendentes:
+                if len(turnos) > 0:
+                    process_turns(turnos, mensagem, tempo)
+
         pokemon_a_fazer = turnos[0][0] # pokemon que vai usar a ação
         pokemon_a_tomar = turnos[0][1] # pokémon que vai sofrer da ação
-        move = turnos[0][2] # qual movimento vai ser realizado
+        move = turnos[0][2] # qual movimento vai ser realizado (id, nome do movimento);
+        #Quando for movimento de estado, será True ou false.
         turn_category = turnos[0][3] # pega qual categoria é (movimento normal ou de estado)
 
-        # abrir exceção para o movimento de estado:
-        if move == None:
-            move = [-9999999, "None"]
-
+        # Só faz o movimento se o pokémon não estiver bloqueado:
         if not move == None and not pokemon_a_fazer.bloqueado:
-
-            # Percorrer toda a lista de movimentos até achar o movimento certo e obter seu pp
-            for i in range (len(pokemon_a_fazer.movimentos)):
-                if pokemon_a_fazer.movimentos[i][0] == move[0]:
-                    move_pokemon = pokemon_a_fazer.movimentos[i]
-                    break
             if turn_category["id"] == category.state_move["id"]:
                 if tempo.etapa_turno == 0:
-                    mensagem.texto = "state_move"
-                    pokemon_a_fazer.process_effects(True, pokemon_a_tomar)
-                    tempo.etapa_turno_incrementa()
+                    mensagens = pokemon_a_fazer.process_effects(move, pokemon_a_tomar)
+                    # Se tiver mensagens significa que aconteceu algum efeito:
+                    if len(mensagens) > 0:
+                        mensagem.texto = mensagens[0]
+                        tempo.etapa_turno_incrementa()
+                    else:
+                        # Se não, então não teve, então já podemos remover e ir logo pro próximo turno:
+                        remover_turno(True)
                 elif tempo.etapa_turno == 1:
-                    if len(turnos) > 0:
-                        turnos.pop(0)
-                    tempo.etapa_turno_reseta()
+                    remover_turno()
             elif turn_category["id"] == category.normal_move["id"]:
+                # Percorrer toda a lista de movimentos até achar o movimento certo e obter seu pp
+                for i in range (len(pokemon_a_fazer.movimentos)):
+                    if pokemon_a_fazer.movimentos[i][0] == move[0]:
+                        move_pokemon = pokemon_a_fazer.movimentos[i]
+                        break
+                
                 # atualiza qual foi o ultimo movimento usado desse pokémon:
                 # move[0]: id
                 pokemon_a_fazer.ultimo_movimento_id = move[0] 
@@ -648,9 +689,7 @@ def main():
                 # a última etapa é tirar o movimento que acabou de ser feito da lista
                 # de movimentos:
                 elif tempo.etapa_turno == 3:
-                    if len(turnos) > 0:
-                        turnos.pop(0)
-                    tempo.etapa_turno_reseta()
+                    remover_turno()
             elif turn_category["id"] == category.item_move["id"]:
                 if tempo.etapa_turno == 0:
                     mensagem.texto = "{} usou o item {}".format(pokemon_a_fazer.nome, str(move[1]))
@@ -662,19 +701,11 @@ def main():
                     usar_item(pokemon_a_fazer, pokemon_a_tomar, move[0])
                     tempo.etapa_turno_incrementa()
                 else:
-                    if len(turnos) > 0:
-                        turnos.pop(0)
-                    tempo.etapa_turno_reseta()
+                    remover_turno()
             else:
-                if len(turnos) > 0:
-                    turnos.pop(0)
-                tempo.etapa_turno_reseta()
-
+                remover_turno()
         else:
-            print("NADA")
-            if len(turnos) > 0:
-                turnos.pop(0)
-            tempo.etapa_turno_reseta()
+            remover_turno()
         # resetar o tempo:
         tempo.resetar()  
 

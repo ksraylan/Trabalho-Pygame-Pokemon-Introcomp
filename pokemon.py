@@ -4,11 +4,11 @@ import math
 from effect import Effect
 
 vel_anim = 0.03
-# A class with all stats of a pokémon (in this game). Contains methods
-# that calculates the damage, things like that.
+# Uma class com todas as estatísticas de um pokémon (neste jogo). Contém métodos
+# que calculam o dano, coisas assim.
 class Pokemon:
     def __init__(self, nome, vida, ataque, defesa, velocidade, especial_ataque, especial_defesa, nivel, genero, tipos, movimentos, itens, imagens):
-        # Contains all properties of a pokémon:
+        # Contém todas as propriedades do pokémon:
         self.__nome = nome
         self.__vida = vida
         self.__vida_anim = 0
@@ -35,8 +35,7 @@ class Pokemon:
         for i in range(len(movimentos)):
             self.__movimentos.append(list(movimentos[i]))
 
-        self.__pokemon_effects = []
-        # This is to easy acess to a "list" of all effects:
+        # Isso facilita o acesso a uma "lista" de todos os efeitos:
         self.effects = Effect()
         self.__bloqueado = 0
         self.__protegido = 0
@@ -51,6 +50,8 @@ class Pokemon:
         self.__ultimo_movimento_id = None
 
         self.__movimentos_bloqueados = []
+
+        self.__pokemon_effects = [] # Começa com nenhum efeito
 
     @property
     def ultimo_movimento_id(self):
@@ -182,15 +183,11 @@ class Pokemon:
     def bloqueado(self, value):
         self.__bloqueado = value
 
-    def batalha(self,ataque,outro_pokemon):
-        # Deprecated!
-        outro_pokemon.vida -= ataque
-
     def foi_derrotado(self):
-        # Returns True if this pokémon is not alive (your life is below or equals 0):
+        # Retorna True se este pokémon não estiver vivo (sua vida está abaixo ou igual a 0):
         return True if self.__vida <= 0 else False
     def conseguiu_fugir(self):
-        # Returns if this pokémon sucessful runned away:
+        # Retorna False se este pokémon fugiu com sucesso:
         return self.__fugiu
 
     def process_effects(self, priority, enemy_pokemon):
@@ -201,48 +198,74 @@ class Pokemon:
             self.__protegido -= 1
         else:
             self.__passou_um_turno()
-            
-        # Process all effects:
-        for i in range(len(self.__pokemon_effects)):
-            # Get a effect from the list of the effects of the current pokémon:
+        
+        lista_mensagens = []
+
+        # Iniciará pelo primeiro efeito:
+        i = 0
+        # Processa efeito por efeito até o último:
+        while i < len(self.__pokemon_effects):
+            # Obtenha um efeito da lista de efeitos do pokémon atual:
+            print(self.__pokemon_effects, i)# debug
             effect_pokemon = self.__pokemon_effects[i]
-            # Now it needs to verify if the priority of the effect from the pokémon
-            # is equal to the current priority (True: before the turns; False: after
-            # the turns.):
+            # Agora é necessario verificar o efeito para o pokémon
+            # se é igual a corrente de prioridade (True: antes dos turnos; False: depois
+            # dos turnos.):
             if self.__pokemon_effects[i]["priority"] is priority:
-                # Call the function that process the effect:
-                self.__process_one_effect(effect_pokemon, enemy_pokemon)
-                # (PRECISA COMENTAR!)
-                if effect_pokemon["stops"] is not None and effect_pokemon["offset"] > effect_pokemon["stops"]:
-                    self.__pokemon_effects.pop(i)
-                else:
-                    effect_pokemon["offset"] += 1
+                if effect_pokemon["offset"] >= 0:
+                    # Chamar a função que processa o efeito:
+                    self.__process_one_effect(effect_pokemon, enemy_pokemon, lista_mensagens)
+                    # Verifica se o "offset" chegou no "stops", e se o stops é igual a None, então o efeito ficará
+                    # no pokémon para "sempre":
+                    if effect_pokemon["stops"] is not None and effect_pokemon["offset"] > effect_pokemon["stops"]:
+                        self.__pokemon_effects.pop(i)
+                        # tem que diminuir o "i", se não vai pular o próximo efeito, pois removeu um item
+                        # da lista:
+                        i -= 1
+                # Aumenta o offset, como se tivesse passado um turno:
+                effect_pokemon["offset"] += 1
+            # Próximo efeito:
+            i += 1
+        # Retornar as mensagens que deve aparecer:
+        return lista_mensagens
 
-    def __process_one_effect(self, pokemon_effects, enemy_pokemon):
-        # Get the list of all effects that exists in the code "effect.py":
+    def __process_one_effect(self, pokemon_effects, enemy_pokemon, lista_mensagens):
+        # Obtem da lista todos os efeitos que existem no código "effect.py":
         effects = self.effects
-        # Now this verifies if the actual effect is equal a effect, if yes, do a
-        # specific thing:
+        #Agora,verifica se o efeito real é igual a um efeito, se sim, faça um
+        #coisa específica:
 
-        print( self.nome, enemy_pokemon.nome)
-
-        if pokemon_effects["id"] == effects.leech_seed["id"]:
+        # código que processa o efeito, como no processar_movimentos
+        # self: seu pokemon
+        # enemy_pokemon: pokemon inimigo
+        if pokemon_effects["id"] == effects.leech_seed["id"]: # Leech Seed
+            # A mensagem que aparecerá quando aplicar o efeito:
+            mensagem = "O HP de {} foi sugado".format(self.nome, enemy_pokemon.nome)
+            # Colocar a mensagem na lista de mensagens:
+            lista_mensagens.append(mensagem)
+            # Código do efeito em si:
             vida_perdida = 12.5 * self.vida_maxima / 100
             self.vida -= vida_perdida
             enemy_pokemon.vida += vida_perdida
-        
+        elif pokemon_effects["id"] == effects.wrap["id"]: # Wrap
+            # Mensagem:
+            mensagem = "HP máximo de {} foi reduzido".format(self.nome)
+            # Adicionando na lista:
+            lista_mensagens.append(mensagem)
+            # Esse efeito faz perder 1/8 da vida do seu pokémon:
+            self.vida_maxima -= self.vida_maxima/8
 
-    def atacar(self, outro_pokemon):
+    def atacar(self, outro_pokemon, poder):
         # A = Accuracymove * Adjusted_stages * Other_mods
         A = random.randrange(0,101) * 1 * 1
-        # The game then selects a random number R from 1 to 100 and compares it to A
-        # to determine whether the move hits. If R is less than or equal to A, the move hits.
+        # O jogo seleciona um número aleatório R de 1 a 100 e o compara com A
+        # para determinar se o movimento acerta. Se R for menor ou igual a A, o movimento acerta.
         R = random.randrange(0, 101)
         #acertou = 1 if R <= A else 0
         acertou = 1
         multiplicador_critico = (2 * self.__nivel + 5) / (self.__nivel + 5)
         # poder (teste):
-        poder = 1
+        
         ataque_critico = 1
 
 
@@ -261,8 +284,10 @@ class Pokemon:
         if chance_critico == 0:
             ataque_critico = multiplicador_critico
 
-        # modificador = alvos * tempo_meteorológico * Badge * ataque_critico * aleatorio de 0.85 a 1.00 * bônus de ataque do mesmo tipo * tipo * queimado * outro (não precisa)
+        # modificador = alvos * tempo_meteorológico * Badge * ataque_critico * aleatorio de 0.85 a 1.00 *
+        # bônus de ataque do mesmo tipo * tipo * queimado * outro (não precisa)
         modificador = 1 * 1 * 1 * ataque_critico * (random.randrange(85, 100)/100) * 1 * 1 * 1 * 1
+        
         formula = ( (((2 * self.__nivel)/ 5 + 2) * poder * self.__ataque / outro_pokemon.defesa) / 50 + 2) * modificador * acertou
         formula = math.trunc(formula)
         outro_pokemon.vida -= formula
@@ -396,9 +421,26 @@ class Pokemon:
     # setters:
 
     def add_effect(self, effect):
-        place = True if not effect in self.__pokemon_effects else False
+        
+        place = True
+        # Verifica se o efeito que está querendo adicionar não existe na lista de efeitos:
+        for i in range(len(self.__pokemon_effects)):
+            if effect["id"] == self.__pokemon_effects[i]["id"]:
+                # Achamos o efeito que queremos adicionar na lista, então não vamos adicionar:
+                place = False
+                # E não precisamos continuar procurando por efeitos iguais, então:
+                break
+
+        # Se place == True, então não existe, assim podemos adicionar, mas se for place == False,
+        # então existe, assim não precisamos adicionar efeito duplicado:
         if place:
+            # Se o efeito não dura para "sempre":
+            if not effect["stops"] == None:
+                # Sortear por quantas rodadas durará o mesmo:
+                effect["stops"] = random.choice(effect["stops"])
+            # Adicionar o efeito para a lista de efeitos
             self.__pokemon_effects.append(effect)
+        # Retorna se adicionou o efeito
         return place
 
     @sumindo.setter
