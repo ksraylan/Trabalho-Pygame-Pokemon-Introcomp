@@ -1,6 +1,8 @@
+# Class que retorna a todos os tipos de movimentos:
 class Types:
     def __init__(self):
         pass
+    # Getters:
     @property
     def normal(self):
         return "Normal"

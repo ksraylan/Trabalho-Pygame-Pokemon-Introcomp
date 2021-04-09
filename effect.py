@@ -1,3 +1,4 @@
+# Os efeitos serão comparados:
 def compare_effects(effect1, effect2, priority):
         return True if effect1["id"] == effect2["id"] and effect1["priority"] == priority else False
 

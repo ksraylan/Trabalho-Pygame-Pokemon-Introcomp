@@ -19,4 +19,4 @@ Bolsa com Poções - 1,0 - OK
 PVE - 1,0 - OK
 Arquivos - 1,0 OK
 
-NOTA = notaObrigatoria + (notaExtra * notaObrigatoria) / 10
+NOTA = notaObrigatoria + (notaExtra * notaObrigatoria) / 10:#

@@ -1,3 +1,4 @@
+# Define as posições:
 class Pos:
     def __init__(self, width, height, i_limit = -1):
         self.__width = width
@@ -9,6 +10,7 @@ class Pos:
         self.i_calc(False)
         self.__offset = 0
 
+    # Getter e setter:
     @property
     def offset(self):
         return self.__offset
@@ -17,6 +19,7 @@ class Pos:
     def offset(self, offset):
         self.__offset = offset
 
+    # Atualização dos valores de x e y: 
     def i_calc(self, recalcular_x_e_y):
         current_x = 0
         current_y = 0
@@ -39,7 +42,7 @@ class Pos:
         #else:
         self.__i = i
 
-
+    # Getter e setter:
     @property
     def i_limit(self):
         return self.__i_limit

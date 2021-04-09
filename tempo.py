@@ -1,3 +1,4 @@
+#Atua em tudo que envolve tempo no jogo:
 class Tempo:
     def __init__(self, milisegundos = 0):
         self.__milisegundos = milisegundos
@@ -6,6 +7,7 @@ class Tempo:
         self.__fim_de_jogo_tempo = 0
         self.__mensagem_tempo = 0
 
+    #Getters e Setters
     @property
     def mensagem_tempo(self):
         return self.__mensagem_tempo
@@ -17,7 +19,7 @@ class Tempo:
     @property
     def fim_de_jogo_tempo(self):
         return self.__fim_de_jogo_tempo
-
+#
     @property
     def milisegundos(self):
         return self.__milisegundos
@@ -26,12 +28,15 @@ class Tempo:
     def etapa_turno(self):
         return self.__etapa_turno
     
+    # Acrescenta mais 1 turno:
     def etapa_turno_incrementa(self):
         self.__etapa_turno += 1
     
+    # Reseta o turno:
     def etapa_turno_reseta(self):
         self.__etapa_turno = 0
 
+    # Getters e Setters:
     @property
     def sumido_tempo(self):
         return self.__sumido_tempo

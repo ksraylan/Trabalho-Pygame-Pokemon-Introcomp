@@ -1,3 +1,4 @@
+# Determina os itens que são usados pelo pokémon:
 class Itens:
 
     # itens que se usam na batalha:
@@ -35,7 +36,7 @@ class Itens:
 
     @property
     def berry_juice(self):
-        # Um 100% "PURE JUICE". Ele restaura o HP de um Pokémon em 20 pontos.
+        # Ele restaura o HP de um Pokémon em 20 pontos.
         return [-1, "Berry Juice"]
     @property
     def elixir(self):
@@ -43,5 +44,5 @@ class Itens:
         return [-2, "Elixir"]
     @property
     def potion(self):
-        # Um medicamento "SPRAY-TYPE". Ele restaura o HP de um Pokémon em 20 pontos.
+        # Ele restaura o HP de um Pokémon em 20 pontos.
         return [-3, "Potion"]

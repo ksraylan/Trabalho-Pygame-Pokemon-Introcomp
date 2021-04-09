@@ -18,7 +18,9 @@ img_barra1 = pygame.image.load('Recursos/Sprites/SpritesInterface/barra_1.png').
 img_barra2 = pygame.image.load('Recursos/Sprites/SpritesInterface/barra_2.png').convert_alpha()
 img_barra_sem_vida = pygame.image.load('Recursos/Sprites/SpritesInterface/barra_sem_vida.png').convert_alpha()
 img_pp_bar = pygame.image.load('Recursos/Sprites/SpritesInterface/pp_bar.png').convert_alpha()
-img_fundo_pokemon = pygame.image.load('Recursos/Sprites/SpritesInterface/FundoPokemon.png').convert_alpha()
+img_fundo_pokemon = pygame.image.load('Recursos/Sprites/SpritesInterface/FundoPokemon_1.png').convert_alpha()
+img_fundo_pokemon_circulo1 = pygame.image.load('Recursos/Sprites/SpritesInterface/FundoPokemon_2.png').convert_alpha()
+img_fundo_pokemon_circulo2 = pygame.image.load('Recursos/Sprites/SpritesInterface/FundoPokemon_3.png').convert_alpha()
 img_text_bar = pygame.image.load('Recursos/Sprites/SpritesInterface/text_bar.png').convert_alpha()
 img_vida_amarela = pygame.image.load('Recursos/Sprites/SpritesInterface/vida_amarela.png').convert_alpha()
 img_vida_vermelha = pygame.image.load('Recursos/Sprites/SpritesInterface/vida_vermelha.png').convert_alpha()
@@ -36,23 +38,30 @@ img_barra1 = pygame.transform.scale(img_barra1, (int(101*escala), int(29*escala)
 img_barra2 = pygame.transform.scale(img_barra2, (int(104*escala), int(39*escala)))
 img_opcoes_batalha = pygame.transform.scale(img_opcoes_batalha, (int(120*escala), int(48*escala)))
 img_text_bar = pygame.transform.scale(img_text_bar, (int(240*escala), int(48*escala)))
-img_fundo_pokemon = pygame.transform.scale(img_fundo_pokemon, (int(240*escala*1), int(112*escala*1.25)))
+
+# Altura para escalar a imagem de fundo:
+escala_height = janela.tamanho[1] / 160
+
+# Imagem de fundo:
+img_fundo_pokemon = pygame.transform.scale(img_fundo_pokemon, (int(240*escala), int(112*escala_height*1.05)))
+# Círculos que ficam em baixo dos pokémons:
+img_fundo_pokemon_circulo1 = pygame.transform.scale(img_fundo_pokemon_circulo1, (int(128*escala), int(32*escala)))
+img_fundo_pokemon_circulo2 = pygame.transform.scale(img_fundo_pokemon_circulo2, (int(120*escala), int(11*escala)))
 
 # Essa função carregará duas imagens, uma do pokémon de frente e outra de costas,
 # e retornará as mesmas:
-def carregar_imagem_pokemon(numero):
-    return [pygame.transform.scale(pygame.image.load("Recursos/Sprites/SpritesPokemon/Frente/{}.png".format(numero)), (int(64*escala), int(64*escala))),
-    pygame.transform.scale(pygame.image.load("Recursos/Sprites/SpritesPokemon/Costas/{}.png".format(numero)), (int(64*escala), int(64*escala)))]
+def carregar_imagem_pokemon(numero, shiny = False):
+    # Se foi pedido shiny:
+    nome = str(numero) if not shiny else str(numero) + "_s"
+    return [pygame.transform.scale(pygame.image.load("Recursos/Sprites/SpritesPokemon/Frente/{}.png".format(nome)), (int(64*escala), int(64*escala))),
+    pygame.transform.scale(pygame.image.load("Recursos/Sprites/SpritesPokemon/Costas/{}.png".format(nome)), (int(64*escala), int(64*escala)))]
 
 # Carregando os efeitos sonoros:
-#som_absorb = pygame.mixer.Sound("Recursos/Sprites/SonsPokemon/Absorb.wav")
 som_fire_red_abertura = pygame.mixer.Sound("Recursos/Sprites/SonsPokemon/fireRedAbertura.wav")
 som_Batalha = pygame.mixer.Sound("Recursos/Sprites/SonsPokemon/batalha.wav")
 som_Flamethrower = pygame.mixer.Sound("Recursos/Sprites/SonsPokemon/Flamethrower.wav")
 som_Bite = pygame.mixer.Sound("Recursos/Sprites/SonsPokemon/Bite.wav")
-#som_Bubble = pygame.mixer.Sound("Recursos/Sprites/SonsPokemon/Bubble.wav")
 som_Confusion = pygame.mixer.Sound("Recursos/Sprites/SonsPokemon/Confusion.wav")
-#som_Dark_Pulse = pygame.mixer.Sound("Recursos/Sprites/SonsPokemon/Dark_Pulse.wav")
 som_derrota = pygame.mixer.Sound("Recursos/Sprites/SonsPokemon/derrota.wav")
 som_Dual_Chop = pygame.mixer.Sound("Recursos/Sprites/SonsPokemon/Dual_Chop.wav")
 som_Ember = pygame.mixer.Sound("Recursos/Sprites/SonsPokemon/Ember.wav")
@@ -69,7 +78,6 @@ som_Stomp = pygame.mixer.Sound("Recursos/Sprites/SonsPokemon/Stomp.wav")
 som_Tackle = pygame.mixer.Sound("Recursos/Sprites/SonsPokemon/Tackle.wav")
 som_Thunder_Shock = pygame.mixer.Sound("Recursos/Sprites/SonsPokemon/Thunder_Shock.wav")
 som_Twister = pygame.mixer.Sound("Recursos/Sprites/SonsPokemon/Twister.wav")
-#som_ViridianCity = pygame.mixer.Sound("Recursos/Sprites/SonsPokemon/ViridianCity.mp3")
 som_vitoria = pygame.mixer.Sound("Recursos/Sprites/SonsPokemon/vitoria.wav")
 som_Thunder = pygame.mixer.Sound("Recursos/Sprites/SonsPokemon/Thunder.wav")
 

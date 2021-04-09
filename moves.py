@@ -1,22 +1,21 @@
+#Importação:
 from poke_types import Types
 
 tipos = Types()
 
+#Classe que descreve os movimentos que o pokemon realiza e suas características:
 class Moves:
     def __init__(self):
         pass
 
     # geração 3 (talvez não precise):
-    
+    #Getters:
     @property
     def fugir(self):
         return (0, "Fugir")
-    
     @property
     def struggle(self):
         return (1, "Struggle", 0, 0, 0, 50, 0, tipos.normal)
-
-
     @property
     def arm_thrust(self):
         return 2
@@ -321,8 +320,6 @@ class Moves:
     def yawm(self):
         return 102
     
-
-
     # geração 1. exemplo: return (id, nome, pp_atual, pp_maximo, prioridade, força, chance_de_acertar, tipo) 
     @property
     def tackle(self):
@@ -342,48 +339,12 @@ class Moves:
     @property
     def sleep_powder(self):
         return (-6, "Sleep Powder", 15, 15, 0, 0, 75, tipos.grass)
-    #@property
-    #def razor_leaf(self):
-    #    return (-7, "Razor Leaf", , , 0, 55, 95, 25)
-    #@property
-    #def sweet_scent(self):
-    #    return (-8, "Sweet Scent", 0, -6, 100, 20)
-    #@property
-    #def growth(self):
-    #    return (-9, "Growth", 0, 6, 100, 20)
-    #@property
-    #def synthesis(self):
-    #    return (-10, "Synthesis", 3, 50, 100, 5)
-    #@property
-    #def solar_beam(self):
-    #    return (-11, "Solar Beam", 0, 120, 100, 10)
     @property
     def thunder_shock(self):
         return (-12, "Thunder Shock", 30, 30, 0, 40, 100, tipos.electric)
     @property
     def tail_whip(self):
         return (-13, "Tail Whip", 30, 30, 0, -6, 100, tipos.normal)
-    #@property
-    #def quick_attack(self):
-    #    return (-14, "Quick Attack", 1, 40, 100, 30)
-    #@property
-    #def double_team(self):
-    #    return (-15, "Double Team", 0, 6, 100, 15)
-    #@property
-    #def slam(self):
-    #    return (-16, "Slam", 0, 80, 75, 20)
-    #@property
-    #def thunderbolt(self):
-    #    return (-17, "Thunderbolt", 0, 95, 100, 15)
-    #@property
-    #def agility(self):
-    #    return (-18, "Agility", 0, 6, 100, 30)
-    #@property
-    #def thunder(self):
-    #    return (-19, "Thunder", 0, 120, 70, 10)
-    #@property
-    #def light_screen(self):
-    #    return (-20, "Light Screen", 0, 0, 100, 30)
     @property
     def thunder_wave(self):
         return (-21, "Thunder Wave", 20, 20, 0, 0, 100, tipos.electric)
@@ -393,54 +354,12 @@ class Moves:
     @property
     def ember(self):
         return (-23, "Ember", 25, 25, 0, 40, 100, tipos.fire)
-    #@property
-    #def smokescreen(self):
-    #    return (-24, "Smokescreen", 0, -6, 100, 20)
-    #@property
-    #def rage(self):
-    #    return (-25, "Rage", 0, 20, 100, 20)
-    #@property
-    #def scary_face(self):
-    #    return (-26, "Scary Face", 0, -6, 100, 10)
-    #@property
-    #def flamethrower(self):
-    #    return (-27, "Flamethrower", 0, 90, 100, 15)
-    #@property
-    #def slash(self):
-    #    return (-28, "Slash", 0, 70, 100, 20)
-    #@property
-    #def dragon_rage(self):
-    #    return (-29, "Dragon Rage", 0, 40, 100, 10)
-    #@property
-    #def fire_spin(self):
-    #    return (-30, "Fire Spin", 0, 35, 85, 15)
     @property
     def withdraw(self):
         return (-31, "Withdraw", 40, 40, 0, 6, 100, tipos.water)
-    #@property
-    #def water_gun(self):
-    #    return (-32, "Water Gun", 0, 40, 100, 25)
-    #@property
-    #def bite(self):
-    #    return (-33, "Bite", 0, 60, 100, 25)
-    #@property
-    #def rapid_spin(self):
-    #    return (-34, "Rapid Spin", 0, 20, 100, 40)
-    #@property
-    #def protect(self):
-    #    return (-35, "Protect", 3, 0, 100, 10)
-    #@property
-    #def rain_dance(self):
-    #    return (-36, "Rain Dance", 0, 0, 100, 5)
-    #@property
-    #def skull_bash(self):
-    #    return (-37, "Skull Bash", 0, 130, 100, 10)
     @property
     def bubble(self):
         return (-38, "Bubble", 30, 30, 0, 20, 100, tipos.water)
-    #@property
-    #def hydro_pump(self):
-    #    return (-39, "Hydro Pump", 0, 120, 80, 5)
     @property
     def fury_attack(self):
         return (-40, "Fury Attack", 20, 20, 0, 15, 85, tipos.normal)
@@ -453,30 +372,9 @@ class Moves:
     @property
     def horn_drill(self):
         return (-43, "Horn Drill", 5, 5, 0, 0, 30, tipos.normal)
-    #@property
-    #def take_down(self):
-    #    return (-44, "Take Down")
-    #@property
-    #def earthquake(self):
-    #    return (-45, "Earthquake")
-    #@property
-    #def megahorn(self):
-    #    return (-46, "Megahorn")
     @property
     def curse(self):
         return (-47, "Curse", 10, 10, 0, 0, 100, tipos.ghost)
-    #@property
-    #def night_shade(self):
-    #    return (-48, "Night Shade")
-    #@property
-    #def confuse_ray(self):
-    #    return (-49, "Confuse Ray")
-    #@property
-    #def dream_eater(self):
-    #    return (-50, "Dream Eater")
-    #@property
-    #def destiny_bond(self):
-    #    return (-51, "Destiny Bond")
     @property
     def hypnosis(self):
         return (-52, "Hypnosis", 20, 20, 0, 0, 60, tipos.psychic)
@@ -486,15 +384,6 @@ class Moves:
     @property
     def spite(self):
         return (-54, "Spite", 10, 10, 0, 0, 100,tipos.ghost)
-    #@property
-    #def shadow_ball(self):
-    #    return (-55, "Shadow Ball")
-    #@property
-    #def nightmare(self):
-    #    return (-56, "Nightmare")
-    #@property
-    #def mean_look(self):
-    #    return (-57,"Mean Look")
     @property
     def leer(self):
         return (-58, "Leer", 30, 30, 0, 0, 100, tipos.normal)
@@ -504,19 +393,6 @@ class Moves:
     @property
     def wrap(self):
         return (-60, "Wrap", 20, 20, 0, 15, 90, tipos.normal)
-    #@property
-    #def safeguard(self):
-    #    return (-62,"Safeguard")
-    #@property
-    #def wing_attack(self):
-    #    return (-63, "Wing Attack")
-    #@property
-    #def outrage(self):
-    #    return (-64, "Outrage")
-    #@property
-    #def hyperbeam(self):
-    #    return (-65, "Hyperbeam")
-    
     @property
     def confusion(self):
         return (-66, "Confusion", 25, 25, 0, 50, 100,tipos.psychic)
@@ -529,26 +405,9 @@ class Moves:
     @property
     def mist(self):
         return (-69,"Mist", 30, 30, 0, 0, 100, tipos.ice)
-    #@property
-    #def swift(self):
-    #    return (-70, "Swift")
-    #@property
-    #def recover(self):
-    #    return (-71, "Recover")
     @property
     def psychic(self):
         return (-72, "Psychic", 10, 10, 0, 90, 100, tipos.psychic)
-    #@property
-    #def psych_up(self):
-    #    return (-73, "Psych Up")
-    #@property
-    #def future_sight(self):
-    #    return (-74,"Future Sight")
-    #@property
-    #def amnesia(self):
-    #    return (-75,"Amnesia")
     @property
     def metal_claw(self):
         return (-76, "Metal Claw", 35, 35, 0, 50, 95, tipos.steel)
-
-    

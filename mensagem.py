@@ -1,8 +1,10 @@
+#Posições dos textos:
 class Mensagem:
     def __init__(self, texto=""):
         self.__texto = texto
         self.__texto_posicao = 0
-    
+
+    #Getters e setters:
     @property
     def texto_posicao(self):
         return self.__texto_posicao

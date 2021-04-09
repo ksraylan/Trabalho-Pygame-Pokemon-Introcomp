@@ -5,6 +5,7 @@ class Menu:
         self.__escolhendo_pokemon = 0
         self.__batalhando = 1
 
+    #Getters e setters:
     @property
     def escolhendo_pokemon(self):
         return self.__escolhendo_pokemon
@@ -30,6 +31,7 @@ class Submenu:
         self.__principal = 0
         self.__escolhendo_ataque = 1
     
+    # Getters e setters:
     @property
     def principal(self):
         return 0

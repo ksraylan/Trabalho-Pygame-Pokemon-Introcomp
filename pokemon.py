@@ -1,11 +1,11 @@
-# Importações
+# Importações:
 import random
 import math
 from effect import Effect
 
 vel_anim = 0.03
 # Uma class com todas as estatísticas de um pokémon (neste jogo). Contém métodos
-# que calculam o dano, coisas assim.
+# que calculam o dano, coisas assim:
 class Pokemon:
     def __init__(self, nome, vida, ataque, defesa, velocidade, especial_ataque, especial_defesa, nivel, genero, tipos, movimentos, itens, imagens):
         # Contém todas as propriedades do pokémon:
@@ -46,13 +46,13 @@ class Pokemon:
         # precisão do movimento que se aplica apenas em uma rodada:
         self.__precisao_temp = 100
 
-
         self.__ultimo_movimento_id = None
 
         self.__movimentos_bloqueados = []
 
         self.__pokemon_effects = [] # Começa com nenhum efeito
 
+    # Getters e setters:
     @property
     def ultimo_movimento_id(self):
         return self.__ultimo_movimento_id
@@ -69,7 +69,7 @@ class Pokemon:
     def movimentos_bloqueados(self, valor):
         self.__movimentos_bloqueados = valor
 
-
+    # Movimento do pokemon que será bloqueado:
     def adicionar_movimento_bloqueado(self, movimento_id, por_quantos_turnos):
         # precisamos somente da id do movimento (índice 0):
         self.movimentos_bloqueados.append([movimento_id, por_quantos_turnos])
@@ -79,13 +79,14 @@ class Pokemon:
         self.__precisao_temp = 100
 
         for i in range(len(self.movimentos_bloqueados)):
-            # Diminui por_quantos_turnos
+            # Diminui por_quantos_turnos:
             self.movimentos_bloqueados[i][1] -= 1
             # Se a quantidade de turnos chegarem a zero, então o movimento não é mais bloqueado,
             # assim, temos que tirar ele da lista dos bloqueados:
             if self.movimentos_bloqueados[i][1] <= 0:
                 self.movimentos_bloqueados.pop(i)
 
+    # Getters e setters:
     @property
     def precisao_temp(self):
         return self.__precisao_temp
@@ -133,6 +134,7 @@ class Pokemon:
         self.checar_e_corrigir_vida_anim()
         return self.__vida_anim
 
+    # Correção de vida:
     def checar_e_corrigir_vida_anim(self):
         if self.__vida_anim > self.__vida_maxima:
             self.__vida_anim = self.__vida_maxima
@@ -152,9 +154,11 @@ class Pokemon:
     def protegido(self, value):
         self.__protegido = value
 
+    # Verifica se o pokemon está protegido:
     def esta_protegido(self):
         return True if self.__protegido > 0 else False
 
+    # Atualiza a vida:
     def atualiza_vida_anim(self, delta):
         valor = vel_anim * delta
         if self.__vida - valor/2 < self.__vida_anim < self.__vida + valor/2:
@@ -164,6 +168,7 @@ class Pokemon:
         elif self.__vida_anim > self.__vida:
             self.vida_anim -= valor      
 
+    # Verifica se o pokemon está bloqueado:
     def is_blocked(self):
         return True if self.__bloqueado > 0 else False
 
@@ -183,13 +188,16 @@ class Pokemon:
     def bloqueado(self, value):
         self.__bloqueado = value
 
+    #Pokemon perdeu:
     def foi_derrotado(self):
         # Retorna True se este pokémon não estiver vivo (sua vida está abaixo ou igual a 0):
         return True if self.__vida <= 0 else False
+    # Pokemon fugiu:
     def conseguiu_fugir(self):
         # Retorna False se este pokémon fugiu com sucesso:
         return self.__fugiu
 
+    # Processa os efeitos
     def process_effects(self, priority, enemy_pokemon):
         # priority True: antes do movimento
         # False: depois do movimento
@@ -206,7 +214,6 @@ class Pokemon:
         # Processa efeito por efeito até o último:
         while i < len(self.__pokemon_effects):
             # Obtenha um efeito da lista de efeitos do pokémon atual:
-            print(self.__pokemon_effects, i)# debug
             effect_pokemon = self.__pokemon_effects[i]
             # Agora é necessario verificar o efeito para o pokémon
             # se é igual a corrente de prioridade (True: antes dos turnos; False: depois
@@ -255,8 +262,9 @@ class Pokemon:
             # Esse efeito faz perder 1/8 da vida do seu pokémon:
             self.vida_maxima -= self.vida_maxima/8
 
+    # Ataque do adversário:
     def atacar(self, outro_pokemon, poder):
-        # A = Accuracymove * Adjusted_stages * Other_mods
+        # A = Accuracymove * Adjusted_stages * Other_mods:
         A = random.randrange(0,101) * 1 * 1
         # O jogo seleciona um número aleatório R de 1 a 100 e o compara com A
         # para determinar se o movimento acerta. Se R for menor ou igual a A, o movimento acerta.
@@ -267,8 +275,6 @@ class Pokemon:
         # poder (teste):
         
         ataque_critico = 1
-
-
 
         chance_critico = -1
         if self.ataque_critico == 0:
@@ -293,7 +299,7 @@ class Pokemon:
         outro_pokemon.vida -= formula
         return (formula, True if chance_critico == 0 else False)
 
-    
+    #Para o outro pokemon fugir:
     def fugir_de(self, outro_pokemon):
         self.__tentou_fugir += 1
         A = self.__velocidade
@@ -308,9 +314,11 @@ class Pokemon:
             # não conseguiu
             return False
     
+    # permite que o pokmémon recupere a vida:
     def cura(self, quantidade):
         self.__vida += quantidade
 
+    #getters:
     @property
     def pokemon_effects(self):
         return self.__pokemon_effects
@@ -418,7 +426,7 @@ class Pokemon:
 
 
 
-    # setters:
+    # Setters:
 
     def add_effect(self, effect):
         
