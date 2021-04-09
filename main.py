@@ -35,6 +35,8 @@ from category import Category
 from itens import Itens
 # Função que processa cada movimento:
 from processar_movimentos import process_moves
+# Importar o Easter Egg:
+from easter_egg import EasterEgg
 
 # Função do jogo principal:
 def main():
@@ -55,7 +57,7 @@ def main():
     # Pega a escala do arquivos.py:
     escala = arq.escala
     # menu espaçamento:
-    menu_espacamento = (200,100)
+    menu_espacamento = (200,50)
     # tamanho menu:
     #menu_tamanho = 2*escala
     # tamanho seta:
@@ -75,6 +77,9 @@ def main():
     tipos = Types()
     # Objeto moves possui todos os movimentos que os pokémons podem fazer nesse jogo:
     moves = Moves()
+
+    # Cria o objeto do Easter Egg:
+    easter_egg = EasterEgg()
 
     # Lista com os itens que cada pokémon irá ter em suas mochilas:
     itens_usados = [itens.dire_hit, itens.guard_spec, itens.x_accuracy, itens.x_attack, itens.x_defense,
@@ -114,6 +119,26 @@ def main():
     pk_mewtwo = Pokemon("Mewtwo",106,110,90,130,154,90,22,random.choice(generos),
     [tipos.psychic], [moves.confusion, moves.disable, moves.barrier, moves.mist],itens_usados.copy(),
     arq.carregar_imagem_pokemon(150,True))
+    
+    # Easter egg:
+    # Nome, vida, ataque, defesa, velocidade, especial_ataque,
+    # especial_defesa, nivel, genero, tipos, movimentos, itens, imagens
+    
+    # Marco:
+    pk_marco = Pokemon("Marco", 200, 170, 180, 500, 180, 180, 99, "M", [tipos.normal],
+    [moves.tackle, moves.fury_attack, moves.hypnosis], itens_usados, arq.carregar_imagem_easter_egg("marco"))
+    # Jorge:
+    pk_jorge = Pokemon("Jorge",200,180,190,200,205,530,99, "M",[tipos.normal],
+    [moves.confusion, moves.fury_attack,moves.curse], itens_usados, arq.carregar_imagem_easter_egg("jorge"))
+    # Bea:
+    pk_bea = Pokemon("Bea",200,190,170,300,150,190,99, "F", [tipos.normal], 
+    [moves.thunder_wave, moves.disable, moves.twister], itens_usados, arq.carregar_imagem_pokemon(1,False))
+    # André:
+    pk_andre = Pokemon("André",200,145,500,220,190,230,99, "M", [tipos.normal],
+    [moves.bubble, moves.vine_whip,moves.leer], itens_usados, arq.carregar_imagem_easter_egg("andre"))
+    # Thiago:
+    pk_thiago = Pokemon("Thiago",200,260,150,300,170,180,99, "M", [tipos.normal],
+    [moves.barrier, moves.withdraw, moves.lick], itens_usados, arq.carregar_imagem_pokemon(1,False))
     
     # Lista com os pokémons que podem ser escolhidos na tela de seleção de pokémon e suas cores abaixo.
     pokemons_pode_escolher = [pk_pikachu, pk_charmander, pk_bulbasaur, pk_squirtle, pk_rhyhorn, pk_gastly, pk_dratini, pk_mewtwo]
@@ -234,20 +259,31 @@ def main():
     e_n = 32
 
     # Determina a posição e o tamanho da barra sem vida:
-    def barra_sem_vida_calculo_escala(x, width):
+    def barra_sem_vida_calculo_escala(x, width, qual_vida = 1):
         # Pega a posição x e converte para int:
         x = int(x)
         # E a largura em int
         width = int(width)
         # Agora, se x + width for menor do que a largura estabelecida:
-        if x + width <= ceil(102.6*escala):
+        #formula = - x - width + (janela.tamanho[0] + x + width)
+        formula = x + width
+        # Posição máxima que o x + width deve ter:
+        pos_x_maximo = 0
+        # Se for a vida do pokémons[1]:
+        if qual_vida == 1:
+            pos_x_maximo = 102.6*escala
+        # Se for a vida do pokémons[0]:
+        else:
+            pos_x_maximo = 225.6*escala
+        if formula <= pos_x_maximo:
             # Aumenta em + 1:
             width += 1
             # Isso porque às vezes acontece da barra sem vida ser um pouco menor
             # do que devia, ai mostraria um pixel verde do lado direito dessa barra,
-            # ai não seria agradável, então a solução que conseguimos foi essa.
+            # ai não seria agradável, então a solução que conseguimos foi essa, ou melhor
+            # dizendo, a barra sem vida fica "tremendo" quando animada.
         # No final, retorna o x e width "corrigidos":
-        return x, width
+        return int(x), int(width)
 
     # Confere se o pokemon teve um movimento boloqueado:
     def obter_id_bloqueados(pokemon):
@@ -270,14 +306,14 @@ def main():
             # Obtém o tamanho:
             superf_rect = superf.get_rect()
             # Centraliza ela no meio horizontal (x, y):
-            superf_rect.center =(width_dividido, 20*escala)
+            superf_rect.center =(width_dividido, 10*escala)
             # Coloca na tela a mesma:
             janela.tela.blit(superf, superf_rect)
 
             # posicao y da seta dentro do retangulo:
-            li = tamanho_cursor/2 + (e_n*pos.y)
+            li = (e_n*pos.y) + e_n
 
-            # Renderizando a seta de seleção de acordo :
+            # Renderizando a seta de seleção de acordo:
             pygame.draw.polygon(janela.tela, cor.VERMELHO, ((menu_espacamento[0] + e_s_x,
             menu_espacamento[1] + li), (menu_espacamento[0] + e_s_x,menu_espacamento[1] +
             tamanho_cursor + li), (menu_espacamento[0] + e_s_x+ tamanho_cursor/2,
@@ -292,7 +328,7 @@ def main():
                 superf_rect = superf.get_rect()
                 # Colocaremos no centro, e pegamos o espaçamento e multiplicamos por "i",
                 # para os nomes dos pokemons irem para baixo e não ficarem um em cima do outro:
-                superf_rect.center =(janela.tamanho[0]/2, 100 + e_n + i*e_n)
+                superf_rect.center =(janela.tamanho[0]/2, 20*escala + e_n + i*e_n)
                 # Por fim, mostraremos na tela o texto:
                 janela.tela.blit(superf, superf_rect)
             
@@ -600,7 +636,7 @@ def main():
                     # "barra_sem_vida_calculo_escala":
                     x, width = barra_sem_vida_calculo_escala(55*escala +
                     barra_width * (pokemons[1].vida_anim/pokemons[1].vida_maxima) , (arq.img_barra_sem_vida.get_width() + (escala*39)) *
-                    (pokemons[1].vida_maxima - pokemons[1].vida_anim)/pokemons[1].vida_maxima)
+                    (pokemons[1].vida_maxima - pokemons[1].vida_anim)/pokemons[1].vida_maxima, 1)
                     # Desenharemos na tela a imagem de barra da parte sem vida:
                     img_barra_sem_vida_esticada = pygame.transform.scale(arq.img_barra_sem_vida,
                     (width,
@@ -636,8 +672,13 @@ def main():
                         janela.tela.blit(img_vida_vermelha_esticada,(janela.tamanho[0] -
                         62*escala,janela.tamanho[1] - 69*escala))
                     # "Vida vazia":
-                    x, width = barra_sem_vida_calculo_escala(janela.tamanho[0] - 62*escala + barra_width * (pokemons[1].vida_anim/pokemons[1].vida_maxima),arq.img_barra_sem_vida.get_width() + (escala*39) *
-                    (pokemons[0].vida_maxima - pokemons[0].vida_anim)/pokemons[0].vida_maxima)
+                    x, width = barra_sem_vida_calculo_escala(janela.tamanho[0] - 62*escala +
+                    barra_width * (pokemons[0].vida_anim/pokemons[0].vida_maxima) , (arq.img_barra_sem_vida.get_width() + (escala*39)) *
+                    (pokemons[0].vida_maxima - pokemons[0].vida_anim)/pokemons[0].vida_maxima, 0)
+                    # Desenharemos na tela a imagem de barra da parte sem vida:
+                    img_barra_sem_vida_esticada = pygame.transform.scale(arq.img_barra_sem_vida,
+                    (width,
+                    arq.img_barra_sem_vida.get_height()))
                     # Mostrando a "vida vazia":
                     janela.tela.blit(img_barra_sem_vida_esticada, (x, janela.tamanho[1] - 69*escala))
                     # Mostrando o nível do pokémon:
@@ -1101,7 +1142,29 @@ def main():
         elif item == itens.potion[0]: #Ele restaura o HP de um Pokémon em 20 pontos.
             pokemon_a_usar.vida += 20
             mensagem.texto = "{} teve seu HP restaurado em 20 pontos".format(pokemon_a_usar.nome)
+    # Começa com o easter egg desativado:
+    easter_egg_ativado = False
+    def ativar_easter_egg():
+        # Só ativa se ainda não foi ativado:
+        if not easter_egg_ativado:
+            # Adiciona os personagens secretos nas listas:
+            pokemons_pode_escolher.append(pk_marco)
+            pokemons_pode_escolher.append(pk_jorge)
+            pokemons_pode_escolher.append(pk_bea)
+            pokemons_pode_escolher.append(pk_andre)
+            pokemons_pode_escolher.append(pk_thiago)
 
+            # Cores:
+            cores_pode_escolher.append(cor.BRANCO)
+            cores_pode_escolher.append(cor.BRANCO)
+            cores_pode_escolher.append(cor.BRANCO)
+            cores_pode_escolher.append(cor.BRANCO)
+            cores_pode_escolher.append(cor.BRANCO)
+
+            # Recalcula a posição do cursor:
+            pos_menu_principal()
+    
+    codigos_digitados = []
     
     rodando_o_jogo = True
     # Loop do jogo:
@@ -1250,6 +1313,12 @@ def main():
                     elif event.key == pygame.K_ESCAPE:
                         # Faz a condição do while ser falsa:
                         rodando_o_jogo = False
+
+
+                    # Obter o caractere digitado (Easter Egg):
+                    caractere = pygame.key.name(event.key)
+                    if easter_egg.processa_caractere(caractere):
+                        ativar_easter_egg()
         
         #pygame.event.poll()
         # Chama a função que processa a lógica, ou seja, o tempo das animações, etc:

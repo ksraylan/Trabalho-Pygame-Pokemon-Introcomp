@@ -1,13 +1,13 @@
-#Importações:
-import os
+# Importações:
+# Importação da biblioteca do pygame:
 import pygame
 
 # Iniciar o pygame:
 pygame.init()
 
 #Gráfico inicial e nome do display:
-tamanho = (800, 600)
-titulo = "Trabalho Pokemon Introcomp"
-pygame.display.set_caption(titulo)
-tela = pygame.display.set_mode(tamanho)
+tamanho = (800, 600) # Resolução 800x600
+titulo = "Pokémon: Introcomp" # Nome do jogo
+pygame.display.set_caption(titulo) # Coloca o nome do jogo
+tela = pygame.display.set_mode(tamanho) # define o tamanho da tela
 

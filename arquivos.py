@@ -55,7 +55,10 @@ def carregar_imagem_pokemon(numero, shiny = False):
     nome = str(numero) if not shiny else str(numero) + "_s"
     return [pygame.transform.scale(pygame.image.load("Recursos/Sprites/SpritesPokemon/Frente/{}.png".format(nome)), (int(64*escala), int(64*escala))),
     pygame.transform.scale(pygame.image.load("Recursos/Sprites/SpritesPokemon/Costas/{}.png".format(nome)), (int(64*escala), int(64*escala)))]
-
+# Essa carregará as imagens dos Easter Eggs:
+def carregar_imagem_easter_egg(nome):
+    return [pygame.transform.scale(pygame.image.load("Recursos/Sprites/EasterEgg/{}_edit.png".format(nome)), (int(64*escala), int(64*escala))),
+        pygame.transform.scale(pygame.image.load("Recursos/Sprites/EasterEgg/{}_edit.png".format(nome)), (int(64*escala), int(64*escala)))]
 # Carregando os efeitos sonoros:
 som_fire_red_abertura = pygame.mixer.Sound("Recursos/Sprites/SonsPokemon/fireRedAbertura.wav")
 som_Batalha = pygame.mixer.Sound("Recursos/Sprites/SonsPokemon/batalha.wav")

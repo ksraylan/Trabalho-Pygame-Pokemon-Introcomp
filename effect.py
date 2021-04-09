@@ -1,5 +1,6 @@
 # Os efeitos serão comparados:
 def compare_effects(effect1, effect2, priority):
+        # compara os efeitos pelo id e prioridade:
         return True if effect1["id"] == effect2["id"] and effect1["priority"] == priority else False
 
 class Effect:

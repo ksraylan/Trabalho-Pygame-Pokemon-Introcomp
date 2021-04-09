@@ -1,6 +1,9 @@
 # Importações:
+# Importação da biblioteca que randomiza os números:
 import random
+# Importação da biblioteca da matemática:
 import math
+# Importação dos efeitos:
 from effect import Effect
 
 vel_anim = 0.03
@@ -30,26 +33,33 @@ class Pokemon:
         self.__deslocamento = [0,0] # x, y
         self.__tipos = tipos
         self.__conjunto_movimentos = movimentos
-        
+        # Lista com os movimentos:
         self.__movimentos = []
         for i in range(len(movimentos)):
+            # Transforma os movimentos que estão em tuplas em listas:
             self.__movimentos.append(list(movimentos[i]))
 
         # Isso facilita o acesso a uma "lista" de todos os efeitos:
         self.effects = Effect()
+        # Por quantas rodadas ficará bloqueado:
         self.__bloqueado = 0
+        # Por quantas rodadas ficará protegido (não muda o ataque, defesa, etc):
         self.__protegido = 0
+        # Se está paralisado:
         self.__paralisado = False
+        # Precisão:
         self.__precisao = 1
+        # Itens que o pokémon terá na mochila:
         self.__itens = itens
+        # Chance de ataque crítico:
         self.__ataque_critico = 0
         # precisão do movimento que se aplica apenas em uma rodada:
         self.__precisao_temp = 100
-
+        # O último movimento executado por ele:
         self.__ultimo_movimento_id = None
-
+        # Lista com os movimentos que não podem ser usados
         self.__movimentos_bloqueados = []
-
+        # Efeitos que o pokémon "pega" do outro:
         self.__pokemon_effects = [] # Começa com nenhum efeito
 
     # Getters e setters:
@@ -79,7 +89,7 @@ class Pokemon:
         self.__precisao_temp = 100
 
         for i in range(len(self.movimentos_bloqueados)):
-            # Diminui por_quantos_turnos:
+            # Diminui o tempo que o movimento está bloqueado:
             self.movimentos_bloqueados[i][1] -= 1
             # Se a quantidade de turnos chegarem a zero, então o movimento não é mais bloqueado,
             # assim, temos que tirar ele da lista dos bloqueados:
@@ -101,6 +111,7 @@ class Pokemon:
     
     @ataque_critico.setter
     def ataque_critico(self,ataque_critico):
+        # Não existe ataque crítico negativo:
         if ataque_critico < 0:
             ataque_critico = 0
         self.__ataque_critico = ataque_critico
@@ -131,19 +142,29 @@ class Pokemon:
 
     @property
     def vida_anim(self):
+        # Retorna a vida animada (tamanho atual da animação):
+        # Mas antes verificar se a animação não está negativa ou passou do tamanho
+        # limite do máximo da vida:
         self.checar_e_corrigir_vida_anim()
         return self.__vida_anim
 
     # Correção de vida:
     def checar_e_corrigir_vida_anim(self):
+        # Verifica se a vida animada é maior que a vida máxima:
         if self.__vida_anim > self.__vida_maxima:
+            # E se essa verificação for efetivada,
+            # a vida animada recebe o valor da vida máxima:
             self.__vida_anim = self.__vida_maxima
+        # Verifica se a vida animada é menor que zero:
         elif self.__vida_anim < 0:
+            # Sendo a afirmção efetivada, a vida animada reseta:
             self.__vida_anim = 0
 
     @vida_anim.setter
     def vida_anim(self, value):
+        # Coloca o valor da animação de vida:
         self.__vida_anim = value
+        # E corrige se necessário:
         self.checar_e_corrigir_vida_anim()
 
     @property
@@ -161,10 +182,14 @@ class Pokemon:
     # Atualiza a vida:
     def atualiza_vida_anim(self, delta):
         valor = vel_anim * delta
+        # Verifica se a animação da vida está perto da vida atual:
         if self.__vida - valor/2 < self.__vida_anim < self.__vida + valor/2:
+            # Se está perto, então já pode terminar a animação:
             self.vida_anim = self.vida
+        # Se não, então se for menor, aumenta a barra de vida:
         elif self.__vida_anim < self.__vida:
             self.vida_anim += valor
+        # Caso contrário, diminui:
         elif self.__vida_anim > self.__vida:
             self.vida_anim -= valor      
 
@@ -199,7 +224,7 @@ class Pokemon:
 
     # Processa os efeitos
     def process_effects(self, priority, enemy_pokemon):
-        # priority True: antes do movimento
+        # Priority True: antes do movimento
         # False: depois do movimento
         if priority is True:
             self.__bloqueado -= 1
@@ -242,9 +267,9 @@ class Pokemon:
         #Agora,verifica se o efeito real é igual a um efeito, se sim, faça um
         #coisa específica:
 
-        # código que processa o efeito, como no processar_movimentos
-        # self: seu pokemon
-        # enemy_pokemon: pokemon inimigo
+        # Código que processa o efeito, como no processar_movimentos
+        # Self: seu pokemon
+        # Enemy_pokemon: pokemon inimigo
         if pokemon_effects["id"] == effects.leech_seed["id"]: # Leech Seed
             # A mensagem que aparecerá quando aplicar o efeito:
             mensagem = "O HP de {} foi sugado".format(self.nome, enemy_pokemon.nome)
@@ -269,56 +294,65 @@ class Pokemon:
         # O jogo seleciona um número aleatório R de 1 a 100 e o compara com A
         # para determinar se o movimento acerta. Se R for menor ou igual a A, o movimento acerta.
         R = random.randrange(0, 101)
-        #acertou = 1 if R <= A else 0
+        # Acertou = 1 if R <= A else 0
         acertou = 1
-        multiplicador_critico = (2 * self.__nivel + 5) / (self.__nivel + 5)
-        # poder (teste):
         
+        # Poder (teste):
+        # 1: ataque normal:
         ataque_critico = 1
-
+        # Chance de crítico:
         chance_critico = -1
+        # Quanto maior o ataque crítico, maior a chance de dar ataque crítico:
         if self.ataque_critico == 0:
-            chance_critico = random.randrange(0, 16)
+            chance_critico = random.randrange(0, 16) # 1/16
         elif self.ataque_critico == 1:
-            chance_critico = random.randrange(0, 8)
+            chance_critico = random.randrange(0, 8) # 1/8
         elif self.ataque_critico == 2:
-            chance_critico = random.randrange(0, 4)
+            chance_critico = random.randrange(0, 4) # 1/4
         elif self.ataque_critico == 3:
-            chance_critico = random.randrange(0, 3)
+            chance_critico = random.randrange(0, 3) # 1/3
         elif self.ataque_critico >= 4:
-            chance_critico = random.randrange(0, 2)
+            chance_critico = random.randrange(0, 2) # 1/2
+        # Se deu 0, então deu a chance:
         if chance_critico == 0:
-            ataque_critico = multiplicador_critico
+            # O ataque_critico agora será aplicado pelo multiplicador critico:
+            ataque_critico = (2 * self.__nivel + 5) / (self.__nivel + 5)
 
-        # modificador = alvos * tempo_meteorológico * Badge * ataque_critico * aleatorio de 0.85 a 1.00 *
-        # bônus de ataque do mesmo tipo * tipo * queimado * outro (não precisa)
+        # Modificador = alvos * tempo_meteorológico * Badge * ataque_critico * aleatorio de 0.85 a 1.00 *
+        # bônus de ataque do mesmo tipo * tipo * queimado * outro
         modificador = 1 * 1 * 1 * ataque_critico * (random.randrange(85, 100)/100) * 1 * 1 * 1 * 1
-        
+        # Fórmula de dano:
         formula = ( (((2 * self.__nivel)/ 5 + 2) * poder * self.__ataque / outro_pokemon.defesa) / 50 + 2) * modificador * acertou
+        # Diz que o resultado deve ser "truncado":
         formula = math.trunc(formula)
+        # A vida do pokémon inimigo será diminuída pela fórmula:
         outro_pokemon.vida -= formula
+        # Retorna o quanto de dano deu e o ataque foi crítico:
         return (formula, True if chance_critico == 0 else False)
 
-    #Para o outro pokemon fugir:
+    # Para o outro pokemon fugir:
     def fugir_de(self, outro_pokemon):
+        # Aumenta por quantas vezes tentou fugir:
         self.__tentou_fugir += 1
+        # Cálculo de tentativa de fuga:
         A = self.__velocidade
         B = outro_pokemon.velocidade
         C = self.__tentou_fugir
         F = ((A * 128/B) + 30 * C) % 256
 
         if random.randrange(0, 255) < F:
+            # Conseguiu fugir:
             self.__fugiu = True
             return True
         else:
-            # não conseguiu
+            # Não conseguiu:
             return False
     
-    # permite que o pokmémon recupere a vida:
+    # Permite que o pokemémon recupere a vida:
     def cura(self, quantidade):
         self.__vida += quantidade
 
-    #getters:
+    # Getters:
     @property
     def pokemon_effects(self):
         return self.__pokemon_effects
@@ -329,24 +363,6 @@ class Pokemon:
 
     @property
     def movimentos(self):
-        """
-        # Somente iremos retornar os movimentos não bloqueados:
-        movimentos_nao_bloqueados = []
-        id_bloqueados = []
-        for i in range(len(self.__movimentos_bloqueados)):
-            # obteremos somente a id do movimento para depois comparar com "in":
-            id_bloqueados.append(self.__movimentos_bloqueados[i])
-
-        for i in range (len(self.__movimentos)):
-            # [0]: id
-            # Se a id do movimento não está na lista de ids de movimentos bloqueados:
-            if not self.__movimentos[0] in id_bloqueados:
-                # adicionamos na lista de movimentos_nao_bloqueados:
-                movimentos_nao_bloqueados.append(self)
-        # por fim, retornar a lista apenas dos movimentos não bloqueados:
-
-        return movimentos_nao_bloqueados
-        """
         return self.__movimentos
 
     
@@ -358,9 +374,11 @@ class Pokemon:
     @deslocamento.setter
     def deslocamento(self, deslocamento):
         self.__deslocamento = deslocamento
-
+    
+    # Retorna a copia dos dados do pokemon:
     def copy(self):
-        return Pokemon(self.__nome, self.__vida, self.__ataque, self.__defesa, self.__velocidade, self.__especial_ataque, self.__especial_defesa, self.__nivel, self.__genero, self.__tipos, self.__conjunto_movimentos, self.itens.copy() , [self.imagem_frente,self.imagem_costas])
+        # Ou seja, essa função retorna uma cópia desse pokémon:
+        return Pokemon(self.__nome, self.__vida_maxima, self.__ataque, self.__defesa, self.__velocidade, self.__especial_ataque, self.__especial_defesa, self.__nivel, self.__genero, self.__tipos, self.__conjunto_movimentos, self.itens.copy() , [self.imagem_frente,self.imagem_costas])
 
     @property
     def nome(self):
@@ -368,6 +386,8 @@ class Pokemon:
 
     @property
     def vida(self):
+        # Se vida for menor que 0, ela retornará 0,
+        # caso contrário vida é igual a vida.
         if self.__vida < 0:
             return 0
         else:
@@ -427,7 +447,7 @@ class Pokemon:
 
 
     # Setters:
-
+    # Adiciona os efeitos:
     def add_effect(self, effect):
         
         place = True
@@ -453,7 +473,9 @@ class Pokemon:
 
     @sumindo.setter
     def sumindo(self, sumindo):
+        # Define se está sumindo:
         self.__sumindo = sumindo
+        # Reseta se está invisível:
         self.__sumido = sumindo
 
     @sumido.setter
@@ -467,7 +489,7 @@ class Pokemon:
     @vida.setter
     def vida(self,vida):
         vida_a_setar = int(vida)
-
+        # A vida não pode ser negativa ou maior que a vida máxima:
         if vida_a_setar < 0:
             vida_a_setar = 0
         elif vida_a_setar > self.__vida_maxima:
@@ -479,7 +501,9 @@ class Pokemon:
     def vida_maxima(self, valor):
         valor = int(valor)
         self.__vida_maxima = valor 
+        # Verifica se a vida é a maior que a vida máxima:
         if self.__vida > self.__vida_maxima:
+            # Se sim, a vida recebe o valor da vida máxima:
             self.__vida = self.__vida_maxima
     
     @ataque.setter

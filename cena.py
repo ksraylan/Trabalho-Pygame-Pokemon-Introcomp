@@ -2,7 +2,9 @@
 class Menu:
     def __init__(self):
         self.__atual = 0
+        # Pokemon que esta sendo escolhido:
         self.__escolhendo_pokemon = 0
+        # Pokemon que está batalhando:
         self.__batalhando = 1
 
     #Getters e setters:
@@ -12,7 +14,7 @@ class Menu:
     @property
     def batalhando(self):
         return self.__batalhando
-    
+    # Define o menu atual:
     @property
     def atual(self):
         return self.__atual
@@ -21,6 +23,7 @@ class Menu:
     def atual(self, valor):
         self.__atual = valor
 
+    # Retorna True se está no menu passado pelo usuário, caso contrário False:
     def no_menu(self, outro_menu):
         return True if self.__atual == outro_menu else False
 
@@ -29,6 +32,7 @@ class Submenu:
     def __init__(self):
         self.__atual = 0
         self.__principal = 0
+        # O ataque que será escolhido:
         self.__escolhendo_ataque = 1
     
     # Getters e setters:
@@ -59,10 +63,11 @@ class Submenu:
     def itens(self):
         return 6
     
-    
+    # Define o sub menu atual:
     @atual.setter
     def atual(self, valor):
         self.__atual = valor
 
+    # Retorna True se está no sub menu passado pelo usuário, caso contrário False:
     def no_submenu(self, outro_menu):
         return True if self.__atual == outro_menu else False

@@ -1,7 +1,7 @@
 # Determina os itens que são usados pelo pokémon:
 class Itens:
 
-    # itens que se usam na batalha:
+    # Itens que se usam na batalha:
     @property
     def dire_hit(self):
         # Aumenta a proporção de acertos críticos de Pokémon em batalha. Esmaece se o Pokémon for retirado.
@@ -30,10 +30,6 @@ class Itens:
     def x_speed(self):
         # Aumenta a estatística do "SPEED" do Pokémon em batalha. Esmaece se o Pokémon for retirado.
         return [6, "X Speed"]
-
-
-    # alimentos:
-
     @property
     def berry_juice(self):
         # Ele restaura o HP de um Pokémon em 20 pontos.

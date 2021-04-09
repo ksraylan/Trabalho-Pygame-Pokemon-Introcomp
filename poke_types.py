@@ -2,7 +2,7 @@
 class Types:
     def __init__(self):
         pass
-    # Getters:
+    # Getters dos movimentos:
     @property
     def normal(self):
         return "Normal"

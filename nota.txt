@@ -1,7 +1,7 @@
 - Obrigatório: -
 
 Orientação a Objetos - 1,0 - OK
-Comentários - 0,5 - falta comentar tudo
+Comentários - 0,5 - OK
 Funções - 0,5 - OK
 Menu Inicial - 1,0 - OK
 Exibir Interface - 2,0 - OK
@@ -19,4 +19,4 @@ Bolsa com Poções - 1,0 - OK
 PVE - 1,0 - OK
 Arquivos - 1,0 OK
 
-NOTA = notaObrigatoria + (notaExtra * notaObrigatoria) / 10:#
+NOTA = notaObrigatoria + (notaExtra * notaObrigatoria) / 10
