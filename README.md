@@ -1,4 +1,4 @@
-# Trabalho-Pygame-Pokemon-Introcomp
+# Trabalho Pokémon (Pygame): Introcomp 2020
 
 ![alt print](image.png)
 
