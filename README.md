@@ -4,9 +4,11 @@
 
 Trabalho feito pelos alunos do Introcomp 2020:<br>
 Nomes:
-<ul>Antonella dos Santos Mota (Anto)</ul>
-<ul>Raylan Klitzke Schultz (Nerdedscience)</ul>
-<ul>Sara Zanetti (SZtti)</ul>
+<ul>
+<li>Antonella dos Santos Mota (Anto)</li>
+<li>Raylan Klitzke Schultz (Nerdedscience)</li>
+<li>Sara Zanetti (SZtti)</li>
+</ul>
 <br><b>Descrição: </b>É uma versão atualizada e modificada do Pokémon 3° geração (Fire Red). Onde é possível encontrar características originais do jogo e outras bem criativas.<br><br>
 <b>Como jogar: </b>Escolha um Pokémon de sua preferência, escolha um ato (ação, fuga, bolsa) para que o Pokémon o exerça, escolha o movimento ou poção e tente derrote seu oponente.<br><br>
 <b>Observação: </b>Existe Easter Egg, o descubra e aproveite. O jogo não é 100% parecido com o original, é necessário notar que foi feito por alunos que nunca jogaram qualquer tipo de jogo de pokémons.<br><br>
