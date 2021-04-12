@@ -4,6 +4,9 @@
 
 Trabalho feito pelos alunos do Introcomp 2020:
 Nomes: 
+* Antonella dos Santos Mota (Anto)
+* Raylan Klitzke Schultz (Nerdedscience)
+* Sara Zanetti (SZtti)
 
 Descrição: É uma versão atualizada e modificada do Pokémon 3° geração (Fire Red). Onde é possível encontrar características originais do jogo e outras bem criativas.
 
