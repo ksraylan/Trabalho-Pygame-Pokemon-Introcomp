@@ -23,5 +23,3 @@ class EasterEgg:
             return True
         else:
             return False
-
-    

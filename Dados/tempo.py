@@ -1,9 +1,9 @@
-#Atua em tudo que envolve tempo no jogo:
+# Atua em tudo que envolve tempo no jogo:
 class Tempo:
-    def __init__(self, milisegundos = 0):
+    def __init__(self, milisegundos=0):
         # Milisegundos:
         self.__milisegundos = milisegundos
-        # Etapas de cada turno (usado na função process_turns em main.py)
+        # Etapas de cada turno (usado na função process_turns em main.py):
         self.__etapa_turno = 0
         # Tem por quanto tempo o pokémon está visível ou invisível:
         self.__sumido_tempo = 0
@@ -13,7 +13,7 @@ class Tempo:
         # acontecendo:
         self.__mensagem_tempo = 0
 
-    #Getters:
+    # Getters:
     @property
     def mensagem_tempo(self):
         return self.__mensagem_tempo
@@ -21,7 +21,7 @@ class Tempo:
     @property
     def fim_de_jogo_tempo(self):
         return self.__fim_de_jogo_tempo
-#
+
     @property
     def milisegundos(self):
         return self.__milisegundos
@@ -54,15 +54,15 @@ class Tempo:
     # Acrescenta mais uma etapa no turno:
     def etapa_turno_incrementa(self):
         self.__etapa_turno += 1
-    
+
     # Reseta o turno:
     def etapa_turno_reseta(self):
         self.__etapa_turno = 0
 
-    # soma milisegundos com o valor (delta):
+    # Soma milisegundos com o valor (delta):
     def adicionar(self, valor):
         self.__milisegundos += valor
-    
-    # reseta os milisegundos para 0:
+
+    # Reseta os milisegundos para 0:
     def resetar(self):
         self.__milisegundos = 0
