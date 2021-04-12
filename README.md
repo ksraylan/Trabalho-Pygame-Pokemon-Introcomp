@@ -14,6 +14,11 @@ Como jogar: Escolha um Pokémon de sua preferência, escolha um ato (ação, fug
 
 Observação: Existe Easter Egg, o descubra e aproveite. O jogo não é 100% parecido com o original, é necessário notar que foi feito por alunos que nunca jogaram qualquer tipo de jogo de pokémons.
 
+<b>Como abrir o jogo</b>
+Você pode abrir ele indo no terminal do seu sistema operacional e digitar python main.py.
+Necessário ter instalado o python (versão 3.0 ou superior) e a biblioteca pygame.
+
+
 Classificação indicativa: Livre.
 
 Recomendação: Divirta-se jogando.
