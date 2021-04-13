@@ -9,7 +9,7 @@ import pygame
 import Dados.arquivos as arq
 # Cena: menu e sub menu atual:
 import Dados.cena as cena
-# Importandos as cores que temos:
+# Importando as cores que temos:
 import Dados.cores as cor
 # Possui as configurações da janela:
 import Dados.janela as janela
@@ -83,7 +83,7 @@ def main():
 
     # Lista dos pokémons e seus movimentos e outras propriedades:
     # Ver a classe Pokémon localizada em pokemon.py para mais informações.
-    # Picachu:
+    # Pikachu:
     pk_pikachu = Pokemon("Pikachu", 35, 55, 40, 90, 50, 50, 15, 50,
                          [tipos.normal], [moves.growl, moves.thunder_shock, moves.tail_whip, moves.thunder_wave],
                          itens_usados.copy(),
@@ -197,7 +197,7 @@ def main():
                         # Remove ele, ai quando remover vai "reorganizar" a lista, ou seja, não vai ter
                         # "espaços vazios":
                         t.pop(s)
-                # Agora a gente avança para o próximo caractere de novo a partidar do espaço, ou seja, começaremos
+                # Agora a gente avança para o próximo caractere de novo a partir do espaço, ou seja, começaremos
                 # do primeiro caractere da palavra:
                 i = s + 1
                 # E resetamos o último espaço:
@@ -352,13 +352,13 @@ def main():
         # Se estiver no menu de escolha de pokémons:      
         if menu.no_menu(menu.escolhendo_pokemon):
             # Renderiza a fonte:
-            superf = arq.fonte.render("Escolha o seu pokémon", False, cor.BRANCO)
+            superficie = arq.fonte.render("Escolha o seu pokémon", False, cor.BRANCO)
             # Obtém o tamanho:
-            superf_rect = superf.get_rect()
+            superficie_rect = superficie.get_rect()
             # Centraliza ela no meio horizontal (x, y):
-            superf_rect.center = (width_dividido, 10 * escala)
+            superficie_rect.center = (width_dividido, 10 * escala)
             # Coloca na tela a mesma:
-            janela.tela.blit(superf, superf_rect)
+            janela.tela.blit(superficie, superficie_rect)
 
             # Posição y da seta dentro do retângulo:
             li = (e_n * pos.y) + e_n
@@ -374,15 +374,15 @@ def main():
             # Loop que vai percorrer a lista com os nomes dos pokémons:
             for i in range(len(pokemons_pode_escolher)):
                 # Aqui vamos criar um texto com o pokémon "i" (o "i" que vai até o range do loop):
-                superf = arq.fonte.render(pokemons_pode_escolher[i].nome, False,
-                                          cores_pode_escolher[i])
+                superficie = arq.fonte.render(pokemons_pode_escolher[i].nome, False,
+                                              cores_pode_escolher[i])
                 # Pegaremos as dimensões do texto que criamos acima:
-                superf_rect = superf.get_rect()
+                superficie_rect = superficie.get_rect()
                 # Colocaremos no centro, e pegamos o espaçamento e multiplicamos por "i",
                 # para os nomes dos pokémons irem para baixo e não ficarem um em cima do outro:
-                superf_rect.center = (janela.tamanho[0] / 2, 20 * escala + e_n + i * e_n)
+                superficie_rect.center = (janela.tamanho[0] / 2, 20 * escala + e_n + i * e_n)
                 # Por fim, mostraremos na tela o texto:
-                janela.tela.blit(superf, superf_rect)
+                janela.tela.blit(superficie, superficie_rect)
 
             # Desenharemos na tela o retângulo branco que fica em volta dos nomes:
             pygame.draw.rect(janela.tela, cor.BRANCO, ((menu_espacamento[0], menu_espacamento[1]), (
@@ -514,8 +514,8 @@ def main():
                     x = 0
                     y = 0
                     # Esse será o espaçamento x e y entre cada movimento:
-                    espac_x = janela.tamanho[0] / 2 - janela.tamanho[0] / 5
-                    espac_y = 13 * escala
+                    espacamento_x = janela.tamanho[0] / 2 - janela.tamanho[0] / 5
+                    espacamento_y = 13 * escala
                     # Percorre cada movimento:
                     for i in range(len(pokemons[0].movimentos)):
                         # Pega o id dele:
@@ -527,19 +527,19 @@ def main():
                         # Se ele não estiver na lista de movimentos bloqueados:
                         if id_movimento not in id_bloqueados:
                             # Desenha o nome do movimento com a cor preta:
-                            superf = arq.fonte_escolher_move.render(str(nome_movimento), False, cor.PRETO)
+                            superficie = arq.fonte_escolher_move.render(str(nome_movimento), False, cor.PRETO)
                         # Caso esteja:
                         else:
                             # Desenha com a cor vermelha:
-                            superf = arq.fonte_escolher_move.render(str(nome_movimento), False, cor.VERMELHO)
+                            superficie = arq.fonte_escolher_move.render(str(nome_movimento), False, cor.VERMELHO)
 
                         # Pega o tamanho do nome do movimento:
-                        superf_rect = superf.get_rect()
+                        superficie_rect = superficie.get_rect()
                         # Posiciona na posição certa:
-                        superf_rect.topleft = (
-                            15 * escala + (espac_x * x), janela.tamanho[1] - (36 * escala) + (espac_y * y))
+                        superficie_rect.topleft = (
+                            15 * escala + (espacamento_x * x), janela.tamanho[1] - (36 * escala) + (espacamento_y * y))
                         # Mostra ele na tela
-                        janela.tela.blit(superf, superf_rect)
+                        janela.tela.blit(superficie, superficie_rect)
                         # Agora o próximo item vai começar na próxima posição x:
                         x += 1
                         # Mas se a próxima posição x for maior que 2:
@@ -549,8 +549,8 @@ def main():
                             # Pois agora o próximo nome do item será mostrado em baixo:
                             y += 1
                     # Posição x e y da seta:
-                    ly = (espac_y * pos.y)
-                    lx = (espac_x * pos.x)
+                    ly = (espacamento_y * pos.y)
+                    lx = (espacamento_x * pos.x)
 
                     # Posição inicial da seta:
                     pos_inicial = (7 * escala, janela.tamanho[1] - 35 * escala)
@@ -631,14 +631,14 @@ def main():
                         # Texto será o símbolo de masculino e a cor azul:
                         texto, a_cor = "♂", cor.AZUL
                     # Fonte do símbolo:
-                    simb_2 = arq.fonte.render(texto, False, a_cor)
+                    simbolo_2 = arq.fonte.render(texto, False, a_cor)
                     # Tamanho:
-                    simb_2_rect = simb_2.get_rect()
+                    simbolo_2_rect = simbolo_2.get_rect()
                     # Posição:
-                    simb_2_rect.left = poke_2_rect.width + poke_2_rect.x
-                    simb_2_rect.top = poke_2_rect.y
+                    simbolo_2_rect.left = poke_2_rect.width + poke_2_rect.x
+                    simbolo_2_rect.top = poke_2_rect.y
                     # Mostrando na tela:
-                    janela.tela.blit(simb_2, simb_2_rect)
+                    janela.tela.blit(simbolo_2, simbolo_2_rect)
 
                     # Barras de vida:
 
@@ -718,14 +718,14 @@ def main():
                         # Texto será o símbolo de masculino e a cor azul:
                         texto, a_cor = "♂", cor.AZUL
                     # Fonte do símbolo do gênero do seu pokémon
-                    simb_1 = arq.fonte.render(texto, False, a_cor)
+                    simbolo_1 = arq.fonte.render(texto, False, a_cor)
                     # Obtendo o tamanho do símbolo:
-                    simb_1_rect = simb_1.get_rect()
+                    simbolo_1_rect = simbolo_1.get_rect()
                     # Colocando na posição certa (ao lado do nome dele):
-                    simb_1_rect.left = poke_1_rect.width + poke_1_rect.x
-                    simb_1_rect.top = poke_1_rect.y
+                    simbolo_1_rect.left = poke_1_rect.width + poke_1_rect.x
+                    simbolo_1_rect.top = poke_1_rect.y
                     # Mostrando na tela o símbolo:
-                    janela.tela.blit(simb_1, simb_1_rect)
+                    janela.tela.blit(simbolo_1, simbolo_1_rect)
 
                     # Barra de vida amarela:
                     if pokemons[0].vida_anim <= pokemons[0].vida_maxima / 2:
@@ -795,7 +795,7 @@ def main():
         menu_funcao.atual = menu_funcao.batalhando
         # Muda também o sub menu para ser o principal:
         sub_menu_funcao.atual = sub_menu_funcao.principal
-        # Obtém através da posição do cursor o pokémon que foi escolhiido pelo usuário:
+        # Obtém através da posição do cursor o pokémon que foi escolhido pelo usuário:
         pokemons[0] = pokemons_pode_escolher[pos.i].copy()
         # Pokémon inimigo aleatório:
         pokemons[1] = pokemons_pode_escolher[random.randrange(0, len(pokemons_pode_escolher))].copy()
@@ -906,7 +906,7 @@ def main():
         # A gente pega a categoria que o usuário escolheu, a outra é a categoria do "computador":
         movimento_ia, categoria_ia, = randomizar_acao(pokemons[1])
 
-        # Aqui primeiro vemos qual pokémon fazerá suas ações primeiro:
+        # Aqui primeiro vemos qual pokémon vai fazer suas ações primeiro:
         # Pela prioridade de item:
         if category.item_move == categoria_ia and not categoria == category.item_move:
             # Primeiro o computador:
@@ -994,7 +994,7 @@ def main():
     def processar_logica(delta_funcao, tempo_funcao, menu_funcao, sub_menu_funcao):
         # Se o menu atual for o de batalha:
         if menu_funcao.atual == menu_funcao.batalhando:
-            # Faz a animação texto passando quandos milisegundos passaram (delta):
+            # Faz a animação texto passando quantos milisegundos passaram (delta):
             tempo_funcao.mensagem_tempo += delta_funcao
 
             # Aqui serão executados as funções que atualizam o tamanho da animação da
@@ -1092,8 +1092,8 @@ def main():
                             process_turns(turnos, mensagem, tempo_funcao)
                         else:
                             # Caso não temos turnos para serem processados agora:
-                            # Se estiver no sub menu de fazendo acoes, ou seja, de mostrando que ações estão sendo
-                            # feitas:
+                            # Se estiver no sub menu de fazendo ações, ou seja, o sub menu que mostra que ações estão
+                            # sendo feitas:
                             if sub_menu_funcao.atual == sub_menu_funcao.fazendo_acoes:
                                 # Se o seu pokémon está bloqueado, então ele deve fazer simplesmente nada:
                                 if pokemons[0].bloqueado:
@@ -1190,7 +1190,7 @@ def main():
                     tempo_funcao.etapa_turno_incrementa()
                 # Segunda etapa:
                 elif tempo_funcao.etapa_turno == 1:
-                    # Animação básica, assim fazerá o pokémon ficar "sumindo" e "voltando":
+                    # Animação básica, assim vai fazer o pokémon ficar "sumindo" e "voltando":
                     if not move[0] == moves.fugir[0]:
                         pokemon_a_tomar.sumindo = True
                     else:

@@ -42,7 +42,7 @@ class Pos:
         if i > self.__i_limit:  # Se passou do limite:
             # Volta para dentro do limite:
             i = self.__i_limit
-        # Por úlimo, define o item selecionado:
+        # Por último, define o item selecionado:
         self.__i = i
 
     # Getter e setter:

@@ -9,7 +9,7 @@ class Effect:
     def leech_seed(self):
         # {id, quantos turnos precisa passar antes do efeito começar a funcionar,
         # para_depois de quantos turnos, prioridade (True = antes do seu movimento, False = depois do seu movimento)}
-        # sem dicionarios seria: return [0, -1, None, True]
+        # sem dicionários seria: return [0, -1, None, True]
         # usar dicionários é melhor:
         return {"id": 0,
                 "offset": 0,  # logo quando pegar o efeito começará a funcionar

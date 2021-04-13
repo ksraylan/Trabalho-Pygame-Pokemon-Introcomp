@@ -28,7 +28,6 @@ img_text_bar = pygame.image.load('Dados/Recursos/Sprites/SpritesInterface/text_b
 img_vida_amarela = pygame.image.load('Dados/Recursos/Sprites/SpritesInterface/vida_amarela.png').convert_alpha()
 img_vida_vermelha = pygame.image.load('Dados/Recursos/Sprites/SpritesInterface/vida_vermelha.png').convert_alpha()
 img_bag = pygame.image.load('Dados/Recursos/Sprites/SpritesInterface/bag_1.png').convert_alpha()
-img_bag_arrow = pygame.image.load('Dados/Recursos/Sprites/SpritesInterface/bag_arrow.png').convert_alpha()
 
 # Depois disso a gente aumenta o tamanho deles de acordo com a escala:
 img_pp_bar = pygame.transform.scale(img_pp_bar, (int(240 * escala), int(48 * escala)))
@@ -36,7 +35,6 @@ img_vida_amarela = pygame.transform.scale(img_vida_amarela, (int(9 * escala), in
 img_vida_vermelha = pygame.transform.scale(img_vida_vermelha, (int(9 * escala), int(3 * escala)))
 img_barra_sem_vida = pygame.transform.scale(img_barra_sem_vida, (int(9 * escala), int(3 * escala)))
 img_bag = pygame.transform.scale(img_bag, (int(240 * escala), int(160 * escala)))
-img_bag_arrow = pygame.transform.scale(img_bag_arrow, (int(20 * escala), int(20 * escala)))
 img_barra1 = pygame.transform.scale(img_barra1, (int(101 * escala), int(29 * escala)))
 img_barra2 = pygame.transform.scale(img_barra2, (int(104 * escala), int(39 * escala)))
 img_opcoes_batalha = pygame.transform.scale(img_opcoes_batalha, (int(120 * escala), int(48 * escala)))
@@ -73,27 +71,17 @@ def carregar_imagem_easter_egg(nome):
 
 # Carregando os efeitos sonoros:
 som_Batalha = pygame.mixer.Sound("Dados/Recursos/Sprites/SonsPokemon/batalha.wav")
-som_Flamethrower = pygame.mixer.Sound("Dados/Recursos/Sprites/SonsPokemon/Flamethrower.wav")
-som_Bite = pygame.mixer.Sound("Dados/Recursos/Sprites/SonsPokemon/Bite.wav")
 som_Confusion = pygame.mixer.Sound("Dados/Recursos/Sprites/SonsPokemon/Confusion.wav")
 som_derrota = pygame.mixer.Sound("Dados/Recursos/Sprites/SonsPokemon/derrota.wav")
-som_Dual_Chop = pygame.mixer.Sound("Dados/Recursos/Sprites/SonsPokemon/Dual_Chop.wav")
 som_Ember = pygame.mixer.Sound("Dados/Recursos/Sprites/SonsPokemon/Ember.wav")
 som_menu_mudou = pygame.mixer.Sound("Dados/Recursos/Sprites/SonsPokemon/firered_0005.wav")
-som_menu_escolheu = pygame.mixer.Sound("Dados/Recursos/Sprites/SonsPokemon/firered_0030.wav")
-som_Hydro_Pump = pygame.mixer.Sound("Dados/Recursos/Sprites/SonsPokemon/Hydro_Pump.wav")
 som_Hypnosis = pygame.mixer.Sound("Dados/Recursos/Sprites/SonsPokemon/Hypnosis.wav")
 som_Lick = pygame.mixer.Sound("Dados/Recursos/Sprites/SonsPokemon/Lick.wav")
-som_Megahorn = pygame.mixer.Sound("Dados/Recursos/Sprites/SonsPokemon/Megahorn.wav")
-som_Quick_Attack = pygame.mixer.Sound("Dados/Recursos/Sprites/SonsPokemon/Quick_Attack.wav")
-som_Razor = pygame.mixer.Sound("Dados/Recursos/Sprites/SonsPokemon/Razor_Leaf.wav")
-som_Recover = pygame.mixer.Sound("Dados/Recursos/Sprites/SonsPokemon/Recover.wav")
 som_Stomp = pygame.mixer.Sound("Dados/Recursos/Sprites/SonsPokemon/Stomp.wav")
 som_Tackle = pygame.mixer.Sound("Dados/Recursos/Sprites/SonsPokemon/Tackle.wav")
 som_Thunder_Shock = pygame.mixer.Sound("Dados/Recursos/Sprites/SonsPokemon/Thunder_Shock.wav")
 som_Twister = pygame.mixer.Sound("Dados/Recursos/Sprites/SonsPokemon/Twister.wav")
 som_vitoria = pygame.mixer.Sound("Dados/Recursos/Sprites/SonsPokemon/vitoria.wav")
-som_Thunder = pygame.mixer.Sound("Dados/Recursos/Sprites/SonsPokemon/Thunder.wav")
 
 # Também a gente carrega as fontes, aumentando elas também de acordo com a escala, cada fonte
 # tem um tamanho diferente de acordo com nossas necessidades:

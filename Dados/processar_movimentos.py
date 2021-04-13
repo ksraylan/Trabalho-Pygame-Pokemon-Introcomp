@@ -16,18 +16,18 @@ def process_moves(pokemon_a_fazer, pokemon_a_tomar, move, mensagem, moves, tipos
         # Growl reduz o Ataque do alvo em um estágio:
         pokemon_a_tomar.ataque -= 1
         # Mostra a mensagem:
-        mensagem.texto = "O ataque de {} diminuiu".format(pokemon_a_tomar.nome)
+        mensagem.texto = "Ataque de {} diminuiu".format(pokemon_a_tomar.nome)
     elif move == moves.thunder_shock[0]:
         # Processa o damage e mostra se errou e o quanto de vida tirou:
         funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar, 40, 100), mensagem)
         # O pokémon só é bloqueado se não for um pokémon elétrico:
-        if num <= 10 * precisao and tipos.electric not in pokemon_a_tomar.tipos:  # 10% de chance de ser paralizado:
+        if num <= 10 * precisao and tipos.electric not in pokemon_a_tomar.tipos:  # 10% de chance de ser paralisado:
             # Bloqueado por 1 turno somente se ainda não foi bloqueado:
             if not pokemon_a_tomar.bloqueado:
                 pokemon_a_tomar.bloqueado = 1
                 # É reduzido a velocidade dele:
                 pokemon_a_tomar.velocidade -= 50 * pokemon_a_fazer.velocidade / 100  # 75%
-                mensagem.texto += " e foi paralizado"
+                mensagem.texto += " e foi paralisado"
         # Reproduz o efeito sonoro desse movimento:
         arq.som_Thunder_Shock.play()
     elif move == moves.tail_whip[0]:
@@ -39,21 +39,16 @@ def process_moves(pokemon_a_fazer, pokemon_a_tomar, move, mensagem, moves, tipos
         pokemon_a_tomar.bloqueado = 1
         # A velocidade é reduzida em 75%:
         pokemon_a_tomar.velocidade -= 75 * pokemon_a_fazer.velocidade / 100
-        mensagem.texto = "{} ficou paralisado".format(pokemon_a_tomar.nome)
+        mensagem.texto = "{} ficou bloqueado".format(pokemon_a_tomar.nome)
     elif move == moves.metal_claw[0]:
         # Processa o damage e mostra se errou e o quanto de vida tirou:
         funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar, 50, 95), mensagem)
         if num <= 10 * precisao:  # 10% de chance de seu ataque ser diminuído:
             pokemon_a_fazer.ataque -= 1
-    elif move == moves.bubble[0]:
-        # Processa o damage e mostra se errou e o quanto de vida tirou e reduz a velocidade:
-        funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar, 40, 100), mensagem)
-        if num <= 10 * precisao:  # 10% de chance de sua velocidade diminuir:
-            pokemon_a_tomar.velocidade -= 1
     elif move == moves.barrier[0]:
         # Aumenta a defesa do seu pokémon:
         pokemon_a_fazer.defesa += 2
-        mensagem.texto = "{} aumentou sua defesa".format(pokemon_a_fazer.nome)
+        mensagem.texto = "{} aumentou a defesa".format(pokemon_a_fazer.nome)
     elif move == moves.scratch[0]:
         # Processa o damage e mostra se errou e o quanto de vida tirou:
         funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar, 40, 100), mensagem)
@@ -64,7 +59,7 @@ def process_moves(pokemon_a_fazer, pokemon_a_tomar, move, mensagem, moves, tipos
         arq.som_Tackle.play()
     elif move == moves.leech_seed[0]:
         # Drena 1/8 do HP máximo:
-        # Só funciona se o pokémon ininigo não é do tipo "grass":
+        # Só funciona se o pokémon inimigo não é do tipo "grass":
         if tipos.grass not in pokemon_a_tomar.tipos:
             # Adiciona o efeito:
             pokemon_a_tomar.add_effect(effect.leech_seed)
@@ -90,7 +85,7 @@ def process_moves(pokemon_a_fazer, pokemon_a_tomar, move, mensagem, moves, tipos
         # Aumenta a defesa em 1 estágio
         pokemon_a_fazer.defesa += 1
         # Mostra que aumentou:
-        mensagem.texto = "{} teve a defesa aumentada".format(pokemon_a_fazer.nome)
+        mensagem.texto = "{} aumentou a defesa".format(pokemon_a_fazer.nome)
 
     elif move == moves.fury_attack[0]:
         # Probabilidade de 1 a 8
@@ -115,7 +110,7 @@ def process_moves(pokemon_a_fazer, pokemon_a_tomar, move, mensagem, moves, tipos
         for i in range(hits):
             pokemon_a_fazer.atacar(pokemon_a_tomar, 15, 100)
 
-        mensagem.texto = "{} tomou {} ataques".format(pokemon_a_tomar.nome, hits)
+        mensagem.texto = "{} tomou {} golpes".format(pokemon_a_tomar.nome, hits)
 
     elif move == moves.horn_attack[0]:
         # Processa o damage e mostra se errou e o quanto de vida tirou:
@@ -177,7 +172,7 @@ def process_moves(pokemon_a_fazer, pokemon_a_tomar, move, mensagem, moves, tipos
                 pokemon_a_fazer.vida_maxima -= pokemon_a_fazer.vida_maxima / 2
 
                 # Mostra o que aconteceu:
-                mensagem.texto = "{} teve HP máximo reduzido".format(pokemon_a_tomar.nome)
+                mensagem.texto = "{} ficou amaldiçoado".format(pokemon_a_tomar.nome)
 
                 # Se tem menos da metade da vida máxima, seu pokémon desmaia:
                 if pokemon_a_fazer.vida < pokemon_a_fazer.vida_maxima/2:
@@ -189,12 +184,12 @@ def process_moves(pokemon_a_fazer, pokemon_a_tomar, move, mensagem, moves, tipos
             pokemon_a_fazer.velocidade -= 1
             pokemon_a_fazer.ataque += 1
             pokemon_a_fazer.defesa += 1
-            mensagem.texto = "{} teve estados aumentads".format(pokemon_a_fazer.nome)
+            mensagem.texto = "{} teve estados aumentados".format(pokemon_a_fazer.nome)
 
     elif move == moves.leer[0]:
-        # A defesa do alvo diminu em 1 estágio:
+        # A defesa do alvo diminui em 1 estágio:
         pokemon_a_tomar.defesa -= 1
-        mensagem.texto = "{} teve sua defesa diminuida".format(pokemon_a_tomar.nome)
+        mensagem.texto = "Defesa de {} diminuiu".format(pokemon_a_tomar.nome)
 
     elif move == moves.twister[0]:
         # Processa o damage e mostra se errou e o quanto de vida tirou e o alvo tem chance de vacilar de 30%:
@@ -234,7 +229,7 @@ def process_moves(pokemon_a_fazer, pokemon_a_tomar, move, mensagem, moves, tipos
             # Adiciona o movimento como bloqueado:
             pokemon_a_tomar.adicionar_movimento_bloqueado(pokemon_a_tomar.ultimo_movimento_id, turnos_a_desativar)
             # Mostra o que aconteceu:
-            mensagem.texto = "{} teve seu último movimento desativado".format(pokemon_a_tomar.nome)
+            mensagem.texto = "Último movimento desativado ({})".format(pokemon_a_tomar.nome)
         else:
             # Mostra que não funcionou:
             mensagem.texto = "mas não funcionou"

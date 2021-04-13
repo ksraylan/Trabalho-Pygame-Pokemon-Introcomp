@@ -48,7 +48,7 @@ class Pokemon:
             # Caso seja carrega as imagens do Easter Egg:
             imagens = arq.carregar_imagem_easter_egg(imagem_id)
 
-        # Coloa as imagens correspondentes:
+        # Coloca as imagens correspondentes:
         self.__imagem_costas = imagens[1]
         self.__imagem_frente = imagens[0]
         self.__tentou_fugir = 0
@@ -112,7 +112,7 @@ class Pokemon:
         self.circulo_offset = 1
 
     def pos_offset_parar(self):
-        # Resetar a animação do pokémon se mexendo:
+        # Reseta a animação do pokémon se mexendo:
         self.pos_offset = 0
         self.pos_offset_descendo = True
 
@@ -263,7 +263,7 @@ class Pokemon:
             self.__vida_anim = self.__vida_maxima
         # Verifica se a vida animada é menor que zero:
         elif self.__vida_anim < 0:
-            # Sendo a afirmção efetivada, a vida animada reseta:
+            # Sendo a afirmação efetivada, a vida animada reseta:
             self.__vida_anim = 0
 
     @vida_anim.setter
@@ -348,7 +348,7 @@ class Pokemon:
         while i < len(self.__pokemon_effects):
             # Obtenha um efeito da lista de efeitos do pokémon atual:
             effect_pokemon = self.__pokemon_effects[i]
-            # Agora é necessario verificar o efeito para o pokémon
+            # Agora é necessário verificar o efeito para o pokémon
             # se é igual a corrente de prioridade (True: antes dos turnos; False: depois
             # dos turnos.):
             if self.__pokemon_effects[i]["priority"] is priority:
@@ -370,7 +370,7 @@ class Pokemon:
         return lista_mensagens
 
     def __process_one_effect(self, pokemon_effects, enemy_pokemon, lista_mensagens):
-        # Obtem da lista todos os efeitos que existem no código "effect.py":
+        # Obtém da lista todos os efeitos que existem no código "effect.py":
         effects = self.effects
         # Agora,verifica se o efeito real é igual a um efeito, se sim, faça um
         # coisa específica:
@@ -431,9 +431,9 @@ class Pokemon:
             # O ataque_critico agora será aplicado pelo multiplicador critico:
             ataque_critico = (2 * self.__nivel + 5) / (self.__nivel + 5)
 
-        # Modificador = alvos * tempo_meteorológico * Badge * ataque_critico * aleatorio de 0.85 a 1.00 *
+        # Modificador = alvos * tempo_meteorológico * Badge * ataque_critico * aleatório de 0.85 a 1.00 *
         # bônus de ataque do mesmo tipo * tipo * queimado * outro
-        modificador = 1 * 1 * 1 * ataque_critico * (random.randrange(85, 100) / 100) * 1 * 1 * 1 * 1
+        modificador = ataque_critico * (random.randrange(85, 100) / 100)
         # Fórmula de dano:
         formula = ((((
                              2 * self.__nivel) / 5 + 2) * poder * self.__ataque / outro_pokemon.defesa) /
@@ -463,7 +463,7 @@ class Pokemon:
             # Não conseguiu:
             return False
 
-    # Permite que o pokemémon recupere a vida:
+    # Permite que o pokémom recupere a vida:
     def cura(self, quantidade):
         self.__vida += quantidade
 
@@ -602,14 +602,14 @@ class Pokemon:
 
     @vida.setter
     def vida(self, vida):
-        vida_a_setar = int(vida)
+        vida_a_colocar = int(vida)
         # A vida não pode ser negativa ou maior que a vida máxima:
-        if vida_a_setar < 0:
-            vida_a_setar = 0
-        elif vida_a_setar > self.__vida_maxima:
-            vida_a_setar = self.__vida_maxima
+        if vida_a_colocar < 0:
+            vida_a_colocar = 0
+        elif vida_a_colocar > self.__vida_maxima:
+            vida_a_colocar = self.__vida_maxima
 
-        self.__vida = vida_a_setar
+        self.__vida = vida_a_colocar
 
     @vida_maxima.setter
     def vida_maxima(self, valor):
