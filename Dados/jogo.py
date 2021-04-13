@@ -1,10 +1,8 @@
 # Importações:
 # Biblioteca que randomiza números:
 import random
-
 # Biblioteca mais importante, sem ela não poderíamos renderizar imagens na tela:
 import pygame
-
 # Arquivos com imagens, sons, etc.
 import Dados.arquivos as arq
 # Cena: menu e sub menu atual:
@@ -736,8 +734,8 @@ def main():
                         # Mostrando:
                         janela.tela.blit(img_vida_amarela_esticada, (janela.tamanho[0] - 62 * escala +
                                                                      pokemons[1].circulo_offset * janela.tamanho[0],
-                                                                     janela.tamanho[1] - 69 * escala +
-                                                                     pokemons[1].pos_offset * -1 * escala))
+                                                                     round(janela.tamanho[1] - 69 * escala +
+                                                                     pokemons[1].pos_offset * -1 * escala)))
                     # Vida vermelha:
                     if pokemons[0].vida_anim <= pokemons[0].vida_maxima / 5:
                         img_vida_vermelha_esticada = pygame.transform.scale(arq.img_vida_vermelha,
@@ -748,8 +746,8 @@ def main():
                         janela.tela.blit(img_vida_vermelha_esticada, (janela.tamanho[0] -
                                                                       62 * escala + pokemons[1].circulo_offset *
                                                                       janela.tamanho[0],
-                                                                      janela.tamanho[1] - 69 * escala +
-                                                                      pokemons[1].pos_offset * -1 * escala))
+                                                                      round(janela.tamanho[1] - 69 * escala +
+                                                                      pokemons[1].pos_offset * -1 * escala)))
                     # "Vida vazia":
                     x, width = barra_sem_vida_calculo_escala(janela.tamanho[0] - 62 * escala +
                                                              barra_width * (pokemons[0].vida_anim /
@@ -757,14 +755,15 @@ def main():
                                                              (arq.img_barra_sem_vida.get_width() + (escala * 39)) *
                                                              (pokemons[0].vida_maxima - pokemons[0].vida_anim) /
                                                              pokemons[0].vida_maxima, 0)
-                    # Desenharemos na tela a imagem de barra da parte sem vida:
+                    # Desenharemos na tela a imagem de barra da parte sem vida (tamanho):
                     img_barra_sem_vida_esticada = pygame.transform.scale(arq.img_barra_sem_vida,
                                                                          (width,
                                                                           arq.img_barra_sem_vida.get_height()))
                     # Mostrando a "vida vazia":
                     janela.tela.blit(img_barra_sem_vida_esticada, (
-                        x + pokemons[1].circulo_offset * janela.tamanho[0], janela.tamanho[1] - 69 * escala +
-                        pokemons[1].pos_offset * -1 * escala))
+                        x + pokemons[1].circulo_offset * janela.tamanho[0], round(janela.tamanho[1] - 69 * escala +
+                                                                                  pokemons[
+                                                                                      1].pos_offset * -1 * escala)))
                     # Mostrando o nível do pokémon:
                     nivel = arq.fonte_escolher_move.render(str(pokemons[0].nivel), False, cor.PRETO)
                     nivel_rect = nivel.get_rect()
@@ -1007,7 +1006,7 @@ def main():
 
             # Aqui é a animação do texto:
             # Se passou mais de 25 milisegundos:
-            if tempo_funcao.mensagem_tempo > 25:
+            while tempo_funcao.mensagem_tempo > 25:
                 # A gente subtrai 25 milisegundos para resetar esse tempo:
                 tempo_funcao.mensagem_tempo -= 25
                 # E se a última posição do texto (quantidade de caracteres exibidos) for menor do que
@@ -1173,7 +1172,9 @@ def main():
                 # Agora temos a segunda etapa, observando que a gente vai voltar aqui depois de um certo tempo,
                 # executando assim a função que remove o turno, ou seja, termina ele:
                 elif tempo_funcao.etapa_turno == 1:
-                    remover_turno()
+                    remover_turno(True)
+                else:
+                    remover_turno(True)
             # Agora, se for um movimento "normal", ou seja, movimento de ataque, entre outros.
             # Só pode se não estiver bloqueado o pokémon:
             elif turn_category["id"] == category.normal_move["id"] and not pokemon_a_fazer.bloqueado:
@@ -1252,7 +1253,9 @@ def main():
                 # a última etapa é tirar o movimento que acabou de ser feito da lista
                 # de movimentos:
                 elif tempo_funcao.etapa_turno == 3:
-                    remover_turno()
+                    remover_turno(True)
+                else:
+                    remover_turno(True)
             # Por último, se o movimento foi do tipo "item", ou seja, ele usou um item.
             # Só pode se não estiver bloqueado também:
             elif turn_category["id"] == category.item_move["id"] and not pokemon_a_fazer.bloqueado:
@@ -1278,7 +1281,7 @@ def main():
             # Remover o movimento da lista (se for inválido):
             remover_turno(True)
         # Resetamos o tempo que leva para executar essa função de novo:
-        tempo_funcao.resetar()
+        tempo_funcao.resetar(delta)
 
         # Código que executa a função de cada item:
 
@@ -1288,39 +1291,39 @@ def main():
             # O código do que o item faz em si:
             pokemon_a_usar.ataque_critico += 1
             # Mostra o que aconteceu em forma de texto:
-            mensagem.texto = "{} aumentou a proporção de ataque crítico".format(pokemon_a_usar.nome)
+            mensagem.texto = "{} aumentou o ataque crítico".format(pokemon_a_usar.nome)
 
         # Se for o guard spec:
         elif item == itens.guard_spec[0]:  # Um item que impede a redução de estatísticas
             pokemon_a_usar.protegido = 3
-            mensagem.texto = "{} tem seus dados protegidos por 3 turnos".format(pokemon_a_usar.nome)
+            mensagem.texto = "{} está protegido".format(pokemon_a_usar.nome)
 
         # Se for o x accuracy e etc:
         elif item == itens.x_accuracy[0]:  # Aumenta a estatística de precisão do Pokémon em batalha
             pokemon_a_usar.precisao += 1
-            mensagem.texto = "{} aumentou a precisão em 1 estágio".format(pokemon_a_usar.nome)
+            mensagem.texto = "{} aumentou a precisão".format(pokemon_a_usar.nome)
 
         # Se for o x attack:
         elif item == itens.x_attack[0]:  # Aumenta a estatística ataque do Pokémon na batalha
             pokemon_a_usar.ataque += 1
-            mensagem.texto = "{} aumentou seu ataque em 1 estágio".format(pokemon_a_usar.nome)
+            mensagem.texto = "{} aumentou o ataque".format(pokemon_a_usar.nome)
 
         # Se for o x defense:
         elif item == itens.x_defense[0]:  # Aumenta a estatística DEFESA do Pokémon em batalha
             pokemon_a_usar.defesa += 1
-            mensagem.texto = "{} aumentou sua defesa em 1 estágio".format(pokemon_a_usar.nome)
+            mensagem.texto = "{} aumentou a defesa".format(pokemon_a_usar.nome)
         # Se for o x special:
         elif item == itens.x_special[0]:  # Eleva a estatística do ataque especial
             pokemon_a_usar.especial_ataque += 1
-            mensagem.texto = "{} aumentou seu ataque especial em 1 estágio".format(pokemon_a_usar.nome)
+            mensagem.texto = "{} aumentou o ataque especial".format(pokemon_a_usar.nome)
         # Se for o x speed:
         elif item == itens.x_speed[0]:  # Aumenta a estatística de VELOCIDADE do Pokémon na batalha
             pokemon_a_usar.velocidade += 1
-            mensagem.texto = "{} aumentou sua velocidade em 1 estágio".format(pokemon_a_usar.nome)
+            mensagem.texto = "{} aumentou a velocidade".format(pokemon_a_usar.nome)
         # Se for o berry juice:
         elif item == itens.berry_juice[0]:  # Um suco 100% puro. Ele restaura o HP de um Pokémon em 20 pontos.
             pokemon_a_usar.vida += 20
-            mensagem.texto = "{} teve seu HP restaurado em 20 pontos".format(pokemon_a_usar.nome)
+            mensagem.texto = "{} recuperou HP".format(pokemon_a_usar.nome)
         # Se for o elixir:
         elif item == itens.elixir[0]:  # Restaura o PP de todos os movimentos de um Pokémon em 10 pontos cada.
             # Percorrer todos os movimentos do pokémon e aumentar seus respectivos pp's:

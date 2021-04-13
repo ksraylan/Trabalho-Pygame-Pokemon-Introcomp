@@ -120,12 +120,12 @@ class Pokemon:
         # Animação do pokémon se mexendo:
         if self.pos_offset_descendo:
             self.pos_offset += vel_anim_2 * delta
-            if self.pos_offset > 1:
+            while self.pos_offset > 1:
                 self.pos_offset_descendo = False
                 self.pos_offset -= vel_anim_2 * delta
         else:
             self.pos_offset -= vel_anim_2 * delta
-            if self.pos_offset < 0:
+            while self.pos_offset < 0:
                 self.pos_offset_descendo = True
                 self.pos_offset += vel_anim_2 * delta
 

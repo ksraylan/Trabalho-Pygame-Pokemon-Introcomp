@@ -59,10 +59,8 @@ def process_moves(pokemon_a_fazer, pokemon_a_tomar, move, mensagem, moves, tipos
         arq.som_Tackle.play()
     elif move == moves.leech_seed[0]:
         # Drena 1/8 do HP máximo:
-        # Só funciona se o pokémon inimigo não é do tipo "grass":
-        if tipos.grass not in pokemon_a_tomar.tipos:
-            # Adiciona o efeito:
-            pokemon_a_tomar.add_effect(effect.leech_seed)
+        # Só funciona se o pokémon inimigo não é do tipo "grass", então adiciona o efeito::
+        if tipos.grass not in pokemon_a_tomar.tipos and pokemon_a_tomar.add_effect(effect.leech_seed):
             # Mostra a mensagem:
             mensagem.texto = "{} foi semeado".format(pokemon_a_tomar.nome)
         else:
@@ -203,11 +201,10 @@ def process_moves(pokemon_a_fazer, pokemon_a_tomar, move, mensagem, moves, tipos
         # Nas gerações 2-5, o alvo perde apenas 1/16 de seu HP máximo após cada turno
         # Nas gerações 1-4, Wrap tem 85% de precisão.
         # Processa o damage e mostra se errou e o quanto de vida tirou:
-        
-        if num <= 85 * precisao:  # 85% de precisão:
-            # Adiciona o efeito:
+
+        # 85% de precisão, se funcionar, adiciona o efeito::
+        if num <= 85 * precisao and pokemon_a_tomar.add_effect(effect.wrap):
             funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar, 15, 100), mensagem)
-            pokemon_a_tomar.add_effect(effect.wrap)
         else:
             # Errou:
             mensagem.texto = "mas não funcionou"
@@ -239,7 +236,13 @@ def process_moves(pokemon_a_fazer, pokemon_a_tomar, move, mensagem, moves, tipos
         # Os dados do usuário (ataque, defesa, etc) não mudam:
         pokemon_a_fazer.protegido = 4
         mensagem.texto = "{} ficou protegido".format(pokemon_a_fazer.nome)
-
+    elif move == moves.bubble[0]:
+        # Processa o damage e mostra se errou e o quanto de vida tirou e reduz a velocidade:
+        funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar, 40, 100), mensagem)
+        if num <= 10 * precisao:  # 10% de chance de sua velocidade diminuir:
+            pokemon_a_tomar.velocidade -= 1
+        # Toca o som:
+        arq.som_Bubble.play()
     elif move == moves.psychic[0]:
         # Processa o damage e mostra se errou e o quanto de vida tirou e menos 10% da defesa especial:
         funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar, 90, 100), mensagem)

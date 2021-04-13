@@ -71,6 +71,7 @@ def carregar_imagem_easter_egg(nome):
 
 # Carregando os efeitos sonoros:
 som_Batalha = pygame.mixer.Sound("Dados/Recursos/Sprites/SonsPokemon/batalha.wav")
+som_Bubble = pygame.mixer.Sound("Dados/Recursos/Sprites/SonsPokemon/Bubble.wav")
 som_Confusion = pygame.mixer.Sound("Dados/Recursos/Sprites/SonsPokemon/Confusion.wav")
 som_derrota = pygame.mixer.Sound("Dados/Recursos/Sprites/SonsPokemon/derrota.wav")
 som_Ember = pygame.mixer.Sound("Dados/Recursos/Sprites/SonsPokemon/Ember.wav")
@@ -82,6 +83,7 @@ som_Tackle = pygame.mixer.Sound("Dados/Recursos/Sprites/SonsPokemon/Tackle.wav")
 som_Thunder_Shock = pygame.mixer.Sound("Dados/Recursos/Sprites/SonsPokemon/Thunder_Shock.wav")
 som_Twister = pygame.mixer.Sound("Dados/Recursos/Sprites/SonsPokemon/Twister.wav")
 som_vitoria = pygame.mixer.Sound("Dados/Recursos/Sprites/SonsPokemon/vitoria.wav")
+
 
 # Também a gente carrega as fontes, aumentando elas também de acordo com a escala, cada fonte
 # tem um tamanho diferente de acordo com nossas necessidades:

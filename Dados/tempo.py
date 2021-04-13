@@ -64,5 +64,5 @@ class Tempo:
         self.__milisegundos += valor
 
     # Reseta os milisegundos para 0:
-    def resetar(self):
-        self.__milisegundos = 0
+    def resetar(self, delta):
+        self.__milisegundos = - delta
