@@ -14,20 +14,12 @@ class Moves:
     # chance_de_acertar e tipo (nessa ordem):
     @property
     def fugir(self):
-        return 0, "Fugir"
+        return 0, "Fugir", 0, 0, 3, 0, 0, tipos.normal
 
     # Padrão quando aba o pp de todos os movimentos:
     @property
     def struggle(self):
         return 1, "Struggle", 1, None, 100, 50, 0, tipos.normal
-
-    @property
-    def rock_blast(self):
-        return 69, "Rock Blast"
-
-    @property
-    def shadow_punch(self):
-        return 74, "Shadow Punch"
 
     @property
     def tackle(self):

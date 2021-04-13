@@ -10,7 +10,6 @@ class Funcao:
         # Mostra o que retornará:
         dano = retornado[0]
         foi_critico = retornado[1]
-        print("dano:",dano)
         errou = True if dano == 0 else False  # Errou caso deu nenhum dano ("0")
         # Mensagem caso o pokemon tenha errado:
         if errou:
@@ -19,10 +18,10 @@ class Funcao:
         else:
             # Caso o ataque tenha sido crítico:
             if foi_critico:
-                mensagem.texto = "Foi muito efetivo! Perdeu {} HP".format(dano)
+                mensagem.texto = "Perdeu {} HP (crítico)".format(dano)
             # Caso o ataque tenha sido normal:
             else:
-                mensagem.texto = "Fez perder {} HP".format(dano)
+                mensagem.texto = "Perdeu {} HP".format(dano)
         # Retorna quanto de dano deu:
         return dano
 

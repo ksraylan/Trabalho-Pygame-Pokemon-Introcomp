@@ -1,40 +1,42 @@
 # Importações:
 # Biblioteca que randomiza números:
 import random
+
 # Biblioteca mais importante, sem ela não poderíamos renderizar imagens na tela:
 import pygame
+
+# Arquivos com imagens, sons, etc.
+import Dados.arquivos as arq
+# Cena: menu e sub menu atual:
+import Dados.cena as cena
+# Importandos as cores que temos:
+import Dados.cores as cor
 # Possui as configurações da janela:
 import Dados.janela as janela
+# Categoria dos movimentos:
+from Dados.category import Category
+# Condição irá nos mostrar a condição do jogo:
+from Dados.condicao import Condicao
+# Importar o Easter Egg:
+from Dados.easter_egg import EasterEgg
+# Efeitos que os pokémons podem ter:
+from Dados.effect import Effect
+# Itens usáveis:
+from Dados.itens import Itens
+# Mensagem é o que mostra o que está acontecendo na tela:
+from Dados.mensagem import Mensagem
 # Movimentos dos pokémons:
 from Dados.moves import Moves
 # Tipos de movimentos e pokémons:
 from Dados.poke_types import Types
 # As propriedades dos Pokémons:
 from Dados.pokemon import Pokemon
-# Arquivos com imagens, sons, etc.
-import Dados.arquivos as arq
-# Importandos as cores que temos:
-import Dados.cores as cor
-# Cena: menu e sub menu atual:
-import Dados.cena as cena
-# Mensagem é o que mostra o que está acontecendo na tela:
-from Dados.mensagem import Mensagem
-# Condição irá nos mostrar a condição do jogo:
-from Dados.condicao import Condicao
-# Tempo irá gerenciar os milisegundos de cada condição:
-from Dados.tempo import Tempo
 # Posição é as configurações do cursor:
 from Dados.posicao import Pos
-# Efeitos que os pokémons podem ter:
-from Dados.effect import Effect
-# Categoria dos movimentos:
-from Dados.category import Category
-# Itens usáveis:
-from Dados.itens import Itens
 # Função que processa cada movimento:
 from Dados.processar_movimentos import process_moves
-# Importar o Easter Egg:
-from Dados.easter_egg import EasterEgg
+# Tempo irá gerenciar os milisegundos de cada condição:
+from Dados.tempo import Tempo
 
 
 # Função do jogo principal:
@@ -126,13 +128,13 @@ def main():
     # especial_defesa, nivel, genero, tipos, movimentos, itens, imagens
 
     # Marco:
-    pk_marco = Pokemon("Marco", 200, 170, 180, 500, 180, 180, 99, "M", [tipos.normal],
+    pk_marco = Pokemon("Marco", 199, 170, 180, 500, 180, 180, 99, "M", [tipos.normal],
                        [moves.tackle, moves.fury_attack, moves.hypnosis, moves.spite], itens_usados, "marco", True)
     # Jorge:
     pk_jorge = Pokemon("Jorge", 200, 180, 190, 200, 205, 530, 99, "M", [tipos.normal],
                        [moves.confusion, moves.fury_attack, moves.curse, moves.twister], itens_usados, "jorge", True)
     # Bea:
-    pk_bea = Pokemon("Bea", 200, 190, 170, 300, 150, 190, 99, "F", [tipos.normal],
+    pk_bea = Pokemon("Bea", 201, 190, 170, 300, 150, 190, 99, "F", [tipos.normal],
                      [moves.thunder_wave, moves.disable, moves.twister, moves.mist], itens_usados, "bea", True)
     # André:
     pk_andre = Pokemon("André", 200, 145, 500, 220, 190, 230, 99, "M", [tipos.normal],
@@ -452,8 +454,11 @@ def main():
                 janela.tela.blit(arq.img_fundo_pokemon, (0, 0))
 
                 # Desenhando os "círculos" que ficam em baixo de cada pokémon:
-                janela.tela.blit(arq.img_fundo_pokemon_circulo1, (janela.tamanho[0] - 128 * escala + pokemons[1].circulo_offset * janela.tamanho[0], 48 * escala))
-                janela.tela.blit(arq.img_fundo_pokemon_circulo2, (4 * escala - pokemons[0].circulo_offset * janela.tamanho[0], janela.tamanho[1] - 59 * escala))
+                janela.tela.blit(arq.img_fundo_pokemon_circulo1, (janela.tamanho[0] - 128 * escala +
+                                                                  pokemons[1].circulo_offset * janela.tamanho[0],
+                                                                  48 * escala))
+                janela.tela.blit(arq.img_fundo_pokemon_circulo2, (4 * escala - pokemons[0].circulo_offset *
+                                                                  janela.tamanho[0], janela.tamanho[1] - 59 * escala))
 
                 # img_pokemons[n_do_pokemon][0 = frente, 1 = costas]
                 # Pokémon inimigo:
@@ -468,10 +473,12 @@ def main():
                 # Mesma coisa com o seu pokémon:
                 if not pokemons[0].sumido:
                     janela.tela.blit(pokemons[0].imagem_costas, (40 * escala + pokemons[0].deslocamento[0] *
-                                                                 escala  - pokemons[1].circulo_offset * janela.tamanho[0],
+                                                                 escala - pokemons[1].circulo_offset *
+                                                                 janela.tamanho[0],
                                                                  janela.tamanho[1] - 48 * escala - pokemons[
                                                                      0].imagem_costas.get_height() +
-                                                                 pokemons[0].deslocamento[1] * escala + pokemons[1].pos_offset*escala))
+                                                                 pokemons[0].deslocamento[1] * escala +
+                                                                 pokemons[1].pos_offset * escala))
 
                 # Desenhando a barra onde fica o texto que mostra o que está acontecendo:
                 janela.tela.blit(arq.img_text_bar, (0, janela.tamanho[1] - 48 * escala))
@@ -589,13 +596,15 @@ def main():
                 # Só iremos mostrar se o pokémon ainda está no jogo:
                 if not pokemons[1].conseguiu_fugir() and not pokemons[1].foi_derrotado():
                     # Desenhando a barra:
-                    janela.tela.blit(arq.img_barra1, (15 * escala - pokemons[1].circulo_offset * janela.tamanho[0], 18 * escala))
+                    janela.tela.blit(arq.img_barra1, (15 * escala - pokemons[1].circulo_offset * janela.tamanho[0], 18 *
+                                                      escala))
                 # Verificamos se ele está no jogo novamente:
                 if not pokemons[0].conseguiu_fugir() and not pokemons[0].foi_derrotado():
                     # Desenhando:
                     janela.tela.blit(arq.img_barra2,
-                                     (janela.tamanho[0] - 110 * escala + pokemons[0].circulo_offset * janela.tamanho[0], janela.tamanho[1] - 88 * escala +
-                                     pokemons[1].pos_offset*-1*escala))
+                                     (janela.tamanho[0] - 110 * escala + pokemons[0].circulo_offset * janela.tamanho[0],
+                                      janela.tamanho[1] - 88 * escala +
+                                      pokemons[1].pos_offset * -1 * escala))
                 # Nomes dos pokémons renderizados na barra:
                 # Pokémon inimigo:
                 # Só mostraremos se ele ainda está no jogo
@@ -641,7 +650,8 @@ def main():
                                                                                    escala * 39)),
                                                                             arq.img_vida_vermelha.get_height()))
                         # Mostrando:
-                        janela.tela.blit(img_vida_amarela_esticada, (55 * escala - pokemons[1].circulo_offset * janela.tamanho[0], 34 * escala))
+                        janela.tela.blit(img_vida_amarela_esticada,
+                                         (55 * escala - pokemons[1].circulo_offset * janela.tamanho[0], 34 * escala))
                     # Vida vermelha só se for menor que 1/5 de sua vida máxima:
                     if pokemons[1].vida_anim <= pokemons[1].vida_maxima / 5:
                         # Imagem:
@@ -650,7 +660,8 @@ def main():
                                                                                     escala * 39)),
                                                                              arq.img_vida_vermelha.get_height()))
                         # Mostrando:
-                        janela.tela.blit(img_vida_vermelha_esticada, (55 * escala - pokemons[1].circulo_offset * janela.tamanho[0], 34 * escala))
+                        janela.tela.blit(img_vida_vermelha_esticada,
+                                         (55 * escala - pokemons[1].circulo_offset * janela.tamanho[0], 34 * escala))
                     # "Vida vazia":
                     # Pegaremos a posição da barra x e a largura (de acordo com a vida) através da função
                     # "barra_sem_vida_calculo_escala":
@@ -665,7 +676,8 @@ def main():
                                                                          (width,
                                                                           arq.img_barra_sem_vida.get_height()))
                     # Mostrando a barra na tela:
-                    janela.tela.blit(img_barra_sem_vida_esticada, (x - pokemons[1].circulo_offset * janela.tamanho[0], 34 * escala))
+                    janela.tela.blit(img_barra_sem_vida_esticada,
+                                     (x - pokemons[1].circulo_offset * janela.tamanho[0], 34 * escala))
 
                     # Mostrando o nível do pokémon:
                     # Fonte:
@@ -685,9 +697,10 @@ def main():
                     # Tamanho:
                     poke_1_rect = poke_1.get_rect()
                     # Posição:
-                    poke_1_rect.center = ((janela.tamanho[0] - 68 * escala + pokemons[1].circulo_offset * janela.tamanho[0]),
-                    janela.tamanho[1] - 77.5 * escala +
-                    pokemons[1].pos_offset*-1*escala)
+                    poke_1_rect.center = (
+                        (janela.tamanho[0] - 68 * escala + pokemons[1].circulo_offset * janela.tamanho[0]),
+                        janela.tamanho[1] - 77.5 * escala +
+                        pokemons[1].pos_offset * -1 * escala)
                     # Mostrando:
                     janela.tela.blit(poke_1, poke_1_rect)
 
@@ -722,9 +735,9 @@ def main():
                                                                             arq.img_vida_vermelha.get_height()))
                         # Mostrando:
                         janela.tela.blit(img_vida_amarela_esticada, (janela.tamanho[0] - 62 * escala +
-                        pokemons[1].circulo_offset * janela.tamanho[0],
+                                                                     pokemons[1].circulo_offset * janela.tamanho[0],
                                                                      janela.tamanho[1] - 69 * escala +
-                                                                     pokemons[1].pos_offset*-1*escala))
+                                                                     pokemons[1].pos_offset * -1 * escala))
                     # Vida vermelha:
                     if pokemons[0].vida_anim <= pokemons[0].vida_maxima / 5:
                         img_vida_vermelha_esticada = pygame.transform.scale(arq.img_vida_vermelha,
@@ -733,9 +746,10 @@ def main():
                                                                              arq.img_vida_vermelha.get_height()))
                         # Mostrando:
                         janela.tela.blit(img_vida_vermelha_esticada, (janela.tamanho[0] -
-                                                                      62 * escala + pokemons[1].circulo_offset * janela.tamanho[0],
+                                                                      62 * escala + pokemons[1].circulo_offset *
+                                                                      janela.tamanho[0],
                                                                       janela.tamanho[1] - 69 * escala +
-                                                                      pokemons[1].pos_offset*-1*escala))
+                                                                      pokemons[1].pos_offset * -1 * escala))
                     # "Vida vazia":
                     x, width = barra_sem_vida_calculo_escala(janela.tamanho[0] - 62 * escala +
                                                              barra_width * (pokemons[0].vida_anim /
@@ -748,21 +762,23 @@ def main():
                                                                          (width,
                                                                           arq.img_barra_sem_vida.get_height()))
                     # Mostrando a "vida vazia":
-                    janela.tela.blit(img_barra_sem_vida_esticada, (x + pokemons[1].circulo_offset * janela.tamanho[0], janela.tamanho[1] - 69 * escala + 
-                    pokemons[1].pos_offset*-1*escala))
+                    janela.tela.blit(img_barra_sem_vida_esticada, (
+                        x + pokemons[1].circulo_offset * janela.tamanho[0], janela.tamanho[1] - 69 * escala +
+                        pokemons[1].pos_offset * -1 * escala))
                     # Mostrando o nível do pokémon:
                     nivel = arq.fonte_escolher_move.render(str(pokemons[0].nivel), False, cor.PRETO)
                     nivel_rect = nivel.get_rect()
                     nivel_rect.left = janela.tamanho[0] - 21 * escala + pokemons[1].circulo_offset * janela.tamanho[0]
-                    nivel_rect.top = janela.tamanho[1] - 80 * escala + pokemons[1].pos_offset*-1*escala
+                    nivel_rect.top = janela.tamanho[1] - 80 * escala + pokemons[1].pos_offset * -1 * escala
                     janela.tela.blit(nivel, nivel_rect)
 
                     # Mostrando o número da vida:
                     txt_vida = arq.fonte.render(str(pokemons[0].vida) + "/" + str(pokemons[0].vida_maxima), False,
                                                 cor.PRETO)
                     txt_vida_rect = txt_vida.get_rect()
-                    txt_vida_rect.bottomright = (janela.tamanho[0] - 20 * escala + pokemons[1].circulo_offset * janela.tamanho[0],
-                     janela.tamanho[1] - 55 * escala + pokemons[1].pos_offset*-1*escala)
+                    txt_vida_rect.bottomright = (
+                        janela.tamanho[0] - 20 * escala + pokemons[1].circulo_offset * janela.tamanho[0],
+                        janela.tamanho[1] - 55 * escala + pokemons[1].pos_offset * -1 * escala)
 
                     janela.tela.blit(txt_vida, txt_vida_rect)
 
@@ -866,28 +882,54 @@ def main():
     def fazer_acao(sub_menu_funcao, movimento, categoria):
         # Para a animação:
         pokemons[0].pos_offset_parar()
-        # Aqui primeiro vemos qual pokémon fazerá suas ações primeiro:
-        # Primeiro a gente pega um número aleatório
-        vez = random.randrange(0, 1)
-        # Agora, se o pokémon "0" (seu pokémon) tiver maior velocidade que o
-        # pokémon "1" (pokémon inimigo), então o seu pokémon será o primeiro:
-        if pokemons[0].velocidade > pokemons[1].velocidade:
-            # Colocamos como primeiro o pokémon "0":
-            vez = 0
-        # Mas se seu pokémon tiver menor velocidade que o pokémon inimigo:
-        elif pokemons[0].velocidade < pokemons[1].velocidade:
-            # O primeiro será o pokémon "1":
-            vez = 1
-        # Agora, se os dois tiverem a mesma velocidade, então nem o if e o elif serão
-        # executados, aí o primeiro será aleatório, pois antes do if colocamos um random
-        # de aleatório.
-        # vez = random.randrange(0,1)
+
+        def aleatorio(pokemons_funcao):
+            # Aleatório pela velocidade
+            # Primeiro a gente pega um número aleatório
+            vez_funcao = random.randrange(0, 1)
+            # Agora, se o pokémon "0" (seu pokémon) tiver maior velocidade que o
+            # pokémon "1" (pokémon inimigo), então o seu pokémon será o primeiro:
+            if pokemons_funcao[0].velocidade > pokemons_funcao[1].velocidade:
+                # Colocamos como primeiro o pokémon "0":
+                vez_funcao = 0
+            # Mas se seu pokémon tiver menor velocidade que o pokémon inimigo:
+            elif pokemons_funcao[0].velocidade < pokemons_funcao[1].velocidade:
+                # O primeiro será o pokémon "1":
+                vez_funcao = 1
+            return vez_funcao
+            # Agora, se os dois tiverem a mesma velocidade, então nem o if e o elif serão
+            # executados, aí o primeiro será aleatório, pois antes do if colocamos um random
+            # de aleatório.
+            # vez = random.randrange(0,1)
 
         # [pokémon "0", pokémon "1"]:
         # A gente pega a categoria que o usuário escolheu, a outra é a categoria do "computador":
-        categorias_pokemons = [categoria, category.normal_move]
+        movimento_ia, categoria_ia, = randomizar_acao(pokemons[1])
+
+        # Aqui primeiro vemos qual pokémon fazerá suas ações primeiro:
+        # Pela prioridade de item:
+        if category.item_move == categoria_ia and not categoria == category.item_move:
+            # Primeiro o computador:
+            vez = 1
+        elif category.item_move == categoria and not categoria_ia == category.item_move:
+            # Primeiro seu pokémon:
+            vez = 0
+        else:
+            # Prioridade do movimento:
+            if not categoria == categoria_ia:
+                # [4]: prioridade
+                if movimento[4] > movimento_ia[4]:
+                    vez = 0
+                elif movimento_ia[4] > movimento[4]:
+                    vez = 1
+                else:
+                    vez = aleatorio(pokemons)
+            else:
+                vez = aleatorio(pokemons)
+
+        categorias_pokemons = [categoria, categoria_ia]
         # E o movimento do usuário, e a ação aleatória do pokémon inimigo:
-        movimentos_pokemons = [movimento, randomizar_acao(pokemons[1])]
+        movimentos_pokemons = [movimento, movimento_ia]
 
         # O primeiro pokémon vai executar os movimentos de estado que acontecem
         # antes dos movimentos dele em si:
@@ -912,16 +954,35 @@ def main():
         sub_menu_funcao.atual = sub_menu_funcao.principal
 
     def randomizar_acao(pokemon):
-        # Verificar se tem algum movimento que pode ser utilizado:
-        movimentos = somente_movimentos_disponiveis(pokemon)
-        if len(movimentos) > 0:
-            # Aqui a gente faz com que o pokémon inimigo faça um movimento aleatório:
-            a_random = pokemon.movimentos[random.choice(movimentos)]
+
+        # Primeiro tenta recuperar sua vida se necessário e possível:
+        if pokemon.vida < pokemon.vida_maxima / 3:
+            if itens.potion in pokemon.itens:
+                # Tem a poção, então use:
+                pokemon.itens.remove(itens.potion)
+                return itens.potion, category.item_move
+            elif itens.berry_juice in pokemon.itens:
+                # Use também:
+                pokemon.itens.remove(itens.berry_juice)
+                return itens.berry_juice, category.item_move
+            else:
+                # Tenta fugir então se não tem:
+                return moves.fugir, category.normal_move
         else:
-            # Movimento padrão:
-            a_random = moves.struggle
-        # E retornamos qual o movimento foi escolhido:
-        return a_random
+            # Verificar se tem algum movimento que pode ser utilizado:
+            movimentos = somente_movimentos_disponiveis(pokemon)
+            if len(movimentos) > 0:
+                # Aqui a gente faz com que o pokémon inimigo faça um movimento aleatório:
+                a_random = pokemon.movimentos[random.choice(movimentos)]
+                if a_random == moves.curse and pokemon.vida < pokemon.vida_maxima / 2:
+                    if len(movimentos) > 1:
+                        # Pega outro movimento:
+                        a_random -= movimentos[a_random - 1]
+            else:
+                # Movimento padrão:
+                a_random = moves.struggle
+            # E retornamos qual o movimento foi escolhido:
+            return a_random, category.normal_move
 
     # Criamos o objeto tempo, ele começará com 1000 milisegundos, pois se colocarmos 0,
     # se o usuário for rápido o suficiente de entrar na partida e já fazer o movimento, ele
@@ -1037,7 +1098,7 @@ def main():
                                 # Se o seu pokémon está bloqueado, então ele deve fazer simplesmente nada:
                                 if pokemons[0].bloqueado:
                                     # Fazer nada se seu pokémon estiver bloqueado:
-                                    fazer_acao(sub_menu_funcao, None, None)
+                                    fazer_acao(sub_menu_funcao, None, category.normal_move)
                                     # E mudaremos o sub menu para o que mostra quais ações estão sendo executadas:
                                     sub_menu_funcao.atual = sub_menu_funcao.fazendo_acoes
                                 else:

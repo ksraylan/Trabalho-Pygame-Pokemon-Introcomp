@@ -1,12 +1,13 @@
 # Importações:
 # Importação da biblioteca que randomiza os números:
-import random
 # Importação da biblioteca da matemática:
 import math
-# Importação dos efeitos:
-from Dados.effect import Effect
+import random
+
 # Importar os arquivos:
 import Dados.arquivos as arq
+# Importação dos efeitos:
+from Dados.effect import Effect
 from Dados.global_vars import funcao
 
 # Velocidade da animação da barra de vida:
@@ -15,6 +16,8 @@ vel_anim = 0.03
 vel_anim_2 = 0.005
 # Velocidade da animação de entrada:
 vel_anim_3 = 0.0005
+# Aumenta isso a cada nível:
+multiplicador_nivel = 0.5
 
 
 # Uma class com todas as estatísticas de um pokémon (neste jogo). Contém métodos
@@ -24,14 +27,16 @@ class Pokemon:
                  tipos, movimentos, itens, imagem_id, is_easter_egg):
         # Contém todas as propriedades do pokémon:
         self.__nome = nome
-        self.__vida = vida
+        # Multiplicador de nível:
+        multiplicando = int((nivel - 1) * multiplicador_nivel)
+        self.__vida = vida + multiplicando
         self.__vida_anim = 0
-        self.__vida_maxima = vida
-        self.__ataque = ataque
-        self.__defesa = defesa
-        self.__velocidade = velocidade
-        self.__especial_ataque = especial_ataque
-        self.__especial_defesa = especial_defesa
+        self.__vida_maxima = vida + multiplicando
+        self.__ataque = ataque + multiplicando
+        self.__defesa = defesa + multiplicando
+        self.__velocidade = velocidade + multiplicando
+        self.__especial_ataque = especial_ataque + multiplicando
+        self.__especial_defesa = especial_defesa + multiplicando
         self.__nivel = nivel
         self.__imagem_id = imagem_id
         self.__is_easter_egg = is_easter_egg
@@ -105,10 +110,12 @@ class Pokemon:
         self.pos_offset = 0
         self.pos_offset_descendo = True
         self.circulo_offset = 1
+
     def pos_offset_parar(self):
         # Resetar a animação do pokémon se mexendo:
         self.pos_offset = 0
         self.pos_offset_descendo = True
+
     def processar_pos_offset(self, delta):
         # Animação do pokémon se mexendo:
         if self.pos_offset_descendo:
@@ -121,11 +128,13 @@ class Pokemon:
             if self.pos_offset < 0:
                 self.pos_offset_descendo = True
                 self.pos_offset += vel_anim_2 * delta
+
     def processar_circulo_anim(self, delta):
         if not self.circulo_offset == 0:
             self.circulo_offset -= delta * vel_anim_3
             if self.circulo_offset < 0:
                 self.circulo_offset = 0
+
     # Getters e setters:
     @property
     def ultimo_movimento_id(self):
@@ -149,7 +158,7 @@ class Pokemon:
         self.movimentos_bloqueados.append([movimento_id, por_quantos_turnos])
 
     def __passou_um_turno(self):
-        
+
         # Restaura a precisão (chance de não vacilar):
         self.__precisao_temp = 100
         # Diminui por 1 estágio o tempo bloqueado
@@ -168,7 +177,38 @@ class Pokemon:
                 i -= 1
             # Próximo:
             i += 1
-        
+
+    @property
+    def precisao_numero(self):
+        # Retorna a precisão em número para ser multiplicado
+        # Obtém o estágio:
+        e = self.precisao
+        if e <= -6:
+            return 33/100
+        elif e == -5:
+            return 36/100
+        elif e == -4:
+            return 43/100
+        elif e == -3:
+            return 50/100
+        elif e == -2:
+            return 60/100
+        elif e == -1:
+            return 75/100
+        elif e == 1:
+            return 133/100
+        elif e == 2:
+            return 166/100
+        elif e == 3:
+            return 200/100
+        elif e == 4:
+            return 250/100
+        elif e == 5:
+            return 266/100
+        elif e == 6:
+            return 300/100
+        else:  # estágio 0:
+            return 100/100
 
     # Getters e setters:
     @property
@@ -347,25 +387,29 @@ class Pokemon:
             vida_perdida = 12.5 * self.vida_maxima / 100
             self.vida -= vida_perdida
             enemy_pokemon.vida += vida_perdida
-        elif pokemon_effects["id"] == effects.wrap["id"]:  # Wrap
+        elif pokemon_effects["id"] == effects.wrap["id"]:  # Wrap:
+            # Esse efeito faz perder 1/8 da vida do seu pokémon:
+            self.vida_maxima -= self.vida_maxima / 8
             # Mensagem:
             mensagem = "HP máximo de {} foi reduzido".format(self.nome)
             # Adicionando na lista:
             lista_mensagens.append(mensagem)
-            # Esse efeito faz perder 1/8 da vida do seu pokémon:
-            self.vida_maxima -= self.vida_maxima / 8
+        elif pokemon_effects["id"] == effects.curse["id"]:
+            # Perde 1/4 de sua vida máxima:
+            self.vida_maxima -= self.vida_maxima / 4
+            # Mensagem:
+            mensagem = "HP máximo de {} foi reduzido".format(self.nome)
+            # Adicionando na lista:
+            lista_mensagens.append(mensagem)
 
     # Ataque do adversário:
     def atacar(self, outro_pokemon, poder, precisao=100):
-        rand_1 = random.randrange(0,100)
-        rand_2 = random.randrange(0,100)
-        if rand_1 <= self.precisao_temp and rand_2 <= precisao:
+        rand_1 = random.randrange(0, 100)
+        rand_2 = random.randrange(0, 100)
+        if rand_1 <= self.precisao_temp and rand_2 <= precisao * self.precisao_numero:
             acertou = 1
         else:
             acertou = 0
-
-        print(rand_1, rand_2, self.precisao_temp, precisao, acertou)
-
         # Poder (teste):
         # 1: ataque normal:
         ataque_critico = 1
@@ -392,14 +436,13 @@ class Pokemon:
         modificador = 1 * 1 * 1 * ataque_critico * (random.randrange(85, 100) / 100) * 1 * 1 * 1 * 1
         # Fórmula de dano:
         formula = ((((
-                                 2 * self.__nivel) / 5 + 2) * poder * self.__ataque / outro_pokemon.defesa) /
+                             2 * self.__nivel) / 5 + 2) * poder * self.__ataque / outro_pokemon.defesa) /
                    50 + 2) * modificador * acertou * (2 if self.queimado else 1)
         # Diz que o resultado deve ser "truncado":
         formula = math.trunc(formula)
         # A vida do pokémon inimigo será diminuída pela fórmula:
         outro_pokemon.vida -= formula
         # Retorna o quanto de dano deu e o ataque foi crítico:
-        print("formula:",formula)
         return formula, True if chance_critico == 0 else False
 
     # Para o outro pokemon fugir:
@@ -570,12 +613,17 @@ class Pokemon:
 
     @vida_maxima.setter
     def vida_maxima(self, valor):
+        valor_anterior = self.__vida_maxima
         valor = int(valor)
         self.__vida_maxima = valor
         # Verifica se a vida é a maior que a vida máxima:
-        if self.__vida > self.__vida_maxima:
-            # Se sim, a vida recebe o valor da vida máxima:
-            self.__vida = self.__vida_maxima
+        # if self.__vida > self.__vida_maxima:
+        #    # Se sim, a vida recebe o valor da vida máxima:
+        #    self.__vida = self.__vida_maxima
+
+        # Reduz a vida uniformemente e a animação também:
+        self.__vida = int(self.__vida * valor / valor_anterior)
+        self.__vida_anim = self.__vida
 
     @ataque.setter
     def ataque(self, ataque):

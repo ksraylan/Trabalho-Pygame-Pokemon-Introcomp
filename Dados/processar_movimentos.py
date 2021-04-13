@@ -1,13 +1,16 @@
 # Importações:
 import random
-from Dados.global_vars import funcao
+
 import Dados.arquivos as arq
+from Dados.global_vars import funcao
 
 
 def process_moves(pokemon_a_fazer, pokemon_a_tomar, move, mensagem, moves, tipos, effect):
     # Códigos dos movimentos:
     # num: número aleatório que representa a probabilidade como porcentagem (%):
     num = random.randrange(0, 100)  # de 0 a 100%
+    # Obter a precisão do pokémon:
+    precisao = pokemon_a_fazer.precisao_numero
 
     if move == moves.growl[0]:
         # Growl reduz o Ataque do alvo em um estágio:
@@ -18,7 +21,7 @@ def process_moves(pokemon_a_fazer, pokemon_a_tomar, move, mensagem, moves, tipos
         # Processa o damage e mostra se errou e o quanto de vida tirou:
         funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar, 40, 100), mensagem)
         # O pokémon só é bloqueado se não for um pokémon elétrico:
-        if num <= 10 and tipos.electric not in pokemon_a_tomar.tipos:  # 10% de chance de ser paralizado:
+        if num <= 10 * precisao and tipos.electric not in pokemon_a_tomar.tipos:  # 10% de chance de ser paralizado:
             # Bloqueado por 1 turno somente se ainda não foi bloqueado:
             if not pokemon_a_tomar.bloqueado:
                 pokemon_a_tomar.bloqueado = 1
@@ -40,12 +43,12 @@ def process_moves(pokemon_a_fazer, pokemon_a_tomar, move, mensagem, moves, tipos
     elif move == moves.metal_claw[0]:
         # Processa o damage e mostra se errou e o quanto de vida tirou:
         funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar, 50, 95), mensagem)
-        if num <= 10:  # 10% de chance de seu ataque ser diminuído:
+        if num <= 10 * precisao:  # 10% de chance de seu ataque ser diminuído:
             pokemon_a_fazer.ataque -= 1
     elif move == moves.bubble[0]:
         # Processa o damage e mostra se errou e o quanto de vida tirou e reduz a velocidade:
         funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar, 40, 100), mensagem)
-        if num <= 10:  # 10% de chance de sua velocidade diminuir:
+        if num <= 10 * precisao:  # 10% de chance de sua velocidade diminuir:
             pokemon_a_tomar.velocidade -= 1
     elif move == moves.barrier[0]:
         # Aumenta a defesa do seu pokémon:
@@ -78,7 +81,7 @@ def process_moves(pokemon_a_fazer, pokemon_a_tomar, move, mensagem, moves, tipos
     elif move == moves.ember[0]:
         # Dano normal:
         funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar, 40, 100), mensagem)
-        if num <= 10 and tipos.fire not in pokemon_a_tomar.tipos:  # e 10% de chance de queimar.
+        if num <= 10 * precisao and tipos.fire not in pokemon_a_tomar.tipos:  # e 10% de chance de queimar.
             pokemon_a_tomar.queimado = True
             mensagem.texto += " e foi queimado"
         # Toca o efeito sonoro:
@@ -136,7 +139,8 @@ def process_moves(pokemon_a_fazer, pokemon_a_tomar, move, mensagem, moves, tipos
     elif move == moves.lick[0]:
         # 30% de chance de paralisar o alvo e processa o damage e mostra se errou e o quanto de vida tirou:
         funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar, 20, 100), mensagem)
-        if num <= 30 and not pokemon_a_tomar.bloqueado:  # 30% de chance de ser bloqueado (somente se ainda não foi):
+        # 30% de chance de ser bloqueado (somente se ainda não foi):
+        if num <= 30 * precisao and not pokemon_a_tomar.bloqueado:
             pokemon_a_tomar.bloqueado = 1
             mensagem.texto += " e foi bloqueado"
         # Pega o som do move do arquivo.py:
@@ -166,12 +170,26 @@ def process_moves(pokemon_a_fazer, pokemon_a_tomar, move, mensagem, moves, tipos
             mensagem.texto = "mas não funcionou"
 
     elif move == moves.curse[0]:
-        # Pokemon 1/2 de seu hp máximo:
-        pokemon_a_tomar.vida_maxima -= pokemon_a_tomar.vida_maxima / 2
-        # E 1/4 de sua vida:
-        pokemon_a_tomar.vida -= pokemon_a_tomar.vida / 4
-        # Mostra o que aconteceu:
-        mensagem.texto = "HP máximo de {} reduzido".format(pokemon_a_tomar.nome)
+        # Perde metade de seu hp máximo do usuário:
+        if tipos.ghost in pokemon_a_fazer.tipos:
+            # Se o pokémon que está fazendo é um fantasma:
+            if pokemon_a_tomar.add_effect(effect.curse):
+                pokemon_a_fazer.vida_maxima -= pokemon_a_fazer.vida_maxima / 2
+
+                # Mostra o que aconteceu:
+                mensagem.texto = "{} teve HP máximo reduzido".format(pokemon_a_tomar.nome)
+
+                # Se tem menos da metade da vida máxima, seu pokémon desmaia:
+                if pokemon_a_fazer.vida < pokemon_a_fazer.vida_maxima/2:
+                    pokemon_a_fazer.vida = 0
+            else:
+                mensagem.texto = "não funcionou"
+        else:
+            # Ele não é um fantasma:
+            pokemon_a_fazer.velocidade -= 1
+            pokemon_a_fazer.ataque += 1
+            pokemon_a_fazer.defesa += 1
+            mensagem.texto = "{} teve estados aumentads".format(pokemon_a_fazer.nome)
 
     elif move == moves.leer[0]:
         # A defesa do alvo diminu em 1 estágio:
@@ -191,7 +209,7 @@ def process_moves(pokemon_a_fazer, pokemon_a_tomar, move, mensagem, moves, tipos
         # Nas gerações 1-4, Wrap tem 85% de precisão.
         # Processa o damage e mostra se errou e o quanto de vida tirou:
         
-        if num <= 85:  # 85% de precisão:
+        if num <= 85 * precisao:  # 85% de precisão:
             # Adiciona o efeito:
             funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar, 15, 100), mensagem)
             pokemon_a_tomar.add_effect(effect.wrap)
@@ -202,15 +220,15 @@ def process_moves(pokemon_a_fazer, pokemon_a_tomar, move, mensagem, moves, tipos
     elif move == moves.confusion[0]:
         # Processa o damage e mostra se errou e o quanto de vida tirou e 10% de chance de ficar bloqueado:
         funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar, 50, 100), mensagem)
-        if num <= 10 and not pokemon_a_tomar.bloqueado:  # 10% (só se ainda não foi bloqueado)
+        if num <= 10 * precisao and not pokemon_a_tomar.bloqueado:  # 10% (só se ainda não foi bloqueado)
             pokemon_a_tomar.bloqueado = 1
-            mensagem.texto += "e ficou bloqueado"
+            mensagem.texto += " e ficou bloqueado"
         # Toca o som:
         arq.som_Confusion.play()
     elif move == moves.disable[0]:
         # Bloqueia o movimento anterior por 1-8 turnos:
         # Chance de 55% e verifica se teve o ultimo_movimento do pokémon inimigo:
-        if num <= 55 and pokemon_a_tomar.ultimo_movimento_id is not None:
+        if num <= 55 * precisao and pokemon_a_tomar.ultimo_movimento_id is not None:
             # Por quantos turnos estará desativado:
             turnos_a_desativar = random.randrange(1, 9)
             # Adiciona o movimento como bloqueado:
@@ -230,13 +248,14 @@ def process_moves(pokemon_a_fazer, pokemon_a_tomar, move, mensagem, moves, tipos
     elif move == moves.psychic[0]:
         # Processa o damage e mostra se errou e o quanto de vida tirou e menos 10% da defesa especial:
         funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar, 90, 100), mensagem)
-        if num <= 10:
+        if num <= 10 * precisao:
             pokemon_a_tomar.especial_defesa -= 1
 
     elif move == moves.struggle[0]:
         # Processa o damage e mostra se errou e o quanto de vida tirou
         # e perde 1/4 de HP do dano que o inimigo recebeu:
-        pokemon_a_fazer.vida -= funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar, 50, 100), mensagem) / 4
+        pokemon_a_fazer.vida -= funcao.mostrar_texto_ataque_normal(pokemon_a_fazer.atacar(pokemon_a_tomar, 50, 100),
+                                                                   mensagem) / 4
     elif move == moves.fugir[0]:
         # O movimento de fugir é feito na função process_moves (main.py)
         pass

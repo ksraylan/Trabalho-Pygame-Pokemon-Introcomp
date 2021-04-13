@@ -14,11 +14,18 @@ class Effect:
         return {"id": 0,
                 "offset": 0,  # logo quando pegar o efeito começará a funcionar
                 "stops": None,  # None: dura para "sempre"
-                "priority": True}
+                "priority": True}  # Antes do movimento dele
 
     @property
     def wrap(self):
         return {"id": 1,
                 "offset": -1,  # Quantos turnos precisa passar antes de começar (NOTA: precisa ser negativo)
                 "stops": [2, 3, 4, 5],  # De 2 a 5 turnos (todas as possibilidades)
+                "priority": False}  # Depois do movimento dele
+
+    @property
+    def curse(self):
+        return {"id": 2,
+                "offset": -1,
+                "stops": None,  # Nunca
                 "priority": False}  # Depois do movimento dele

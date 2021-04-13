@@ -1,6 +1,7 @@
 # Importações:
 # Precisamos importar o pygame para poder carregar as imagens:
 import pygame
+
 # E precisamos importar a janela.py para obtermos a largura da janela:
 import Dados.janela as janela
 
@@ -19,8 +20,10 @@ img_barra2 = pygame.image.load('Dados/Recursos/Sprites/SpritesInterface/barra_2.
 img_barra_sem_vida = pygame.image.load('Dados/Recursos/Sprites/SpritesInterface/barra_sem_vida.png').convert_alpha()
 img_pp_bar = pygame.image.load('Dados/Recursos/Sprites/SpritesInterface/pp_bar.png').convert_alpha()
 img_fundo_pokemon = pygame.image.load('Dados/Recursos/Sprites/SpritesInterface/FundoPokemon_1.png').convert_alpha()
-img_fundo_pokemon_circulo1 = pygame.image.load('Dados/Recursos/Sprites/SpritesInterface/FundoPokemon_2.png').convert_alpha()
-img_fundo_pokemon_circulo2 = pygame.image.load('Dados/Recursos/Sprites/SpritesInterface/FundoPokemon_3.png').convert_alpha()
+img_fundo_pokemon_circulo1 = pygame.image.load('Dados/Recursos/Sprites/SpritesInterface/FundoPokemon_2.png'
+                                               ).convert_alpha()
+img_fundo_pokemon_circulo2 = pygame.image.load('Dados/Recursos/Sprites/SpritesInterface/FundoPokemon_3.png'
+                                               ).convert_alpha()
 img_text_bar = pygame.image.load('Dados/Recursos/Sprites/SpritesInterface/text_bar.png').convert_alpha()
 img_vida_amarela = pygame.image.load('Dados/Recursos/Sprites/SpritesInterface/vida_amarela.png').convert_alpha()
 img_vida_vermelha = pygame.image.load('Dados/Recursos/Sprites/SpritesInterface/vida_vermelha.png').convert_alpha()
@@ -54,10 +57,10 @@ img_fundo_pokemon_circulo2 = pygame.transform.scale(img_fundo_pokemon_circulo2, 
 def carregar_imagem_pokemon(numero, shiny=False):
     # Se foi pedido shiny:
     nome = str(numero) if not shiny else str(numero) + "_s"
-    return [pygame.transform.scale(pygame.image.load("Dados/Recursos/Sprites/SpritesPokemon/Frente/{}.png".format(nome)),
-                                   (int(64 * escala), int(64 * escala))),
-            pygame.transform.scale(pygame.image.load("Dados/Recursos/Sprites/SpritesPokemon/Costas/{}.png".format(nome)),
-                                   (int(64 * escala), int(64 * escala)))]
+    return [pygame.transform.scale(pygame.image.load("Dados/Recursos/Sprites/SpritesPokemon/Frente/{}.png".format(nome)
+                                                     ), (int(64 * escala), int(64 * escala))),
+            pygame.transform.scale(pygame.image.load("Dados/Recursos/Sprites/SpritesPokemon/Costas/{}.png".format(nome)
+                                                     ), (int(64 * escala), int(64 * escala)))]
 
 
 # Essa carregará as imagens dos Easter Eggs:
@@ -69,7 +72,6 @@ def carregar_imagem_easter_egg(nome):
 
 
 # Carregando os efeitos sonoros:
-som_fire_red_abertura = pygame.mixer.Sound("Dados/Recursos/Sprites/SonsPokemon/fireRedAbertura.wav")
 som_Batalha = pygame.mixer.Sound("Dados/Recursos/Sprites/SonsPokemon/batalha.wav")
 som_Flamethrower = pygame.mixer.Sound("Dados/Recursos/Sprites/SonsPokemon/Flamethrower.wav")
 som_Bite = pygame.mixer.Sound("Dados/Recursos/Sprites/SonsPokemon/Bite.wav")
