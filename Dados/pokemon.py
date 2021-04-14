@@ -622,6 +622,9 @@ class Pokemon:
         #    self.__vida = self.__vida_maxima
 
         # Reduz a vida uniformemente e a animação também:
+        # Evitar divisão por zero:
+        if valor_anterior == 0:
+            valor_anterior = 1
         self.__vida = int(self.__vida * valor / valor_anterior)
         self.__vida_anim = self.__vida
 

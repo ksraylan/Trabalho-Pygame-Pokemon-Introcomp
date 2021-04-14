@@ -242,15 +242,6 @@ def main():
     # Tamanho da barra de vida:
     barra_width = arq.img_vida_vermelha.get_width() * 5.34
 
-    # Função que permite que o som toque:
-    def tocar_sons():
-        # Condição para que a música da vitória toque:
-        if condicao.atual == condicao.vitoria:
-            arq.som_vitoria.play()
-        # Condição para que a música da derrota toque:
-        if condicao.atual == condicao.derrota:
-            arq.som_derrota.play()
-
     # Metade da tela na horizontal:
     width_dividido = janela.tamanho[0] / 2
     # Espaçamento x na esquerda da seta:
@@ -288,7 +279,6 @@ def main():
         # Percorre toda a lista de bloqueados:
         for i in range(len(pokemon.movimentos_bloqueados)):
             # Obteremos somente a id do movimento para depois comparar com "in":
-            """
             index = -1
             for a in range(len(pokemon.movimentos)):
                 # Procura o movimento bloqueado na lista de movimentos:
@@ -297,8 +287,7 @@ def main():
                     index = a
                     # Não precisa continuar a procura:
                     break
-            """
-            id_bloqueados.append(pokemon.movimentos[i][0])
+            id_bloqueados.append(pokemon.movimentos[index][0])
 
         # Retorna somente os bloqueados:
         return id_bloqueados
@@ -1522,10 +1511,8 @@ def main():
 
         # Chama a função que processa a lógica, ou seja, o tempo das animações, etc:
         processar_logica(delta, tempo, menu, sub_menu)
-        # Agora a função que desenha os gráficos na janela:
+        # E agora a função que desenha os gráficos na janela:
         desenhar_graficos()
-        # E a função que toca os sons:
-        tocar_sons()
 
     # Quando o while terminar, chegaremos aqui, terminando o jogo.
     # Com isso, precisaremos terminar o pygame:
